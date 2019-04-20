@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../dist/YMPlayer.js"></script>
+  <style>
+    div {
+      width: 800px;
+      height: 400px;
+    }
+    video{
+      width: 100%;
+      height:100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div></div>
+  <div><video autoplay muted src="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"></video></div>
+  <script>
+    //http://edge.flowplayer.org/flowplayer-700.flv
+    //http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4
+    //http://192.168.100.192:8080/live/18WR888888/front.flv
+    const container = document.querySelector('div')
+    const player = new YMPlayer(container, { url: './video.flv', autoplay: true,isLiving:true })
+  </script>
+</body>
+
+</html>
