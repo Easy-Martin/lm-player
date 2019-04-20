@@ -1,5 +1,5 @@
 
-export function getVideoType(url: string): string | undefined {
+export function getVideoType(url) {
   const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+)$/i
   const resultArr = reg.exec(url)
   if (resultArr) {
