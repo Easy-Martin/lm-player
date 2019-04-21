@@ -7,14 +7,24 @@ class LeftBar extends React.Component {
   constructor(props) {
     super(props);
   }
-  changePlayStatus = () => {
-    const { video } = this.props;
-    if (video.paused) {
-      video.play();
-    } else {
-      video.pause();
-    }
+  componentDidMount() {
+    this.props.event.on("play", this.updateRender);
+    this.props.event.on("pause", this.updateRender);
+  }
+  componentWillUnmount() {
+    this.props.event.off("play", this.updateRender);
+    this.props.event.off("pause", this.updateRender);
+  }
+  updateRender = () => {
     this.forceUpdate();
+  };
+  changePlayStatus = () => {
+    const { api, video } = this.props;
+    if (video.paused) {
+      api.play();
+    } else {
+      api.pause();
+    }
   };
   render() {
     const { video } = this.props;

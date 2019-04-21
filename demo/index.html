@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh_cn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
-    <link rel="stylesheet" href="../dist/LMPlayer.css">
+    <link rel="stylesheet" href="../dist/LMPlayer.css" />
     <script src="./react.development.js"></script>
     <script src="./react-dom.development.js"></script>
     <script src="./prop-types.min.js"></script>
@@ -13,17 +13,16 @@
     <script src="./flv.min.js"></script>
     <script src="./hls.min.js"></script>
     <script src="../dist/LMPlayer.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="root"></div>
     <script type="text/babel">
-        class Text extends React.Component{
-            render(){
-                return <h1>Hello, world!</h1>
-            }
+      class Text extends React.Component {
+        render() {
+          return <h1>Hello, world!</h1>;
         }
-        ReactDOM.render(<LMPlayer url="./video.flv" isLive={true} autoPlay={true}/>,
-        document.getElementById('root'))
+      }
+      ReactDOM.render(<LMPlayer url="./video.flv" isLive={true} autoPlay={true} />, document.getElementById("root"));
     </script>
-</body>
+  </body>
 </html>

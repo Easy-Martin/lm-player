@@ -1,0 +1,40 @@
+.loading-mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  background: transparent;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.5s;
+  &.mask-loading-animation {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+  }
+  .video-loading-icon {
+    font-size: 48px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    z-index: -1;
+    visibility: hidden;
+    &.video-loading-animation {
+      visibility: visible;
+      z-index: 9;
+      animation: loadingAnimation 1s linear infinite;
+    }
+  }
+}
+
+@keyframes loadingAnimation {
+  form {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
