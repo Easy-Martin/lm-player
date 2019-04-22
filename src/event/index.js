@@ -23,7 +23,7 @@ class VideoEvent {
       this.video[`on${eventName}`] !== undefined && this.video.removeEventListener(eventName, handle, false);
     }
   }
-  dispose() {
+  destroy() {
     this.video = null;
     this.events = null;
   }

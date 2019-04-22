@@ -12,7 +12,7 @@ export default class Api {
   pause() {
     this.player.pause();
   }
-  stop() {
+  destroy() {
     this.player.removeAttribute("src");
     if (this.hls) {
       this.hls.destroy();
@@ -21,9 +21,13 @@ export default class Api {
       this.flv.unload();
       this.flv.destroy();
     }
+    this.player = null;
+    this.flv = null;
+    this.hls = null;
   }
   seekTo(seconds) {
-    if (this.flv) {
+    const buffered = this.getBufferedTime()
+    if (this.flv && buffered[0] > seconds) {
       this.flv.unload();
       this.flv.load();
     }
@@ -32,18 +36,18 @@ export default class Api {
   setVolume(fraction) {
     this.player.volume = fraction;
   }
-  mute = () => {
+  mute() {
     this.player.muted = true;
   };
-  unmute = () => {
+  unmute() {
     this.player.muted = false;
   };
-  enablePIP() {
+  requestPictureInPicture() {
     if (this.player.requestPictureInPicture && document.pictureInPictureElement !== this.player) {
       this.player.requestPictureInPicture();
     }
   }
-  disablePIP() {
+  exitPictureInPicture() {
     if (document.exitPictureInPicture && document.pictureInPictureElement === this.player) {
       document.exitPictureInPicture();
     }
@@ -64,16 +68,39 @@ export default class Api {
     return this.player.currentTime;
   }
   getSecondsLoaded() {
+    return this.getBufferedTime()[1]
+  }
+  getBufferedTime() {
     if (!this.player) return null;
     const { buffered } = this.player;
     if (buffered.length === 0) {
-      return 0;
+      return [0, 0];
     }
     const end = buffered.end(buffered.length - 1);
+    const start = buffered.start(buffered.length - 1);
     const duration = this.getDuration();
     if (end > duration) {
       return duration;
     }
-    return end;
+    return [start, end];
+  }
+  getApi() {
+    return {
+      play: this.play.bind(this),
+      pause: this.pause.bind(this),
+      seekTo: this.seekTo.bind(this),
+      setVolume: this.setVolume.bind(this),
+      mute: this.mute.bind(this),
+      unmute: this.unmute.bind(this),
+      requestPictureInPicture: this.requestPictureInPicture.bind(this),
+      exitPictureInPicture: this.exitPictureInPicture.bind(this),
+      setPlaybackRate: this.setPlaybackRate.bind(this),
+      destroy: this.destroy.bind(this),
+      getDuration: this.getDuration.bind(this),
+      getCurrentTime: this.getCurrentTime.bind(this),
+      getSecondsLoaded: this.getSecondsLoaded.bind(this),
+      getBufferedTime: this.getBufferedTime.bind(this),
+      __player: this.player
+    }
   }
 }

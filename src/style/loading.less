@@ -8,17 +8,17 @@
   width: 100%;
   height: 100%;
   transition: all 0.5s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &.mask-loading-animation {
     opacity: 1;
     background: rgba(0, 0, 0, 0.6);
     z-index: 1;
   }
   .video-loading-icon {
+    position: relative;
     font-size: 48px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
     color: #fff;
     z-index: -1;
     visibility: hidden;
@@ -32,9 +32,9 @@
 
 @keyframes loadingAnimation {
   form {
-    transform: translate(-50%, -50%) rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-    transform: translate(-50%, -50%) rotate(360deg);
+    transform: rotate(360deg);
   }
 }

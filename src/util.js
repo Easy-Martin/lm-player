@@ -38,3 +38,23 @@ export function getVideoType(url) {
     return resultArr[2];
   }
 }
+
+export function timeStamp(second_time) {
+  let time = parseInt(second_time);
+  if (parseInt(second_time) > 60) {
+    let second = parseInt(second_time) % 60;
+    let min = parseInt(second_time / 60);
+    time = `${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`
+    if (min > 60) {
+      min = parseInt(second_time / 60) % 60;
+      let hour = parseInt(parseInt(second_time / 60) / 60);
+      time = `${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`
+    } else {
+      time = `00:${time}`
+    }
+  } else {
+    time = `00:00:${time < 10 ? `0${time}` : time}`
+  }
+
+  return time;
+}  

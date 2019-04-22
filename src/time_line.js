@@ -1,12 +1,14 @@
 import React from "react";
 import { videoDec } from "./context";
+import IconFont from './iconfont'
+import Slider from './slider'
+import { timeStamp } from './util'
 import "./style/time-line.less";
 
 @videoDec
 class TineLine extends React.Component {
   constructor(props) {
     super(props);
-    this.timeLineDomRef = React.createRef();
     this.state = {
       duration: 0,
       currentTime: 0,
@@ -19,8 +21,8 @@ class TineLine extends React.Component {
     event.on("durationchange", this.getDuration);
     event.on("timeupdate", this.getCurrentTime);
     event.on("progress", this.getBuffered);
+    event.on("suspend", this.getBuffered)
     event.on("seeked", this.seekendPlay);
-    this.timeLineDomRef.current.addEventListener("click", this.changePlayTime, false);
   }
   componentWillUnmount() {
     const { event } = this.props;
@@ -28,8 +30,8 @@ class TineLine extends React.Component {
     event.off("durationchange", this.getDuration);
     event.off("timeupdate", this.getCurrentTime);
     event.off("progress", this.getBuffered);
+    event.off("suspend", this.getBuffered)
     event.off("seeked", this.seekendPlay);
-    this.timeLineDomRef.current.removeEventListener("click", this.changePlayTime, false);
   }
   getDuration = () => {
     const { api } = this.props;
@@ -39,9 +41,14 @@ class TineLine extends React.Component {
   };
   getCurrentTime = () => {
     const { api } = this.props;
-    this.setState({
-      currentTime: api.getCurrentTime()
-    });
+    const state = {
+      currentTime: api.getCurrentTime(),
+      buffered: api.getSecondsLoaded()
+    }
+    if (state.buffered === this.state.buffered) {
+      delete state.buffered
+    }
+    this.setState(state);
   };
   getBuffered = () => {
     const { api } = this.props;
@@ -49,14 +56,13 @@ class TineLine extends React.Component {
       buffered: api.getSecondsLoaded()
     });
   };
-  changePlayTime = event => {
+  changePlayTime = percent => {
     const { video, api } = this.props;
+    const currentTime = percent * this.state.duration
     if (!video.paused) {
       api.pause();
     }
-    const { width } = this.timeLineDomRef.current.getBoundingClientRect();
-    let currentTime = (event.layerX / width) * this.state.duration;
-		this.setState({ currentTime });
+    this.setState({ currentTime });
     api.seekTo(currentTime);
   };
   seekendPlay = () => {
@@ -65,15 +71,25 @@ class TineLine extends React.Component {
       api.play();
     }
   };
+  renderTimeLineTips = (percent) => {
+    const currentTime = percent * this.state.duration
+    const time = timeStamp(currentTime)
+    return <span>{time}</span>
+  }
   render() {
     const { duration, currentTime, buffered } = this.state;
     const playPercent = Math.round((currentTime / duration) * 100);
     const bufferedPercent = Math.round((buffered / duration) * 100);
     return (
-      <div className="video-time-line-layout" ref={this.timeLineDomRef}>
-        <div className="time-line-box" />
-        <div className="time-buffer-box" style={{ width: `${bufferedPercent}%` }} />
-        <div className="play-time-line-box" style={{ width: `${playPercent}%` }} />
+      <div className="video-time-line-layout">
+        <IconFont className="time-line-action-item" />
+        <Slider
+          className="time-line-box"
+          currentPercent={playPercent}
+          availablePercent={bufferedPercent}
+          onChange={this.changePlayTime}
+          renderTimeLineTips={this.renderTimeLineTips} />
+        <IconFont className="time-line-action-item" />
       </div>
     );
   }
