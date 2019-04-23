@@ -101,8 +101,8 @@ class Slider extends React.Component {
   }
   changeCurrentValue = (event) => {
     event.stopPropagation()
-    const { width } = this.layoutDom.getBoundingClientRect();
-    let percent = event.layerX / width;
+    const { width,x } = this.layoutDom.getBoundingClientRect();
+    let percent = (event.pageX - x ) / width;
     this.props.onChange && this.props.onChange(percent)
   }
   render() {

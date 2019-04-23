@@ -30,6 +30,7 @@ export default class Api {
   destroy() {
     this.player.removeAttribute("src");
     if (this.hls) {
+      this.hls.stopLoad()
       this.hls.destroy();
     }
     if (this.flv) {

@@ -50,17 +50,17 @@ class LMPlayer extends React.Component {
     this.playerType = null;
   }
   initPlayer = () => {
-    if (!this.props.url) {
+    if (!this.props.file) {
       return null;
     }
 
-    const type = getVideoType(this.props.url);
+    const type = getVideoType(this.props.file);
     if (type === "flv" || this.props.type === "flv") {
       this.flv = createFlvPlayer(this.player, this.props);
     } else if (type === "m3u8" || this.props.type === "hls") {
-      this.hls = createHlsPlayer(this.player, this.props);
+      this.hls = createHlsPlayer(this.player, this.props.file);
     } else {
-      this.player.src = this.props.url;
+      this.player.src = this.props.file;
     }
 
   };

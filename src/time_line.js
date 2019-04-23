@@ -68,7 +68,7 @@ class TineLine extends React.Component {
   seekendPlay = () => {
     const { video, api } = this.props;
     if (video.paused) {
-      // api.play();
+      api.play();
     }
   };
   renderTimeLineTips = (percent) => {

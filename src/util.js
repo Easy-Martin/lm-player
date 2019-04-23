@@ -1,12 +1,12 @@
 import flvjs from "flv.js";
 import Hls from "hls.js";
-export function createHlsPlayer(video, options) {
+export function createHlsPlayer(video, file) {
   const player = new Hls();
   player.attachMedia(video);
   player.on(Hls.Events.MEDIA_ATTACHED, () => {
-    player.loadSource(options.url);
+    player.loadSource(file);
     player.on(Hls.Events.MANIFEST_PARSED, () => {
-      resolve(player);
+      // console.log(player);
     });
   });
   return player;
@@ -17,7 +17,7 @@ export function createFlvPlayer(video, options) {
     const player = flvjs.createPlayer(
       {
         type: "flv",
-        url: options.url,
+        url: options.file,
         isLive: !!options.isLive
       },
       {
@@ -32,10 +32,10 @@ export function createFlvPlayer(video, options) {
   }
 }
 export function getVideoType(url) {
-  const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+)$/i;
+  const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;
   const resultArr = reg.exec(url);
   if (resultArr) {
-    return resultArr[2];
+    return resultArr[2].replace(resultArr[4], '');
   }
 }
 
@@ -57,6 +57,17 @@ export function timeStamp(second_time) {
   }
 
   return time;
+}
+
+export function dateFormat(timetemp) {
+  const date = new Date(timetemp)
+  let YYYY = date.getFullYear()
+  let DD = date.getDate()
+  let MM = date.getMonth() + 1
+  let hh = date.getHours()
+  let mm = date.getMinutes()
+  let ss = date.getSeconds()
+  return `${YYYY}.${MM > 10 ? MM : '0' + MM}.${DD > 10 ? DD : '0' + DD} ${hh > 10 ? hh : '0' + hh}.${mm > 10 ? mm : '0' + mm}.${ss > 10 ? ss : '0' + ss}`
 }
 
 export function fullscreen(element) {
