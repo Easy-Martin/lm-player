@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from 'react-dom'
-import "./style/slider.less";
+import "../style/slider.less";
 
-class Slider extends React.Component {
+class HistorySlider extends React.Component {
   constructor(props) {
     super(props);
     this.sliderDomRef = React.createRef();
@@ -123,4 +123,4 @@ class Slider extends React.Component {
   }
 }
 
-export default Slider;
+export default HistorySlider;

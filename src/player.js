@@ -7,6 +7,7 @@ import ContrallerBar from "./contraller_bar";
 import Loading from "./loading";
 import TimeLine from "./time_line";
 import ErrorEvent from "./event/errorEvent";
+import DragEvent from './event/dragEvent'
 import Api from "./api";
 import "./style/index.less";
 
@@ -18,13 +19,15 @@ class LMPlayer extends React.Component {
     this.flv = null;
     this.hls = null;
     this.playerType = null;
-    this.videoDomRef = React.createRef();
+    this.playContainerRef = React.createRef()
+    this.playContainer = null
   }
   componentDidMount() {
-    this.player = ReactDOM.findDOMNode(this.videoDomRef.current)
-    this.event = new VideoEvent(this.player);
-    this.api = new Api(this.player, this.flv, this.hls);
+    this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current)
+    this.player = this.playContainer.querySelector('video')
     this.initPlayer();
+    this.event = new VideoEvent(this.player);
+    this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
     if (this.props.playsinline) {
       this.player.setAttribute("playsinline", "");
       this.player.setAttribute("webkit-playsinline", "");
@@ -34,12 +37,12 @@ class LMPlayer extends React.Component {
       this.api.getApi().play();
     }
     this.forceUpdate();
+    this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.event.destroy()
     this.api.destroy()
 
-    this.videoDomRef = null;
     this.player = null
     this.event = null;
     this.flv = null;
@@ -59,8 +62,9 @@ class LMPlayer extends React.Component {
     } else {
       this.player.src = this.props.url;
     }
-    this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerContext());
+
   };
+
 
   renderVideoTools = () => {
     if (!this.player) {
@@ -72,10 +76,11 @@ class LMPlayer extends React.Component {
         <Loading />
         <TimeLine />
         <ErrorEvent />
+        <DragEvent />
       </>
     );
   };
-  getPlayerContext = () => {
+  getPlayerApiContext = () => {
     const api = this.api ? this.api.getApi() : {};
     const event = this.event ? {
       on: this.event.on.bind(this.event),
@@ -85,18 +90,19 @@ class LMPlayer extends React.Component {
     return Object.assign({}, api, event)
   }
   render() {
-    const { autoPlay } = this.props;
+    const { autoPlay, poster } = this.props;
     const providerValue = {
-      video: this.videoDomRef.current,
+      video: this.player,
       event: this.event,
       playerType: this.playerType,
       playerProps: this.props,
-      api: this.getPlayerContext()
+      api: this.api,
+      playContainer: this.playContainer
     };
     return (
-      <div className="lm-player-container">
+      <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video ref={this.videoDomRef} autoPlay={autoPlay} muted />
+          <video autoPlay={autoPlay} muted poster={poster} />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

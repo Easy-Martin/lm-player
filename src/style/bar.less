@@ -2,17 +2,52 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  background: rgba(29,33,53,0.80);
+  background: rgba(29, 33, 53, 0.8);
   height: 28px;
   width: 100%;
   display: flex;
-	align-items: center;
-	z-index: 2;
+  align-items: center;
+  z-index: 2;
   justify-content: space-between;
   .contraller-bar-item {
-    display: inline-block;
-    width: 24px;
-    text-align: center;
+    float: left;
+    display: flex;
+    width: 28px;
+    height: 28px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    &.contraller-bar-volume {
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      white-space: nowrap;
+      .volume-slider-layout {
+        width: 100px;
+        height: 28px;
+        position: absolute;
+        left:32px;
+        top:0;
+        opacity: 0;
+        transition: opacity 0.3s;
+        .slider-max-line {
+          background-color: #5b7eac;
+        }
+      }
+      .lm-player-iconfont {
+        line-height: 28px;
+        width: 28px;
+        display: inline-block;
+        text-align: center;
+      }
+      &.contraller-bar-hover-volume {
+        width: 148px;
+        .volume-slider-layout{
+          opacity: 1;
+        }
+      }
+    }
   }
   .contraller-left-bar {
   }

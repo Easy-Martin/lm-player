@@ -49,7 +49,7 @@ const getStyleLoaders = (cssOptions, preProcessor, otherOptions) => {
 };
 module.exports = {
   mode: "production",
-  entry: "./src/player.js",
+  entry: "./src/index.js",
   devtool: "source-map",
   output: {
     filename: "LMPlayer.js",

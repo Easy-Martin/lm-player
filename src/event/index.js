@@ -4,13 +4,16 @@ class VideoEvent {
     this.events = {};
   }
   on(eventName, handle, isCustom = false) {
-    if (isCustom && this.events.eventName) {
-      this.events[eventName].push(handle);
+    if (isCustom) {
+      this.events[eventName] ? this.events[eventName].push(handle) : this.events[eventName] = { type: eventName, listener: [handle] };
     } else {
       this.video[`on${eventName}`] !== undefined && this.video.addEventListener(eventName, handle, false);
     }
   }
   emit(eventName, data) {
+    if (!this.events[eventName]) {
+      return
+    }
     this.events[eventName].listener.forEach(v => {
       v(data);
     });

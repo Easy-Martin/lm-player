@@ -1,9 +1,9 @@
 import React from "react";
-import { videoDec } from "./context";
-import IconFont from './iconfont'
-import Slider from './slider'
-import { timeStamp } from './util'
-import "./style/time-line.less";
+import { videoDec } from "../context";
+import IconFont from '../iconfont'
+import Slider from './history_slider'
+import { timeStamp } from '../util'
+import "../style/time-line.less";
 
 @videoDec
 class TineLine extends React.Component {
