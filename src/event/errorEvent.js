@@ -7,6 +7,9 @@ class ErrorEvent extends React.Component {
     const { event } = this.props;
     event.on("error", this.errorHandle, false);
   }
+  componentWillUnmount(){
+    event.off("error", this.errorHandle, false);
+  }
   errorHandle = e => {
     console.error(e);
   };

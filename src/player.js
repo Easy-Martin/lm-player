@@ -14,6 +14,7 @@ import "./style/index.less";
 class LMPlayer extends React.Component {
   constructor(props) {
     super(props);
+    this.videoKey = Math.random()
     this.player = null
     this.event = null;
     this.flv = null;
@@ -42,18 +43,17 @@ class LMPlayer extends React.Component {
   componentWillUnmount() {
     this.event.destroy()
     this.api.destroy()
-
     this.player = null
     this.event = null;
     this.flv = null;
     this.hls = null;
     this.playerType = null;
   }
+
   initPlayer = () => {
     if (!this.props.file) {
       return null;
     }
-
     const type = getVideoType(this.props.file);
     if (type === "flv" || this.props.type === "flv") {
       this.flv = createFlvPlayer(this.player, this.props);
@@ -89,20 +89,23 @@ class LMPlayer extends React.Component {
     } : {}
     return Object.assign({}, api, event)
   }
-  render() {
-    const { autoPlay, poster } = this.props;
-    const providerValue = {
+  getProvider = () => {
+    return {
       video: this.player,
       event: this.event,
       playerType: this.playerType,
       playerProps: this.props,
       api: this.api,
       playContainer: this.playContainer
-    };
+    }
+  }
+  render() {
+    const { autoPlay, poster } = this.props;
+    const providerValue = this.getProvider();
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoPlay} muted poster={poster} />
+          <video autoPlay={autoPlay} muted poster={poster} key={this.videoKey}/>
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

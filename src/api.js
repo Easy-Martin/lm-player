@@ -9,6 +9,10 @@ export default class Api {
     this.scale = 1;
     this.position = [0, 0]
   }
+  updateChunk({ flv, hls }) {
+    this.flv = flv;
+    this.hls = hls;
+  }
   requestFullScreen() {
     if (!isFullscreen(this.playContainer)) {
       fullscreen(this.playContainer)

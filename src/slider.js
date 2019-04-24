@@ -90,7 +90,7 @@ class Slider extends React.Component {
   computedPositionForEvent(e) {
     const { x, width } = this.layoutDom.getBoundingClientRect();
     const { pageX } = e
-    let dx = pageX - x ;
+    let dx = pageX - x;
     if (dx > width) {
       dx = width
     }
@@ -101,8 +101,8 @@ class Slider extends React.Component {
   }
   changeCurrentValue = (event) => {
     event.stopPropagation()
-    const { width,x } = this.layoutDom.getBoundingClientRect();
-    let percent = (event.pageX - x ) / width;
+    const { width, x } = this.layoutDom.getBoundingClientRect();
+    let percent = (event.pageX - x) / width;
     this.props.onChange && this.props.onChange(percent)
   }
   render() {
@@ -114,10 +114,10 @@ class Slider extends React.Component {
           <div className="slider-max-line" />
           <div className="slider-visibel-line" style={{ width: `${availablePercent}%` }} />
           <div className="slider-current-line" style={{ width: `${value}%` }} />
-          <div className="drag-change-icon" draggable={false} style={{ left: `${value}%` }}></div>
-          <div style={{ left: tipsX, display: showTips ? 'block' : 'none' }} className="slide-tips" />
           {this.props.children}
         </div>
+        <div className="slider-other-content"><div className="drag-change-icon" draggable={false} style={{ left: `${value}%` }}></div></div>
+        <div style={{ left: tipsX, display: showTips ? 'block' : 'none' }} className="slide-tips" />
       </div>
     );
   }

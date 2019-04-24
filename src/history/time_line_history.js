@@ -57,19 +57,15 @@ class TineLine extends React.Component {
     });
   };
   changePlayTime = percent => {
-    const { video, api, historyList } = this.props;
+    const { seekTo, historyList } = this.props;
     const currentTime = percent * historyList.duration;
     const playIndex = historyList.fragments.findIndex(v => v.end > currentTime)
     const fragment = historyList.fragments[playIndex]
-    const seekTime = currentTime - fragment.begin - 1
-    if (!video.paused) {
-      api.pause();
-    }
     if (fragment.file) {
+      seekTo(currentTime)
       this.setState({ currentTime });
     }
-    this.props.initPlayer(playIndex, false, seekTime)
-    api.seekTo(seekTime);
+
   };
   seekendPlay = () => {
     const { video, api } = this.props;
