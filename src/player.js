@@ -9,6 +9,7 @@ import TimeLine from "./time_line";
 import ErrorEvent from "./event/errorEvent";
 import DragEvent from './event/dragEvent'
 import Api from "./api";
+import LiveHeart from './live_heart'
 import "./style/index.less";
 
 class LMPlayer extends React.Component {
@@ -74,12 +75,16 @@ class LMPlayer extends React.Component {
       <>
         <ContrallerBar />
         <Loading />
-        <TimeLine />
-        <ErrorEvent />
+        {!this.props.isLive && <TimeLine />}
+        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
         <DragEvent />
+        {this.props.isLive && <LiveHeart key={this.props.file} />}
       </>
     );
   };
+  getPlayUrl = () => {
+    return this.props.file
+  }
   getPlayerApiContext = () => {
     const api = this.api ? this.api.getApi() : {};
     const event = this.event ? {
@@ -87,7 +92,7 @@ class LMPlayer extends React.Component {
       off: this.event.off.bind(this.event),
       emit: this.event.emit.bind(this.event)
     } : {}
-    return Object.assign({}, api, event)
+    return Object.assign({}, api, event, { getPlayUrl: this.getPlayUrl })
   }
   getProvider = () => {
     return {
@@ -105,7 +110,7 @@ class LMPlayer extends React.Component {
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoPlay} muted poster={poster} key={this.videoKey}/>
+          <video autoPlay={autoPlay} muted poster={poster} key={this.videoKey} />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

@@ -57,6 +57,19 @@ export default class Api {
     }
     this.player.currentTime = seconds;
   }
+  reload() {
+    if (this.flv) {
+      this.flv.unload()
+      this.flv.load()
+      return
+    }
+    if (this.hls) {
+      this.hls.stopLoad()
+      this.hls.startLoad()
+      return
+    }
+    this.seekTo(0)
+  }
   setVolume(fraction) {
     this.player.volume = fraction;
   }

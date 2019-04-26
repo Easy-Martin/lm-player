@@ -5,11 +5,11 @@ import { videoDec } from "../context";
 class PlayEnd extends React.Component {
   componentDidMount() {
     const { event } = this.props;
-    event.on("ended", this.endedHandle, false);
+    event.addEventListener("ended", this.endedHandle, false);
   }
   componentWillUnmount() {
     const { event } = this.props;
-    event.off("ended", this.endedHandle, false);
+    event.removeEventListener("ended", this.endedHandle, false);
   }
   endedHandle = () => {
     let index = this.props.playIndex

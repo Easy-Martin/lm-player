@@ -32,7 +32,7 @@
 </head>
 
 <body>
-  <div id="root"></div>
+  <!-- <div id="root"></div> -->
   <div id="root2"></div>
   <script type="text/babel">
       flvjs.LoggingControl.enableVerbose = false
@@ -77,8 +77,8 @@
           { "begin": 480, "end": 604 , file:`./video.flv?${Math.random()}`}, 
         ]
       }
-      ReactDOM.render(<LMPlayer.HistoryPlayer historyList={historyList} isLive={false} autoPlay={true} poster="./poster.png" onInitPlayer={(player) => {console.log(player)}} />, document.getElementById("root"));
-      ReactDOM.render(<LMPlayer file={`./video.flv?${Math.random()}`} isLive={true} autoPlay={false} poster="./poster.png" onInitPlayer={(player) => {console.log(player)}} />, document.getElementById("root2"));
+      // ReactDOM.render(<LMPlayer.HistoryPlayer historyList={historyList} isLive={false} autoPlay={true} poster="./poster.png" onInitPlayer={(player) => {console.log(player)}} />, document.getElementById("root"));
+      ReactDOM.render(<LMPlayer file={`http://36.33.32.174:5460/v2/540803305/live.flv?client_token=540803305_0_1556321731_2cb545a3f5c1ade5083248b61f75b8f6`} isLive={true} autoPlay={true} poster="./poster.png" onInitPlayer={(player) => {console.log(player)}} />, document.getElementById("root2"));
 
    </script>
 </body>

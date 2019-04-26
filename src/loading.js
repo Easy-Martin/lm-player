@@ -14,11 +14,19 @@ class Loading extends React.Component {
   }
   componentDidMount() {
     const { event } = this.props;
-    event.on("loadstart", this.openLoading);
-    event.on("waiting", this.openLoading);
-    event.on("seeking", this.openLoading);
-    event.on("loadeddata", this.closeLoading);
-    event.on("canplay", this.closeLoading);
+    event.addEventListener("loadstart", this.openLoading);
+    event.addEventListener("waiting", this.openLoading);
+    event.addEventListener("seeking", this.openLoading);
+    event.addEventListener("loadeddata", this.closeLoading);
+    event.addEventListener("canplay", this.closeLoading);
+  }
+  componentWillUnmount(){
+    const { event } = this.props;
+    event.removeEventListener("loadstart", this.openLoading);
+    event.removeEventListener("waiting", this.openLoading);
+    event.removeEventListener("seeking", this.openLoading);
+    event.removeEventListener("loadeddata", this.closeLoading);
+    event.removeEventListener("canplay", this.closeLoading);
   }
   openLoading = () => {
     this.setState({ loading: true });

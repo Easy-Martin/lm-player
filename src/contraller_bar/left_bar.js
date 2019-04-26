@@ -12,15 +12,15 @@ class LeftBar extends React.Component {
     }
   }
   componentDidMount() {
-    this.props.event.on("play", this.updateRender);
-    this.props.event.on("pause", this.updateRender);
-    this.props.event.on("volumechange", this.volumechange);
+    this.props.event.addEventListener("play", this.updateRender);
+    this.props.event.addEventListener("pause", this.updateRender);
+    this.props.event.addEventListener("volumechange", this.volumechange);
 
   }
   componentWillUnmount() {
-    this.props.event.off("play", this.updateRender);
-    this.props.event.off("pause", this.updateRender);
-    this.props.event.off("volumechange", this.volumechange);
+    this.props.event.removeEventListener("play", this.updateRender);
+    this.props.event.removeEventListener("pause", this.updateRender);
+    this.props.event.removeEventListener("volumechange", this.volumechange);
   }
   updateRender = () => {
     this.forceUpdate();

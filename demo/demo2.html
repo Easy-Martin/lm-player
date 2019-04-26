@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>demo</title>
+</head>
+
+<body>
+  <video id="videoElement" muted></video>
+  <script src="./flv.min.js"></script>
+  <script>
+    if (flvjs.isSupported()) {
+      flvjs.LoggingControl.enableVerbose = false
+      var videoElement = document.querySelector('video');
+      var flvPlayer = flvjs.createPlayer({
+        type: 'flv',
+        url: 'http://36.33.32.174:5460/v2/540803305/live.flv?client_token=540803305_0_1556321731_2cb545a3f5c1ade5083248b61f75b8f6',
+        isLive: true
+      });
+      flvPlayer.attachMediaElement(videoElement);
+      flvPlayer.load();
+      flvPlayer.play();
+
+      window.addEventListener('focus', () => {
+        if (videoElement.buffered.end(0) - videoElement.currentTime > 2) {
+          videoElement.currentTime = videoElement.buffered.end(0) - 2 // 更新当前时间
+        }
+      })
+
+      var progressTime = Date.now()
+      videoElement.addEventListener('progress', () => {
+        progressTime = Date.now()
+      })
+
+      setInterval(() => {
+        if (Date.now() - progressTime > 10 * 1000) {
+          flvPlayer.unload()
+          flvPlayer.load();
+          if (videoElement.paused) {
+            flvPlayer.play();
+          }
+        }
+      }, 1000 * 10)
+    }
+  </script>
+</body>
+
+</html>

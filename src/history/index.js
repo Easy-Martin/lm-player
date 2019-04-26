@@ -60,9 +60,12 @@ class HistoryPlayer extends Player {
     if(this.flv){
       this.flv.unload()
       this.flv.destroy()
+      this.flv = null
     }
     if(this.hls){
       this.hls.stopLoad()
+      this.hls.destroy()
+      this.hls = null
     }
     const type = getVideoType(historyList.fragments[index].file);
     if (type === "flv" || this.props.type === "flv") {

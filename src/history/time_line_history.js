@@ -17,21 +17,21 @@ class TineLine extends React.Component {
   }
   componentDidMount() {
     const { event } = this.props;
-    event.on("loadedmetadata", this.getDuration);
-    event.on("durationchange", this.getDuration);
-    event.on("timeupdate", this.getCurrentTime);
-    event.on("progress", this.getBuffered);
-    event.on("suspend", this.getBuffered)
-    event.on("seeked", this.seekendPlay);
+    event.addEventListener("loadedmetadata", this.getDuration);
+    event.addEventListener("durationchange", this.getDuration);
+    event.addEventListener("timeupdate", this.getCurrentTime);
+    event.addEventListener("progress", this.getBuffered);
+    event.addEventListener("suspend", this.getBuffered)
+    event.addEventListener("seeked", this.seekendPlay);
   }
   componentWillUnmount() {
     const { event } = this.props;
-    event.off("loadedmetadata", this.getDuration);
-    event.off("durationchange", this.getDuration);
-    event.off("timeupdate", this.getCurrentTime);
-    event.off("progress", this.getBuffered);
-    event.off("suspend", this.getBuffered)
-    event.off("seeked", this.seekendPlay);
+    event.removeEventListener("loadedmetadata", this.getDuration);
+    event.removeEventListener("durationchange", this.getDuration);
+    event.removeEventListener("timeupdate", this.getCurrentTime);
+    event.removeEventListener("progress", this.getBuffered);
+    event.removeEventListener("suspend", this.getBuffered)
+    event.removeEventListener("seeked", this.seekendPlay);
   }
   getDuration = () => {
     const { api } = this.props;
