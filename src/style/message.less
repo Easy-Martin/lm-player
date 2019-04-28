@@ -1,4 +1,4 @@
-.loading-mask {
+.lm-player-message-mask {
   position: absolute;
   left: 0;
   top: 0;
@@ -11,22 +11,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  &.mask-loading-animation {
+  flex-direction: column;
+  &.lm-player-mask-loading-animation {
     opacity: 1;
     background: rgba(0, 0, 0, 0.6);
     z-index: 1;
   }
-  .video-loading-icon {
+  .lm-player-loading-icon {
     position: relative;
     font-size: 48px;
-    color: #fff;
     z-index: -1;
     visibility: hidden;
-    &.video-loading-animation {
+    &.lm-player-loading-animation {
       visibility: visible;
       z-index: 9;
       animation: loadingAnimation 1s linear infinite;
     }
+  }
+  .lm-player-message{
+    color:#fff;
+    font-size: 16px;
+    padding:10px;
   }
 }
 

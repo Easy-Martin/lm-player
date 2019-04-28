@@ -2,15 +2,17 @@ import React from "react";
 import IconFont from "./iconfont";
 import { videoDec } from "./context";
 
-import "./style/loading.less";
+import "./style/message.less";
 
 @videoDec
-class Loading extends React.Component {
+class VideoMessage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      status: null
     };
+    this.message = null;
   }
   componentDidMount() {
     const { event } = this.props;
@@ -19,8 +21,11 @@ class Loading extends React.Component {
     event.addEventListener("seeking", this.openLoading);
     event.addEventListener("loadeddata", this.closeLoading);
     event.addEventListener("canplay", this.closeLoading);
+    event.on("errorReload", this.errorReload);
+    event.on("reloadFail", this.reloadFail);
+    event.on("reloadSuccess", this.reloadSuccess);
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     const { event } = this.props;
     event.removeEventListener("loadstart", this.openLoading);
     event.removeEventListener("waiting", this.openLoading);
@@ -28,6 +33,18 @@ class Loading extends React.Component {
     event.removeEventListener("loadeddata", this.closeLoading);
     event.removeEventListener("canplay", this.closeLoading);
   }
+  errorReload = (timer) => {
+    this.message = <div>视频加载错误,正在进行重连第{timer}重连</div>;
+    this.setState({ status: "reload" });
+  };
+  reloadFail = () => {
+    this.message = <div>视频错误</div>;
+    this.setState({ status: "fail" });
+  };
+  reloadSuccess = () => {
+    this.message = null;
+    this.setState({ status: null });
+  };
   openLoading = () => {
     this.setState({ loading: true });
   };
@@ -37,11 +54,15 @@ class Loading extends React.Component {
   render() {
     const { loading } = this.state;
     return (
-      <div className={`loading-mask ${loading ? "mask-loading-animation" : ""}`}>
-        <IconFont type="lm-player-Loading" className={`${loading ? "video-loading-animation" : ""} video-loading-icon`} />
+      <div className={`lm-player-message-mask ${loading ? "lm-player-mask-loading-animation" : ""}`}>
+        <IconFont
+          type="lm-player-Loading"
+          className={`${loading ? "lm-player-loading-animation" : ""} lm-player-loading-icon`}
+        />
+        <span className="lm-player-message">{this.message}</span>
       </div>
     );
   }
 }
 
-export default Loading;
+export default VideoMessage;

@@ -6,6 +6,7 @@ class VideoEvent {
   }
   on(eventName, handle) {
     this.events[eventName] ? this.events[eventName].push(handle) : this.events[eventName] = { type: eventName, listener: [handle] };
+    console.log(this.events[eventName],'11111111111111111')
   }
   addEventListener(eventName, handle) {
     this.video.addEventListener(eventName, handle, false);
@@ -14,6 +15,7 @@ class VideoEvent {
     this.video.removeEventListener(eventName, handle, false);
   }
   emit(eventName, ...data) {
+    console.log(eventName,this.events[eventName],'2222222222')
     if (!this.events[eventName]) {
       return
     }
@@ -22,7 +24,7 @@ class VideoEvent {
     });
   }
   off(eventName, handle) {
-    if (this.events.eventName) {
+    if (!this.events.eventName) {
       return
     }
     let index = this.events[eventName].listener.findIndex(v => v === handle);

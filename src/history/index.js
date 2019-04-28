@@ -1,7 +1,7 @@
 
 import Player from '../player'
 import ContrallerBar from "../contraller_bar";
-import Loading from "../loading";
+import VideoMessage from "../message";
 import HistoryTimeLine from "./time_line_history";
 import ErrorEvent from "../event/errorEvent";
 import DragEvent from '../event/dragEvent'
@@ -161,7 +161,7 @@ class HistoryPlayer extends Player {
     return (
       <>
         <ContrallerBar />
-        <Loading />
+        <VideoMessage />
         <HistoryTimeLine />
         <ErrorEvent />
         <DragEvent />

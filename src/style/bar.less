@@ -16,19 +16,25 @@
     height: 28px;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
+   
+    .lm-player-iconfont {
+      cursor: pointer;
+      &:hover{
+        color:#ffaa00;
+      }
+    }
     &.contraller-bar-volume {
       display: inline-block;
       position: relative;
-      overflow: hidden;
       transition: all 0.3s;
       white-space: nowrap;
+      overflow: hidden;
       .volume-slider-layout {
         width: 100px;
         height: 28px;
         position: absolute;
-        left:32px;
-        top:0;
+        left: 32px;
+        top: 0;
         opacity: 0;
         transition: opacity 0.3s;
         .slider-max-line {
@@ -43,7 +49,7 @@
       }
       &.contraller-bar-hover-volume {
         width: 148px;
-        .volume-slider-layout{
+        .volume-slider-layout {
           opacity: 1;
         }
       }

@@ -14,22 +14,20 @@
       var videoElement = document.querySelector('video');
       var flvPlayer = flvjs.createPlayer({
         type: 'flv',
-        url: 'http://36.33.32.174:5460/v2/540803305/live.flv?client_token=540803305_0_1556321731_2cb545a3f5c1ade5083248b61f75b8f6',
+        url: 'http://36.33.32.174:5460/v2/540803305/live.flv?client_token=540803305_0_1556494875_4bf26ead6f3274f15cf2e0db04f00b1f',
         isLive: true
       });
       flvPlayer.attachMediaElement(videoElement);
       flvPlayer.load();
       flvPlayer.play();
 
-      window.addEventListener('focus', () => {
-        if (videoElement.buffered.end(0) - videoElement.currentTime > 2) {
-          videoElement.currentTime = videoElement.buffered.end(0) - 2 // 更新当前时间
-        }
-      })
-
       var progressTime = Date.now()
       videoElement.addEventListener('progress', () => {
         progressTime = Date.now()
+        if (videoElement.buffered.end(0) - videoElement.currentTime > 5) {
+          console.log(`更新播放时间：当前播放时间->${videoElement.currentTime} - 更新播放时间->${videoElement.buffered.end(0) - 2}`)
+          videoElement.currentTime = videoElement.buffered.end(0) - 2 // 更新当前时间
+        }
       })
 
       setInterval(() => {

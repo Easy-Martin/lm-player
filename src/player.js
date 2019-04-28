@@ -1,32 +1,32 @@
 import React from "react";
-import ReactDOM from 'react-dom'
+import ReactDOM from "react-dom";
 import VideoEvent from "./event";
 import { getVideoType, createFlvPlayer, createHlsPlayer } from "./util";
 import { Provider } from "./context";
 import ContrallerBar from "./contraller_bar";
-import Loading from "./loading";
+import VideoMessage from "./message";
 import TimeLine from "./time_line";
 import ErrorEvent from "./event/errorEvent";
-import DragEvent from './event/dragEvent'
+import DragEvent from "./event/dragEvent";
 import Api from "./api";
-import LiveHeart from './live_heart'
+import LiveHeart from "./live_heart";
 import "./style/index.less";
 
 class LMPlayer extends React.Component {
   constructor(props) {
     super(props);
-    this.videoKey = Math.random()
-    this.player = null
+    this.videoKey = Math.random();
+    this.player = null;
     this.event = null;
     this.flv = null;
     this.hls = null;
     this.playerType = null;
-    this.playContainerRef = React.createRef()
-    this.playContainer = null
+    this.playContainerRef = React.createRef();
+    this.playContainer = null;
   }
   componentDidMount() {
-    this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current)
-    this.player = this.playContainer.querySelector('video')
+    this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
+    this.player = this.playContainer.querySelector("video");
     this.initPlayer();
     this.event = new VideoEvent(this.player);
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
@@ -42,9 +42,9 @@ class LMPlayer extends React.Component {
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
   }
   componentWillUnmount() {
-    this.event.destroy()
-    this.api.destroy()
-    this.player = null
+    this.event.destroy();
+    this.api.destroy();
+    this.player = null;
     this.event = null;
     this.flv = null;
     this.hls = null;
@@ -63,9 +63,7 @@ class LMPlayer extends React.Component {
     } else {
       this.player.src = this.props.file;
     }
-
   };
-
 
   renderVideoTools = () => {
     if (!this.player) {
@@ -74,7 +72,7 @@ class LMPlayer extends React.Component {
     return (
       <>
         <ContrallerBar />
-        <Loading />
+        <VideoMessage />
         {!this.props.isLive && <TimeLine />}
         <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
         <DragEvent />
@@ -83,17 +81,19 @@ class LMPlayer extends React.Component {
     );
   };
   getPlayUrl = () => {
-    return this.props.file
-  }
+    return this.props.file;
+  };
   getPlayerApiContext = () => {
     const api = this.api ? this.api.getApi() : {};
-    const event = this.event ? {
-      on: this.event.on.bind(this.event),
-      off: this.event.off.bind(this.event),
-      emit: this.event.emit.bind(this.event)
-    } : {}
-    return Object.assign({}, api, event, { getPlayUrl: this.getPlayUrl })
-  }
+    const event = this.event
+      ? {
+          on: this.event.on.bind(this.event),
+          off: this.event.off.bind(this.event),
+          emit: this.event.emit.bind(this.event)
+        }
+      : {};
+    return Object.assign({}, api, event, { getPlayUrl: this.getPlayUrl });
+  };
   getProvider = () => {
     return {
       video: this.player,
@@ -102,15 +102,15 @@ class LMPlayer extends React.Component {
       playerProps: this.props,
       api: this.api,
       playContainer: this.playContainer
-    }
-  }
+    };
+  };
   render() {
     const { autoPlay, poster } = this.props;
     const providerValue = this.getProvider();
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoPlay} muted poster={poster} key={this.videoKey} />
+          <video autoPlay={autoPlay} muted poster={poster} key={this.videoKey} controls={false} />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

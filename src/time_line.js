@@ -96,7 +96,7 @@ class TineLine extends React.Component {
           currentPercent={playPercent}
           availablePercent={bufferedPercent}
           onChange={this.changePlayTime}
-          renderTimeLineTips={this.renderTimeLineTips} />
+          renderTips={this.renderTimeLineTips} />
         <IconFont type="lm-player-NextFast_Light" onClick={this.fastForward} className="time-line-action-item" />
       </div>
     );

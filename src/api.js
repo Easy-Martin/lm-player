@@ -61,11 +61,13 @@ export default class Api {
     if (this.flv) {
       this.flv.unload()
       this.flv.load()
+      this.play()
       return
     }
     if (this.hls) {
       this.hls.stopLoad()
       this.hls.startLoad()
+      this.play()
       return
     }
     this.seekTo(0)
