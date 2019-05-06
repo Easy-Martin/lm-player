@@ -33,7 +33,7 @@ class VideoMessage extends React.Component {
     event.removeEventListener("loadeddata", this.closeLoading);
     event.removeEventListener("canplay", this.closeLoading);
   }
-  errorReload = (timer) => {
+  errorReload = timer => {
     this.message = <div>视频加载错误,正在进行重连第{timer}重连</div>;
     this.setState({ status: "reload" });
   };
@@ -52,12 +52,12 @@ class VideoMessage extends React.Component {
     this.setState({ loading: false });
   };
   render() {
-    const { loading } = this.state;
+    const { loading, status } = this.state;
     return (
       <div className={`lm-player-message-mask ${loading ? "lm-player-mask-loading-animation" : ""}`}>
         <IconFont
-          type="lm-player-Loading"
-          className={`${loading ? "lm-player-loading-animation" : ""} lm-player-loading-icon`}
+          type={status === "fail" ? "lm-player-YesorNo_No_Dark" : "lm-player-Loading"}
+          className={`${loading && status !== "fail" ? "lm-player-loading-animation" : status === "fail" ? "lm-player-loadfail" : ""} lm-player-loading-icon`}
         />
         <span className="lm-player-message">{this.message}</span>
       </div>

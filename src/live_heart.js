@@ -7,15 +7,28 @@ class LiveHeart extends React.Component {
     super(props);
     this.progressTime = Date.now();
     this.timer = null;
+    this.isPlayError = false
   }
   componentDidMount() {
-    this.props.event.addEventListener("progress", this.updateProgress);
+    const {event} = this.props
+    event.addEventListener("progress", this.updateProgress);
+    event.on('error',this.errorHandle)
+    event.on('reloadSuccess',this.clearHandle)
     this.heartAction();
   }
 
   componentWillUnmount() {
     this.props.event.removeEventListener("progress", this.updateProgress);
+    event.off('error',this.errorHandle)
+    event.off('reloadSuccess',this.clearHandle)
     clearInterval(this.timer);
+  }
+
+  errorHandle = () => {
+    this.isPlayError = true
+  }
+  clearHandle = () => {
+    this.isPlayError = false
   }
   /**
    * 监听视频进度
@@ -30,7 +43,8 @@ class LiveHeart extends React.Component {
    */
   heartAction = () => {
     this.timer = setInterval(() => {
-      if (Date.now() - this.progressTime > 10 * 1000) {
+      const timeNow = Date.now()
+      if (timeNow - this.progressTime > 10 * 1000 && !this.isPlayError ) {
         console.warn("当前实时视频缓存未更新，执行reload操作");
         this.props.api.reload();
       }
