@@ -57,6 +57,7 @@ class LeftBar extends React.Component {
   }
   reload = () => {
     this.props.api.reload()
+    this.props.event.emit('reload')
   }
   render() {
     const { openSliderVolume } = this.state

@@ -24,6 +24,7 @@ class VideoMessage extends React.Component {
     event.on("errorReload", this.errorReload);
     event.on("reloadFail", this.reloadFail);
     event.on("reloadSuccess", this.reloadSuccess);
+    event.on("reload", this.reload);
   }
   componentWillUnmount() {
     const { event } = this.props;
@@ -32,7 +33,14 @@ class VideoMessage extends React.Component {
     event.removeEventListener("seeking", this.openLoading);
     event.removeEventListener("loadeddata", this.closeLoading);
     event.removeEventListener("canplay", this.closeLoading);
+    event.off("errorReload", this.errorReload);
+    event.off("reloadFail", this.reloadFail);
+    event.off("reloadSuccess", this.reloadSuccess);
+    event.off("reload", this.reload);
   }
+  reload = () => {
+    this.setState({ status: "reload" });
+  };
   errorReload = timer => {
     this.message = <div>视频加载错误,正在进行重连第{timer}重连</div>;
     this.setState({ status: "reload" });
