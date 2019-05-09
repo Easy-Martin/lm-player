@@ -31,7 +31,7 @@
   </head>
 
   <body>
-    <!-- <div id="root"></div> -->
+    <div id="root"></div>
     <div id="root2"></div>
     <img src="" alt="" />
     <script type="text/babel">
@@ -65,14 +65,9 @@
       // }
       var historyList = {
         beginDate: "2019-04-17 14:40:12",
-        duration: 604,
+        duration: 540,
         fragments: [
-          {
-            begin: 0,
-            end: 60,
-            file: `http://36.33.32.174:5460/v2/540803088/live.m3u8?client_token=540803088_0_1556148365_94b5195088cd1880f4d7f7757dc5e979`
-          },
-          // { "begin": 0, "end": 60,file:`./video.mp4?${Math.random()}` },
+          { begin: 0, end: 60, file: `http://192.168.100.93:8088/records/m3u8_info2/1555589181_1555590600.m3u8?access_token=753383300_3356491776_1587525476_65e02da72e82aadce9383d2297fc487b&head=1` },
           { begin: 60, end: 120 },
           { begin: 120, end: 180, file: `./video.mp4?${Math.random()}` },
           { begin: 180, end: 240 },
@@ -80,27 +75,38 @@
           { begin: 300, end: 360 },
           { begin: 360, end: 420, file: `./video.mp4?${Math.random()}` },
           { begin: 420, end: 480 },
-          { begin: 480, end: 604, file: `./video.flv?${Math.random()}` }
+          { begin: 480, end: 540, file: `http://192.168.100.93:8088/records/m3u8_info2/1555589181_1555590600.m3u8?access_token=753383300_3356491776_1587525476_65e02da72e82aadce9383d2297fc487b&head=1` }
         ]
       };
-      // ReactDOM.render(<LMPlayer.HistoryPlayer historyList={historyList} isLive={false} autoPlay={true} poster="./poster.png" onInitPlayer={(player) => {console.log(player)}} />, document.getElementById("root"));
       ReactDOM.render(
-        <LMPlayer
-          actions={{
-            snapshot: url => {
-              document.querySelector("img").src = url;
-            }
-          }}
-          file={`http://36.33.32.174:5460/v2/540803305/live.flv?client_token=540803085_0_1557183282_639038b30b0deb21031109b4fd403f2a`}
-          isLive={true}
+        <LMPlayer.HistoryPlayer
+          historyList={historyList}
+          isLive={false}
           autoPlay={true}
           poster="./poster.png"
           onInitPlayer={player => {
             console.log(player);
           }}
         />,
-        document.getElementById("root2")
+        document.getElementById("root")
       );
+      // ReactDOM.render(
+      //   <LMPlayer
+      //     actions={{
+      //       snapshot: url => {
+      //         document.querySelector("img").src = url;
+      //       }
+      //     }}
+      //     file={`./video.mp4?${Math.random()}`}
+      //     isLive={true}
+      //     autoPlay={true}
+      //     poster="./poster.png"
+      //     onInitPlayer={player => {
+      //       console.log(player);
+      //     }}
+      //   />,
+      //   document.getElementById("root2")
+      // );
     </script>
   </body>
 </html>

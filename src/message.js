@@ -1,6 +1,7 @@
 import React from "react";
 import IconFont from "./iconfont";
 import { videoDec } from "./context";
+import EventName from './event/eventName'
 
 import "./style/message.less";
 
@@ -21,10 +22,11 @@ class VideoMessage extends React.Component {
     event.addEventListener("seeking", this.openLoading);
     event.addEventListener("loadeddata", this.closeLoading);
     event.addEventListener("canplay", this.closeLoading);
-    event.on("errorReload", this.errorReload);
-    event.on("reloadFail", this.reloadFail);
-    event.on("reloadSuccess", this.reloadSuccess);
-    event.on("reload", this.reload);
+    event.on(EventName.ERROR_RELOAD, this.errorReload);
+    event.on(EventName.RELOAD_FAIL, this.reloadFail);
+    event.on(EventName.RELOAD_SUCCESS, this.reloadSuccess);
+    event.on(EventName.RELOAD, this.reload);
+    event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
   }
   componentWillUnmount() {
     const { event } = this.props;
@@ -33,10 +35,11 @@ class VideoMessage extends React.Component {
     event.removeEventListener("seeking", this.openLoading);
     event.removeEventListener("loadeddata", this.closeLoading);
     event.removeEventListener("canplay", this.closeLoading);
-    event.off("errorReload", this.errorReload);
-    event.off("reloadFail", this.reloadFail);
-    event.off("reloadSuccess", this.reloadSuccess);
-    event.off("reload", this.reload);
+    event.off(EventName.ERROR_RELOAD, this.errorReload);
+    event.off(EventName.RELOAD_FAIL, this.reloadFail);
+    event.off(EventName.RELOAD_SUCCESS, this.reloadSuccess);
+    event.off(EventName.RELOAD, this.reload);
+    event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
   }
   reload = () => {
     this.setState({ status: "reload" });
@@ -58,6 +61,11 @@ class VideoMessage extends React.Component {
   };
   closeLoading = () => {
     this.setState({ loading: false });
+  };
+  historyPlayEnd = () => {
+    this.message = null;
+    this.setState({ status: null, loading: false });
+    this.props.api.pause();
   };
   render() {
     const { loading, status } = this.state;

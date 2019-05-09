@@ -1,3 +1,7 @@
+/**
+ * history下使用 用户切换下个播放地址
+ */
+
 import React from "react";
 import { videoDec } from "../context";
 
