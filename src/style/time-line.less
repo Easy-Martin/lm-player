@@ -11,6 +11,11 @@
   align-items: center;
   border-radius: 10px;
   z-index: 9;
+  opacity: 1;
+  transition: opacity 0.3s;
+  &.hide-time-line {
+    opacity: 0;
+  }
   .time-line-box {
     flex: 1;
   }
@@ -31,8 +36,8 @@
     display: flex;
     z-index: 2;
     &.history-time-line-disabled {
-			background: #000;
-			z-index: 4;
+      background: #000;
+      z-index: 4;
     }
   }
 }

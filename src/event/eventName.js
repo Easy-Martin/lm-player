@@ -7,5 +7,7 @@ export default {
   HISTORY_PLAY_END: "historyPlayEnd", //历史视频列表播放结束
   SEEK: "seek", //跳跃播放时间
   TRANSFORM: "transform", //视频容器缩放
-  CHANGE_PLAY_INDEX: "changePlayIndex" //历史视频列表播放索引改变
+  CHANGE_PLAY_INDEX: "changePlayIndex", //历史视频列表播放索引改变
+  HIDE_CONTRALLER:"hideContraller",
+  SHOW_CONTRALLER:"showContraller",
 };

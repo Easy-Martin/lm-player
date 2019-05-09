@@ -9,6 +9,11 @@
   align-items: center;
   z-index: 2;
   justify-content: space-between;
+  opacity: 1;
+  transition: opacity 0.3s;
+  &.hide-contraller-bar{
+    opacity: 0;
+  }
   .contraller-bar-item {
     float: left;
     display: flex;

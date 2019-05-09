@@ -14,7 +14,8 @@ class TineLine extends React.Component {
       duration: 1,
       currentTime: 0,
       buffered: 0,
-      isEnd: false
+      isEnd: false,
+      hideBar:false
     };
   }
   componentDidMount() {
@@ -27,6 +28,8 @@ class TineLine extends React.Component {
     event.addEventListener("seeked", this.seekendPlay);
     event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
     event.on(EventName.RELOAD, this.reload);
+    event.on(EventName.HIDE_CONTRALLER, this.hideContraller);
+    event.on(EventName.SHOW_CONTRALLER, this.showContraller);
   }
   componentWillUnmount() {
     const { event } = this.props;
@@ -38,8 +41,16 @@ class TineLine extends React.Component {
     event.removeEventListener("seeked", this.seekendPlay);
     event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
     event.off(EventName.RELOAD, this.reload);
+    event.off(EventName.HIDE_CONTRALLER, this.hideContraller);
+    event.off(EventName.SHOW_CONTRALLER, this.showContraller);
   }
 
+  hideContraller = () => {
+    this.setState({ hideBar: true });
+  };
+  showContraller = () => {
+    this.setState({ hideBar: false });
+  };
   /**
    * reload事件触发时 清除结束状态
    */
@@ -145,14 +156,14 @@ class TineLine extends React.Component {
   };
   render() {
     const { historyList, playIndex } = this.props;
-    const { currentTime, buffered, isEnd } = this.state;
+    const { currentTime, buffered, isEnd ,hideBar } = this.state;
     const lineList = this.computedLineList(historyList);
     const currentLine = lineList.filter((v, i) => i < playIndex).map(v => v.size);
     const currentIndexTime = currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0];
     const playPercent = Math.round((currentTime / historyList.duration) * 100 + currentIndexTime);
     const bufferedPercent = Math.round((buffered / historyList.duration) * 100 + currentIndexTime);
     return (
-      <div className="video-time-line-layout">
+      <div className={`video-time-line-layout ${hideBar ? "hide-time-line" : ""}`}>
         <IconFont type="lm-player-PrevFast" onClick={this.backWind} className="time-line-action-item" />
         <Slider
           className="time-line-box"

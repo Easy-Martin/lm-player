@@ -8,6 +8,7 @@ import Api from "../api";
 import VideoEvent from "../event";
 import PlayEnd from "./play_end";
 import EventName from "../event/eventName";
+import ContrallerEvent from "../event/contrallerEvent";
 import { getVideoType, createFlvPlayer, createHlsPlayer } from "../util";
 
 class HistoryPlayer extends Player {
@@ -63,7 +64,7 @@ class HistoryPlayer extends Player {
         this.flv.unload();
         this.flv.destroy();
       } catch (e) {
-        console.warn(e)
+        console.warn(e);
       }
       this.flv = null;
     }
@@ -72,7 +73,7 @@ class HistoryPlayer extends Player {
         this.hls.stopLoad();
         this.hls.destroy();
       } catch (e) {
-        console.warn(e)
+        console.warn(e);
       }
       this.hls = null;
     }
@@ -187,6 +188,7 @@ class HistoryPlayer extends Player {
         <ContrallerBar />
         <VideoMessage />
         <HistoryTimeLine />
+        <ContrallerEvent />
         <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
         <DragEvent />
         <PlayEnd />
