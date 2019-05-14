@@ -14,13 +14,13 @@
       var videoElement = document.querySelector('video');
       var flvPlayer = flvjs.createPlayer({
         type: 'flv',
-        url: 'http://36.33.32.174:5460/v2/540803305/live.flv?client_token=540803305_0_1556494875_4bf26ead6f3274f15cf2e0db04f00b1f',
+        url: 'http://dgdx-api.antelopecloud.cn/v2/539100188/live.flv?client_token=539100188_0_1556521669_000616d53d4036a7e4a7bcd8e90f62a0',
         isLive: true
       });
       flvPlayer.attachMediaElement(videoElement);
       flvPlayer.load();
       flvPlayer.play();
-
+	  console.log(flvPlayer,flvjs)
       var progressTime = Date.now()
       videoElement.addEventListener('progress', () => {
         progressTime = Date.now()

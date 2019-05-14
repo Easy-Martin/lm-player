@@ -1,7 +1,7 @@
 import React from "react";
 import IconFont from "./iconfont";
 import { videoDec } from "./context";
-import EventName from './event/eventName'
+import EventName from "./event/eventName";
 
 import "./style/message.less";
 
@@ -46,7 +46,7 @@ class VideoMessage extends React.Component {
   };
   errorReload = timer => {
     this.message = <div>视频加载错误,正在进行重连第{timer}重连</div>;
-    this.setState({ status: "reload" });
+    this.setState({ status: "reload", loading: true });
   };
   reloadFail = () => {
     this.message = <div>视频错误</div>;
@@ -70,7 +70,7 @@ class VideoMessage extends React.Component {
   render() {
     const { loading, status } = this.state;
     return (
-      <div className={`lm-player-message-mask ${loading ? "lm-player-mask-loading-animation" : ""}`}>
+      <div className={`lm-player-message-mask ${loading || status === "fail" ? "lm-player-mask-loading-animation" : ""}`}>
         <IconFont
           type={status === "fail" ? "lm-player-YesorNo_No_Dark" : "lm-player-Loading"}
           className={`${loading && status !== "fail" ? "lm-player-loading-animation" : status === "fail" ? "lm-player-loadfail" : ""} lm-player-loading-icon`}

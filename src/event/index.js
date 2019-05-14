@@ -2,17 +2,24 @@ class VideoEvent {
   constructor(video) {
     this.video = video;
     this.events = {};
+    this.playerEvents = {};
   }
   on(eventName, handle) {
     this.events && this.events[eventName] ? this.events[eventName].listener.push(handle) : (this.events[eventName] = { type: eventName, listener: [handle] });
   }
   addEventListener(eventName, handle) {
-    if (this.vide) {
+    if (this.video) {
+      this.playerEvents[eventName] ? this.playerEvents[eventName].push(handle) : (this.playerEvents[eventName] = [handle]);
       this.video.addEventListener(eventName, handle, false);
     }
   }
-  removeEventListener() {
-    if (this.vide) {
+  removeEventListener(eventName, handle) {
+    if (this.video) {
+      if (!this.playerEvents[eventName]) {
+        return;
+      }
+      let index = this.playerEvents[eventName].findIndex(v => v === handle);
+      index > -1 && this.playerEvents[eventName].splice(index, 1);
       this.video.removeEventListener(eventName, handle, false);
     }
   }
@@ -32,7 +39,12 @@ class VideoEvent {
     index > -1 && this.events[eventName].listener.splice(index, 1);
   }
   destroy() {
-    this.video = null;
+    Object.keys(this.playerEvents).forEach(key => {
+      this.playerEvents[key].forEach(fn => {
+        this.removeEventListener(key, fn);
+      });
+    });
+    this.playerEvents = null;
     this.events = null;
   }
 }
