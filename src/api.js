@@ -70,11 +70,6 @@ export default class Api {
         console.warn(e)
       }
     }
-    this.player = null;
-    this.flv = null;
-    this.hls = null;
-    this.playContainer = null;
-    this.event = null;
     this.scale = null;
     this.position = null;
   }

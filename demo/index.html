@@ -34,7 +34,23 @@
     <div id="root"></div>
     <div id="root2"></div>
     <img src="" alt="" />
-    <script type="text/babel">
+    <script>
+      flvjs.LoggingControl.enableVerbose = false;
+      flvjs.LoggingControl.enableDebug = false;
+      flvjs.LoggingControl.enableWarn = false;
+      const container = document.getElementById("root");
+      LMPlayer.createPlayer({
+        container,
+        file: `./video.mp4?${Math.random()}`,
+        onInitPlayer: player => {
+          console.log(player);
+          setTimeout(() => {
+            player.destroy()
+          },5000)
+        }
+      });
+    </script>
+    <!-- <script type="text/babel">
       flvjs.LoggingControl.enableVerbose = false;
       flvjs.LoggingControl.enableDebug = false;
       flvjs.LoggingControl.enableWarn = false;
@@ -107,6 +123,6 @@
       //   />,
       //   document.getElementById("root2")
       // );
-    </script>
+    </script> -->
   </body>
 </html>
