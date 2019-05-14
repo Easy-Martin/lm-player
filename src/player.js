@@ -15,7 +15,6 @@ import "./style/index.less";
 class LMPlayer extends React.Component {
   constructor(props) {
     super(props);
-    this.videoKey = Math.random();
     this.player = null;
     this.event = null;
     this.flv = null;
@@ -49,6 +48,8 @@ class LMPlayer extends React.Component {
     this.flv = null;
     this.hls = null;
     this.playerType = null;
+    this.playContainerRef = null;
+    this.playContainer = null;
   }
 
   initPlayer = () => {
@@ -92,7 +93,7 @@ class LMPlayer extends React.Component {
           emit: this.event.emit.bind(this.event)
         }
       : {};
-    return Object.assign({}, api, event, { getPlayUrl: this.getPlayUrl });
+    return Object.assign({}, api, event, { getPlayUrl: this.getPlayUrl, playContainer: this.playContainer });
   };
   getProvider = () => {
     return {
@@ -110,7 +111,7 @@ class LMPlayer extends React.Component {
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoPlay} muted poster={poster} key={this.videoKey} controls={false} />
+          <video autoPlay={autoPlay} muted poster={poster} controls={false} />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}
