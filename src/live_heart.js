@@ -56,14 +56,14 @@ class LiveHeart extends React.Component {
           this.errorTimer = 0;
         }
       } else {
-        if (this.errorTimer >= 5) {
-          event.emit(EventName.RELOAD_FAIL, this.errorTimer);
-          api.unload();
-        } else {
-          this.errorTimer++;
-          api.reload();
-          event.emit(EventName.ERROR_RELOAD, this.errorTimer);
-        }
+        // if (this.errorTimer >= 5) {
+        //   event.emit(EventName.RELOAD_FAIL, this.errorTimer);
+        //   api.unload();
+        // } else {
+        //   this.errorTimer++;
+        //   api.reload();
+        //   event.emit(EventName.ERROR_RELOAD, this.errorTimer);
+        // }
       }
     }, 1000 * 5);
   };
