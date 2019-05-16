@@ -42,10 +42,11 @@ class VideoMessage extends React.Component {
     event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
   }
   reload = () => {
+    this.message = null
     this.setState({ status: "reload" });
   };
   errorReload = timer => {
-    this.message = <div>视频加载错误,正在进行重连第{timer}重连</div>;
+    this.message = <div>视频加载错误，正在进行重连第{timer}重连</div>;
     this.setState({ status: "reload", loading: true });
   };
   reloadFail = () => {

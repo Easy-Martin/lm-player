@@ -41,12 +41,10 @@
       const container = document.getElementById("root");
       LMPlayer.createPlayer({
         container,
-        file: `./video.mp4?${Math.random()}`,
+        isLive:true,
+        file: `https://jxsr-api.antelopecloud.cn/v2/538454141/live.flv?client_token=538454141_3356491776_1589455233_b38fd7cb67978e2da236d5b9088efea3`,
         onInitPlayer: player => {
           console.log(player);
-          setTimeout(() => {
-            player.destroy()
-          },5000)
         }
       });
     </script>

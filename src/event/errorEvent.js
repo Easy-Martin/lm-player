@@ -62,14 +62,14 @@ class ErrorEvent extends React.Component {
     const timer = this.errorTimer + 1;
     event.emit(EventName.ERROR, ...args);
     if (timer > 5) {
-      isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL);
+      isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload();
     } else {
       event.emit(EventName.ERROR_RELOAD, timer, ...args);
       console.error(`视频播放出错，正在进行重连${timer}`, ...args);
       this.errorTimer = timer;
       this.reconnectTimer = setTimeout(() => {
         api.reload();
-      }, 500);
+      }, 1000 * 5);
     }
   };
   render() {

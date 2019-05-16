@@ -36,39 +36,22 @@ export default class Api {
   }
   play() {
     if (this.player.paused) {
-      try {
-        this.player.play();
-      } catch (e) {
-        console.warn(e)
-      }
+      this.player.play().catch(() => {});
     }
   }
   pause() {
     if (!this.player.paused) {
-      try {
-        this.player.pause();
-      } catch (e) {
-        console.warn(e)
-      }
+      this.player.pause().catch(() => {});
     }
   }
   destroy() {
     this.player.removeAttribute("src");
+    this.unload();
     if (this.flv) {
-      try {
-        this.flv.unload();
-        this.flv.destroy();
-      } catch (e) {
-        console.warn(e)
-      }
+      this.flv.destroy();
     }
     if (this.hls) {
-      try {
-        this.hls.stopLoad();
-        this.hls.destroy();
-      } catch (e) {
-        console.warn(e)
-      }
+      this.flv.destroy();
     }
     this.scale = null;
     this.position = null;
@@ -95,20 +78,21 @@ export default class Api {
    * 视频重载
    */
   reload() {
-    if (this.flv) {
-      this.flv.unload();
-      this.flv.load();
-      this.play();
-      return;
-    }
-    if (this.hls) {
-      this.hls.stopLoad();
-      this.hls.loadSource(this.hls.url);
-      this.play();
-      return;
-    }
-    this.seekTo(0);
+    this.unload();
+    this.load();
+    this.play();
     this.event.emit(EventName.RELOAD);
+    if (this.getCurrentTime !== 0) {
+      this.seekTo(0);
+    }
+  }
+  unload() {
+    this.flv && this.flv.unload();
+    this.hls && this.hls.stopLoad();
+  }
+  load() {
+    this.flv && this.flv.load();
+    this.hls && this.hls.loadSource(this.hls.url);
   }
   setVolume(fraction) {
     this.player.volume = fraction;

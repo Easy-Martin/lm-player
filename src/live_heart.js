@@ -1,6 +1,6 @@
 import React from "react";
 import { videoDec } from "./context";
-import EventName from './event/eventName'
+import EventName from "./event/eventName";
 
 @videoDec
 class LiveHeart extends React.Component {
@@ -9,6 +9,7 @@ class LiveHeart extends React.Component {
     this.progressTime = Date.now();
     this.timer = null;
     this.isPlayError = false;
+    this.errorTimer = 0;
   }
   componentDidMount() {
     const { event } = this.props;
@@ -43,13 +44,28 @@ class LiveHeart extends React.Component {
    * 心跳监听是否视频断流了
    */
   heartAction = () => {
+    const { api, event } = this.props;
     this.timer = setInterval(() => {
       const timeNow = Date.now();
-      if (timeNow - this.progressTime > 10 * 1000 && !this.isPlayError) {
-        console.warn("当前实时视频缓存未更新，执行reload操作");
-        this.props.api.reload();
+      const currentTime = api.getCurrentTime();
+      if (currentTime > 0) {
+        if (timeNow - this.progressTime > 10 * 1000 && !this.isPlayError) {
+          console.warn("当前实时视频缓存未更新，执行reload操作");
+          api.reload();
+        } else {
+          this.errorTimer = 0;
+        }
+      } else {
+        if (this.errorTimer >= 5) {
+          event.emit(EventName.RELOAD_FAIL, this.errorTimer);
+          api.unload();
+        } else {
+          this.errorTimer++;
+          api.reload();
+          event.emit(EventName.ERROR_RELOAD, this.errorTimer);
+        }
       }
-    }, 1000 * 10);
+    }, 1000 * 5);
   };
   /**
    * 更新currentTime
