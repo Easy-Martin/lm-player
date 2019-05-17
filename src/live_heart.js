@@ -48,22 +48,25 @@ class LiveHeart extends React.Component {
     this.timer = setInterval(() => {
       const timeNow = Date.now();
       const currentTime = api.getCurrentTime();
+      if (this.isPlayError) {
+        return;
+      }
       if (currentTime > 0) {
-        if (timeNow - this.progressTime > 10 * 1000 && !this.isPlayError) {
+        if (timeNow - this.progressTime > 10 * 1000) {
           console.warn("当前实时视频缓存未更新，执行reload操作");
           api.reload();
         } else {
           this.errorTimer = 0;
         }
       } else {
-        // if (this.errorTimer >= 5) {
-        //   event.emit(EventName.RELOAD_FAIL, this.errorTimer);
-        //   api.unload();
-        // } else {
-        //   this.errorTimer++;
-        //   api.reload();
-        //   event.emit(EventName.ERROR_RELOAD, this.errorTimer);
-        // }
+        if (this.errorTimer >= 5) {
+          event.emit(EventName.RELOAD_FAIL, this.errorTimer);
+          api.unload();
+        } else {
+          this.errorTimer++;
+          api.reload();
+          event.emit(EventName.ERROR_RELOAD, this.errorTimer);
+        }
       }
     }, 1000 * 5);
   };
