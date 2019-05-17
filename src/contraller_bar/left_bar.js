@@ -34,7 +34,6 @@ class LeftBar extends React.Component {
     this.historyEnd = false;
   }
   historyPlayEnd = () => {
-    console.log(1111)
     this.historyEnd = true;
   };
   updateRender = () => {

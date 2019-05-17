@@ -20,7 +20,8 @@ class LiveHeart extends React.Component {
   }
 
   componentWillUnmount() {
-    this.props.event.removeEventListener("progress", this.updateProgress);
+    const {event} = this.props
+    event.removeEventListener("progress", this.updateProgress);
     event.off(EventName.ERROR, this.errorHandle);
     event.off(EventName.RELOAD_SUCCESS, this.clearHandle);
     clearInterval(this.timer);
