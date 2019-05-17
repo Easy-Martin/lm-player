@@ -107,9 +107,7 @@ module.exports = {
         test: /\.(js|mjs|jsx|ts|tsx)$/,
         loader: require.resolve("babel-loader"),
         options: {
-          customize: require.resolve(
-            "babel-preset-react-app/webpack-overrides"
-          ),
+          customize: require.resolve("babel-preset-react-app/webpack-overrides"),
           plugins: [
             [
               require.resolve("babel-plugin-named-asset-import"),
@@ -147,11 +145,36 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".jsx"]
   },
   externals: {
-    react: "React",
-    "react-dom": "ReactDOM",
-    "prop-types": "PropTypes",
-    "flv.js": "flvjs",
-    "hls.js": "Hls"
+    react: {
+      commonjs: "react",
+      commonjs2: "react",
+      amd: "react",
+      root: "React"
+    },
+    "react-dom": {
+      commonjs: "react-dom",
+      commonjs2: "react-dom",
+      amd: "react-dom",
+      root: "ReactDOM"
+    },
+    "prop-types": {
+      commonjs: "prop-types",
+      commonjs2: "prop-types",
+      amd: "prop-types",
+      root: "PropTypes"
+    },
+    "flv.js": {
+      commonjs: "flv.js",
+      commonjs2: "flv.js",
+      amd: "flv.js",
+      root: "flvjs"
+    },
+    "hls.js": {
+      commonjs: "hls.js",
+      commonjs2: "hls.js",
+      amd: "hls.js",
+      root: "Hls"
+    }
   },
   plugins: [
     new MiniCssExtractPlugin({
