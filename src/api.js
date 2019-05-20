@@ -36,12 +36,12 @@ export default class Api {
   }
   play() {
     if (this.player.paused) {
-      this.player.play().catch(() => {});
+      this.player.play();
     }
   }
   pause() {
     if (!this.player.paused) {
-      this.player.pause().catch(() => {});
+      this.player.pause();
     }
   }
   destroy() {

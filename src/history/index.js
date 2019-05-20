@@ -23,15 +23,6 @@ class HistoryPlayer extends Player {
     this.initPlayer(this.playIndex, true);
     this.event = new VideoEvent(this.player);
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
-
-    if (this.props.playsinline) {
-      this.player.setAttribute("playsinline", "");
-      this.player.setAttribute("webkit-playsinline", "");
-      this.player.setAttribute("x5-playsinline", "");
-    }
-    if (this.props.autoPlay) {
-      this.api.getApi().play();
-    }
     this.forceUpdate();
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
   }
