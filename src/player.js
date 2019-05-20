@@ -4,6 +4,7 @@ import VideoEvent from "./event";
 import { getVideoType, createFlvPlayer, createHlsPlayer } from "./util";
 import { Provider } from "./context";
 import ContrallerBar from "./contraller_bar";
+import ContrallerEvent from "./event/contrallerEvent";
 import VideoMessage from "./message";
 import TimeLine from "./time_line";
 import ErrorEvent from "./event/errorEvent";
@@ -77,6 +78,7 @@ class LMPlayer extends React.Component {
         {!this.props.isLive && <TimeLine />}
         <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
         <DragEvent />
+        <ContrallerEvent />
         {this.props.isLive && <LiveHeart key={this.props.file} />}
       </>
     );
