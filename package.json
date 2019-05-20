@@ -1,7 +1,24 @@
 {
   "name": "lm-player",
   "version": "0.0.7",
-  "description": "",
+  "description": "video for html5 support flv m3u8",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Easy-Martin/lm-player.git"
+  },
+  "keywords": [
+    "video",
+    "flv",
+    "hls",
+    "player",
+    "m3u8"
+  ],
+  "author": "Easy-Martin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Easy-Martin/lm-player/issues"
+  },
+  "homepage": "https://github.com/Easy-Martin/lm-player",
   "main": "dist/LMPlayer.js",
   "dependencies": {
     "flv.js": "^1.5.0",
@@ -30,8 +47,7 @@
     "build": "webpack",
     "start": "webpack -w"
   },
-  "author": "",
-  "license": "ISC",
+ 
   "babel": {
     "presets": [
       "react-app"
