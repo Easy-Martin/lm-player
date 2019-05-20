@@ -30,14 +30,6 @@ class LMPlayer extends React.Component {
     this.initPlayer();
     this.event = new VideoEvent(this.player);
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
-    if (this.props.playsinline) {
-      this.player.setAttribute("playsinline", "");
-      this.player.setAttribute("webkit-playsinline", "");
-      this.player.setAttribute("x5-playsinline", "");
-    }
-    if (this.props.autoPlay) {
-      this.api.getApi().play();
-    }
     this.forceUpdate();
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
   }
@@ -108,12 +100,12 @@ class LMPlayer extends React.Component {
     };
   };
   render() {
-    const { autoPlay, poster } = this.props;
+    const { autoPlay, poster, preload = 'none', loop = false } = this.props;
     const providerValue = this.getProvider();
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoPlay} muted poster={poster} controls={false} />
+          <video autoPlay={autoPlay} preload={preload} muted poster={poster} controls={false} loop={loop}/>
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}
