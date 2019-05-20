@@ -1,6 +1,6 @@
 {
   "name": "lm-player",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "video for html5 support flv m3u8",
   "repository": {
     "type": "git",
@@ -45,7 +45,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "start": "webpack -w"
+    "start": "webpack -w & hs -p1234 -o"
   },
  
   "babel": {
