@@ -67,11 +67,15 @@ class LMPlayer extends React.Component {
       <>
         <ContrallerBar />
         <VideoMessage />
-        {!this.props.isLive && <TimeLine />}
-        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
         <DragEvent />
         <ContrallerEvent />
-        {this.props.isLive && <LiveHeart key={this.props.file} />}
+        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
+        {this.props.isLive && (
+          <>
+            <LiveHeart key={this.props.file} />
+            <TimeLine />
+          </>
+        )}
       </>
     );
   };
@@ -100,12 +104,12 @@ class LMPlayer extends React.Component {
     };
   };
   render() {
-    const { autoplay, poster, preload = 'none', loop = false } = this.props;
+    const { autoplay, poster, preload = "none", muted = true, loop = false, playsinline = false } = this.props;
     const providerValue = this.getProvider();
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoplay} preload={preload} muted poster={poster} controls={false} loop={loop}/>
+          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsinline={playsinline} loop={loop} />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}
