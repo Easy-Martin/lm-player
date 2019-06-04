@@ -3,12 +3,12 @@ import Hls from "hls.js";
 
 /**
  * 创建HLS对象
- * @param {*} video 
- * @param {*} file 
+ * @param {*} video
+ * @param {*} file
  */
 export function createHlsPlayer(video, file) {
   if (Hls.isSupported()) {
-    const player = new Hls();
+    const player = new Hls({ liveDurationInfinity: true, levelLoadingTimeOut: 15000, fragLoadingTimeOut: 25000, enableWorker: true });
     player.attachMedia(video);
     player.on(Hls.Events.MEDIA_ATTACHED, () => {
       player.loadSource(file);
@@ -22,22 +22,29 @@ export function createHlsPlayer(video, file) {
 
 /**
  * 创建FLV对象
- * @param {*} video 
- * @param {*} options 
+ * @param {*} video
+ * @param {*} options
  */
 export function createFlvPlayer(video, options) {
+  const { flvOptions = {}, flvConfig = {} } = options;
   if (flvjs.isSupported()) {
     const player = flvjs.createPlayer(
-      {
+      Object.assign({}, flvOptions, {
         type: "flv",
-        url: options.file,
-        isLive: !!options.isLive
-      },
-      {
-        enableWorker: false,
+        url: options.file
+      }),
+      Object.assign({}, flvConfig, {
+        enableWorker: true,
+        // lazyLoad: false,
+        //Indicates how many seconds of data to be kept for lazyLoad.
+        // lazyLoadMaxDuration: 0,
+        // autoCleanupMaxBackwardDuration: 3,
+        // autoCleanupMinBackwardDuration: 2,
+        // autoCleanupSourceBuffer: true,
         enableStashBuffer: false,
-        isLive: !!options.isLive
-      }
+        stashInitialSize: 128,
+        isLive: options.isLive || true
+      })
     );
     player.attachMediaElement(video);
     player.load();
@@ -47,7 +54,7 @@ export function createFlvPlayer(video, options) {
 
 /**
  * 获取播放文件类型
- * @param {*} url 
+ * @param {*} url
  */
 export function getVideoType(url) {
   const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;
@@ -59,7 +66,7 @@ export function getVideoType(url) {
 
 /**
  * 播放时间转字符串
- * @param {*} second_time 
+ * @param {*} second_time
  */
 export function timeStamp(second_time) {
   let time = Math.ceil(second_time);
@@ -83,7 +90,7 @@ export function timeStamp(second_time) {
 
 /**
  * 日期格式化
- * @param {*} timetemp 
+ * @param {*} timetemp
  */
 export function dateFormat(timetemp) {
   const date = new Date(timetemp);
@@ -98,7 +105,7 @@ export function dateFormat(timetemp) {
 
 /**
  * 全屏
- * @param {*} element 
+ * @param {*} element
  */
 export function fullscreen(element) {
   if (element.requestFullScreen) {
@@ -154,9 +161,9 @@ export function fullScreenListener(isAdd, fullscreenchange) {
 
 /**
  * 计算视频拖拽边界
- * @param {*} ele 
- * @param {*} currentPosition 
- * @param {*} scale 
+ * @param {*} ele
+ * @param {*} currentPosition
+ * @param {*} scale
  */
 export function computedBound(ele, currentPosition, scale) {
   const data = currentPosition;
