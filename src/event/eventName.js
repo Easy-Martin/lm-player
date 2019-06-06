@@ -10,4 +10,5 @@ export default {
   CHANGE_PLAY_INDEX: "changePlayIndex", //历史视频列表播放索引改变
   HIDE_CONTRALLER:"hideContraller",
   SHOW_CONTRALLER:"showContraller",
+  CLEAR_ERROR_TIMER:"clearErrorTimer"
 };

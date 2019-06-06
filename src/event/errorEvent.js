@@ -20,7 +20,7 @@ class ErrorEvent extends React.Component {
     }
     event.addEventListener("error", this.errorHandle, false);
     event.addEventListener("canplay", this.clearError, false);
-    event.on(EventName.RELOAD, this.reload);
+    event.on(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.flvPlayer && nextProps.flvPlayer !== this.props.flvPlayer) {
@@ -35,11 +35,11 @@ class ErrorEvent extends React.Component {
     event.removeEventListener("error", this.errorHandle, false);
     flvPlayer && flvPlayer.off(flvjs.Events.ERROR, this.errorHandle);
     hlsPlayer && hlsPlayer.off(Hls.Events.ERROR, this.errorHandle);
-    event.off(EventName.RELOAD, this.reload);
+    event.off(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
     clearTimeout(this.reconnectTimer);
   }
 
-  reload = () => {
+  clearErrorTimer = () => {
     this.errorTimer = 0;
   };
   /**
@@ -50,7 +50,7 @@ class ErrorEvent extends React.Component {
     if (this.errorTimer > 0) {
       console.warn("视频重连成功！");
       event.emit(EventName.RELOAD_SUCCESS);
-      this.errorTimer = 0;
+      this.clearErrorTimer()
     }
   };
 

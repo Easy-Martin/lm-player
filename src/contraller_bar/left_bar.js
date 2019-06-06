@@ -78,6 +78,7 @@ class LeftBar extends React.Component {
     } else {
       this.props.api.reload();
     }
+    this.props.event.emit(EventName.CLEAR_ERROR_TIMER)
   };
   render() {
     const { openSliderVolume } = this.state;

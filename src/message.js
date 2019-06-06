@@ -27,6 +27,7 @@ class VideoMessage extends React.Component {
     event.on(EventName.RELOAD_SUCCESS, this.reloadSuccess);
     event.on(EventName.RELOAD, this.reload);
     event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
+    event.on(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
   }
   componentWillUnmount() {
     const { event } = this.props;
@@ -40,9 +41,13 @@ class VideoMessage extends React.Component {
     event.off(EventName.RELOAD_SUCCESS, this.reloadSuccess);
     event.off(EventName.RELOAD, this.reload);
     event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
+    event.off(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
+  }
+  clearReloadMessage = () => {
+    this.message = null
+    this.forceUpdate()
   }
   reload = () => {
-    this.message = null
     this.setState({ status: "reload" });
   };
   errorReload = timer => {
