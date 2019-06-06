@@ -11,16 +11,42 @@ import ErrorEvent from "./event/errorEvent";
 import DragEvent from "./event/dragEvent";
 import Api from "./api";
 import LiveHeart from "./live_heart";
+import PropTypes from "prop-types";
 import "./style/index.less";
 
 class LMPlayer extends React.Component {
+  static propTypes = {
+    file: PropTypes.string.isRequired, //播放地址 必填
+    isLive: PropTypes.bool, //是否实时视频
+    errorReloadTimer: PropTypes.number, //视频错误重连次数
+    type: PropTypes.string, //强制视频流类型
+    onInitPlayer: PropTypes.func,
+    isDraggable: PropTypes.bool,
+    isScale: PropTypes.bool,
+    muted: PropTypes.string,
+    autoPlay: PropTypes.bool,
+    playsInline: PropTypes.bool,
+    preload: PropTypes.string,
+    poster: PropTypes.string,
+    loop: PropTypes.bool
+  };
+  static defaultProps = {
+    isLive: true,
+    isDraggable: true,
+    isScale: true,
+    errorReloadTimer: 5,
+    muted: "muted",
+    autoPlay: true,
+    playsInline: false,
+    preload: "auto",
+    loop: false
+  };
   constructor(props) {
     super(props);
     this.player = null;
     this.event = null;
     this.flv = null;
     this.hls = null;
-    this.playerType = null;
     this.playContainerRef = React.createRef();
     this.playContainer = null;
   }
@@ -32,6 +58,9 @@ class LMPlayer extends React.Component {
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
     this.forceUpdate();
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
+    if(this.props.autoPlay){
+      this.api.play()
+    }
   }
   componentWillUnmount() {
     this.event.destroy();
@@ -40,7 +69,6 @@ class LMPlayer extends React.Component {
     this.event = null;
     this.flv = null;
     this.hls = null;
-    this.playerType = null;
     this.playContainerRef = null;
     this.playContainer = null;
   }
@@ -97,14 +125,13 @@ class LMPlayer extends React.Component {
     return {
       video: this.player,
       event: this.event,
-      playerType: this.playerType,
       playerProps: this.props,
       api: this.api,
       playContainer: this.playContainer
     };
   };
   render() {
-    const { autoplay, poster, preload = "none", muted = true, loop = false, playsinline = false } = this.props;
+    const { autoplay, poster, preload = "none", muted = "muted", loop = false, playsinline = false } = this.props;
     const providerValue = this.getProvider();
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>

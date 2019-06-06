@@ -1,4 +1,7 @@
-import Player from "../player";
+import React from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
+import { Provider } from "../context";
 import ContrallerBar from "../contraller_bar";
 import VideoMessage from "../message";
 import HistoryTimeLine from "./time_line_history";
@@ -11,41 +14,71 @@ import EventName from "../event/eventName";
 import ContrallerEvent from "../event/contrallerEvent";
 import { getVideoType, createFlvPlayer, createHlsPlayer } from "../util";
 
-class HistoryPlayer extends Player {
+class HistoryPlayer extends React.Component {
+  static propTypes = {
+    historyList: PropTypes.object.isRequired, //播放地址 必填
+    isLive: PropTypes.bool, //是否实时视频
+    errorReloadTimer: PropTypes.number, //视频错误重连次数
+    type: PropTypes.string, //强制视频流类型
+    onInitPlayer: PropTypes.func,
+    isDraggable: PropTypes.bool,
+    isScale: PropTypes.bool,
+    muted: PropTypes.string,
+    autoPlay: PropTypes.bool,
+    playsInline: PropTypes.bool,
+    preload: PropTypes.string,
+    poster: PropTypes.string,
+    loop: PropTypes.bool,
+    defaultTime: PropTypes.number
+  };
+  static defaultProps = {
+    isLive: true,
+    isDraggable: true,
+    isScale: true,
+    errorReloadTimer: 5,
+    muted: "muted",
+    autoPlay: true,
+    playsInline: false,
+    preload: "auto",
+    loop: false,
+    defaultTime: 0
+  };
   constructor(props) {
     super(props);
     this.playIndex = 0;
+    this.player = null;
+    this.event = null;
+    this.flv = null;
+    this.hls = null;
+    this.playContainerRef = React.createRef();
+    this.playContainer = null;
   }
   componentDidMount() {
     this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
     this.player = this.playContainer.querySelector("video");
-    this.checkFirstFile();
-    this.initPlayer(this.playIndex, true);
+    if (this.props.defaultTime) {
+      this.seekTo(defaultTime);
+    } else {
+      this.initPlayer(this.playIndex);
+    }
     this.event = new VideoEvent(this.player);
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
-    this.forceUpdate();
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
+    if (this.props.autoPlay) {
+      this.api.play();
+    }
   }
-
-  /**
-   * 历史视频专用
-   * 计算视频播放时默认的index，默认去第一个有播放地址的，若有传defaultTime那计算index,当前index没有值，则取默认有file的第一个
-   */
-  checkFirstFile = () => {
-    const { defaultTime, historyList } = this.props;
-    if (!historyList) {
-      return;
-    }
-    if (!defaultTime) {
-      this.playIndex = historyList.fragments.findIndex(v => !!v.file);
-    } else {
-      this.playIndex = this.computedIndexFormTime(defaultTime);
-      if (this.playIndex === -1 || !historyList.fragments[this.playIndex].file) {
-        this.playIndex = historyList.fragments.findIndex(v => !!v.file);
-      }
-    }
-  };
-  initPlayer = (index, isFrist) => {
+  componentWillUnmount() {
+    this.event.destroy();
+    this.api.destroy();
+    this.player = null;
+    this.event = null;
+    this.flv = null;
+    this.hls = null;
+    this.playContainerRef = null;
+    this.playContainer = null;
+  }
+  initPlayer = index => {
     const { historyList } = this.props;
     if (!historyList || !historyList.fragments[index] || !historyList.fragments[index].file) {
       return null;
@@ -78,19 +111,17 @@ class HistoryPlayer extends Player {
     } else {
       this.player.src = historyList.fragments[index].file;
     }
-    if (!isFrist) {
-      this.playIndex = index;
-      this.forceUpdate();
-    }
+    this.playIndex = index;
+    this.forceUpdate();
   };
   /**
-   * 历史视频专用
-   * 修改历史视频播放的索引。
+   * @历史视频
+   * @专用修改历史视频播放的索引
    */
   changePlayIndex = index => {
     const { historyList } = this.props;
-    if (!historyList || !historyList.fragments[index]) {
-      !historyList.fragments[index] && this.event.emit(EventName.HISTORY_PLAY_END);
+    if (!historyList.fragments[index]) {
+      this.event.emit(EventName.HISTORY_PLAY_END);
       return;
     }
     if (!historyList.fragments[index].file) {
@@ -98,6 +129,7 @@ class HistoryPlayer extends Player {
     } else {
       this.initPlayer(index);
     }
+    this.api.play()
     this.event.emit(EventName.CHANGE_PLAY_INDEX, index);
   };
 
@@ -150,6 +182,7 @@ class HistoryPlayer extends Player {
     this.changePlayIndex(0);
     this.api.seekTo(0);
     this.event.emit(EventName.RELOAD);
+    this.api.play()
   };
   /**
    * 覆盖Player中的context的value，新增一些历史视频专用的方法
@@ -158,7 +191,6 @@ class HistoryPlayer extends Player {
     return {
       video: this.player,
       event: this.event,
-      playerType: this.playerType,
       playerProps: this.props,
       api: this.api,
       playContainer: this.playContainer,
@@ -186,6 +218,19 @@ class HistoryPlayer extends Player {
       </>
     );
   };
+  render() {
+    const { autoplay, poster, preload, muted = "muted", loop = false, playsinline = false } = this.props;
+    const providerValue = this.getProvider();
+    return (
+      <div className="lm-player-container" ref={this.playContainerRef}>
+        <div className="player-mask-layout">
+          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+        </div>
+        <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
+        {this.props.children}
+      </div>
+    );
+  }
 }
 
 export default HistoryPlayer;

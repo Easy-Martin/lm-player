@@ -13,13 +13,23 @@ class ErrorEvent extends React.Component {
   componentDidMount() {
     const { event, flvPlayer, hlsPlayer } = this.props;
     if (flvPlayer) {
+      //捕获flv错误
       flvPlayer.on(flvjs.Events.ERROR, this.errorHandle);
     }
     if (hlsPlayer) {
+      //捕获hls错误
       hlsPlayer.on(Hls.Events.ERROR, this.errorHandle);
     }
+    //捕获video错误
     event.addEventListener("error", this.errorHandle, false);
+
+    //获取video状态清除错误状态
     event.addEventListener("canplay", this.clearError, false);
+
+    //历史视频切换播放索引时清除错误次数
+    event.on(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer)
+
+    //历史视频主动清除错误次数
     event.on(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
   }
   componentWillReceiveProps(nextProps) {
@@ -36,6 +46,7 @@ class ErrorEvent extends React.Component {
     flvPlayer && flvPlayer.off(flvjs.Events.ERROR, this.errorHandle);
     hlsPlayer && hlsPlayer.off(Hls.Events.ERROR, this.errorHandle);
     event.off(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
+    event.off(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer)
     clearTimeout(this.reconnectTimer);
   }
 
@@ -50,7 +61,7 @@ class ErrorEvent extends React.Component {
     if (this.errorTimer > 0) {
       console.warn("视频重连成功！");
       event.emit(EventName.RELOAD_SUCCESS);
-      this.clearErrorTimer()
+      this.clearErrorTimer();
     }
   };
 
@@ -58,10 +69,10 @@ class ErrorEvent extends React.Component {
    * 捕获错误
    */
   errorHandle = (...args) => {
-    const { event, api, isHistory, changePlayIndex, playIndex } = this.props;
+    const { event, api, isHistory, changePlayIndex, playIndex, playerProps } = this.props;
     const timer = this.errorTimer + 1;
     event.emit(EventName.ERROR, ...args);
-    if (timer > 5) {
+    if (timer > playerProps.errorReloadTimer) {
       isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload();
     } else {
       event.emit(EventName.ERROR_RELOAD, timer, ...args);
