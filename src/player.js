@@ -19,7 +19,7 @@ class LMPlayer extends React.Component {
     file: PropTypes.string.isRequired, //播放地址 必填
     isLive: PropTypes.bool, //是否实时视频
     errorReloadTimer: PropTypes.number, //视频错误重连次数
-    type: PropTypes.string, //强制视频流类型
+    type: PropTypes.oneOf(["flv", "hls", "native"]), //强制视频流类型
     onInitPlayer: PropTypes.func,
     isDraggable: PropTypes.bool,
     isScale: PropTypes.bool,
@@ -28,7 +28,8 @@ class LMPlayer extends React.Component {
     playsInline: PropTypes.bool,
     preload: PropTypes.string,
     poster: PropTypes.string,
-    loop: PropTypes.bool
+    loop: PropTypes.bool,
+    snapshot: PropTypes.func
   };
   static defaultProps = {
     isLive: true,
@@ -58,8 +59,8 @@ class LMPlayer extends React.Component {
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
     this.forceUpdate();
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
-    if(this.props.autoPlay){
-      this.api.play()
+    if (this.props.autoPlay) {
+      this.api.play();
     }
   }
   componentWillUnmount() {
@@ -98,12 +99,7 @@ class LMPlayer extends React.Component {
         <DragEvent />
         <ContrallerEvent />
         <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
-        {!this.props.isLive && (
-          <>
-            <LiveHeart key={this.props.file} />
-            <TimeLine />
-          </>
-        )}
+        {this.props.isLive ? <LiveHeart key={this.props.file} /> : <TimeLine />}
       </>
     );
   };

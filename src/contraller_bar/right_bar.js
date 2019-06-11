@@ -32,14 +32,13 @@ class RightBar extends React.Component {
   };
   snapshot = () => {
     const { api, playerProps } = this.props;
-    const base64 = api.snapshot();
-    if (playerProps.actions && playerProps.actions.snapshot) {
-      playerProps.actions.snapshot(base64);
+    if (playerProps.snapshot) {
+      playerProps.snapshot(api.snapshot());
     }
   };
   render() {
     const { playContainer, playerProps } = this.props;
-    const { isScale } = playerProps;
+    const { isScale, snapshot } = playerProps;
     const isfull = isFullscreen(playContainer);
     return (
       <div className="contraller-right-bar">
@@ -57,9 +56,11 @@ class RightBar extends React.Component {
           </>
         )}
 
-        <span className="contraller-bar-item">
-          <IconFont title="截图" onClick={this.snapshot} type="lm-player-SearchBox" />
-        </span>
+        {snapshot && (
+          <span className="contraller-bar-item">
+            <IconFont title="截图" onClick={this.snapshot} type="lm-player-SearchBox" />
+          </span>
+        )}
         <span className="contraller-bar-item">
           <IconFont title={isfull ? "窗口" : "全屏"} onClick={this.fullscreen} type={isfull ? "lm-player-ExitFull_Main" : "lm-player-Full_Main"} />
         </span>

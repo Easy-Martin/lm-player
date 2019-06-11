@@ -19,7 +19,7 @@ class HistoryPlayer extends React.Component {
     historyList: PropTypes.object.isRequired, //播放地址 必填
     isLive: PropTypes.bool, //是否实时视频
     errorReloadTimer: PropTypes.number, //视频错误重连次数
-    type: PropTypes.string, //强制视频流类型
+    type: PropTypes.oneOf(["flv", "hls", "native"]), //强制视频流类型
     onInitPlayer: PropTypes.func,
     isDraggable: PropTypes.bool,
     isScale: PropTypes.bool,
@@ -84,21 +84,13 @@ class HistoryPlayer extends React.Component {
       return null;
     }
     if (this.flv) {
-      try {
-        this.flv.unload();
-        this.flv.destroy();
-      } catch (e) {
-        console.warn(e);
-      }
+      this.flv.unload();
+      this.flv.destroy();
       this.flv = null;
     }
     if (this.hls) {
-      try {
-        this.hls.stopLoad();
-        this.hls.destroy();
-      } catch (e) {
-        console.warn(e);
-      }
+      this.hls.stopLoad();
+      this.hls.destroy();
       this.hls = null;
     }
     const type = getVideoType(historyList.fragments[index].file);
@@ -129,7 +121,7 @@ class HistoryPlayer extends React.Component {
     } else {
       this.initPlayer(index);
     }
-    this.api.play()
+    this.api.play();
     this.event.emit(EventName.CHANGE_PLAY_INDEX, index);
   };
 
@@ -182,7 +174,7 @@ class HistoryPlayer extends React.Component {
     this.changePlayIndex(0);
     this.api.seekTo(0);
     this.event.emit(EventName.RELOAD);
-    this.api.play()
+    this.api.play();
   };
   /**
    * 覆盖Player中的context的value，新增一些历史视频专用的方法

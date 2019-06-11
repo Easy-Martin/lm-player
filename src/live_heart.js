@@ -10,10 +10,12 @@ class LiveHeart extends React.Component {
     this.timer = null;
     this.isPlayError = false;
     this.errorTimer = 0;
+    this.isCanPlay = false
   }
   componentDidMount() {
     const { event } = this.props;
     event.addEventListener("progress", this.updateProgress);
+    event.addEventListener("canplay", this.canplay);
     event.on(EventName.ERROR, this.errorHandle);
     event.on(EventName.RELOAD_SUCCESS, this.clearHandle);
     this.heartAction();
@@ -22,11 +24,15 @@ class LiveHeart extends React.Component {
   componentWillUnmount() {
     const {event} = this.props
     event.removeEventListener("progress", this.updateProgress);
+    event.removeEventListener("canplay", this.canplay);
     event.off(EventName.ERROR, this.errorHandle);
     event.off(EventName.RELOAD_SUCCESS, this.clearHandle);
     clearInterval(this.timer);
   }
 
+  canplay = () => {
+    this.isCanPlay = true
+  }
   errorHandle = () => {
     this.isPlayError = true;
   };
@@ -49,7 +55,7 @@ class LiveHeart extends React.Component {
     this.timer = setInterval(() => {
       const timeNow = Date.now();
       const currentTime = api.getCurrentTime();
-      if (this.isPlayError) {
+      if (this.isPlayError || !this.isCanPlay) {
         return;
       }
       if (currentTime > 0) {
