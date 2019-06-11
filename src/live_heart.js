@@ -31,7 +31,9 @@ class LiveHeart extends React.Component {
   }
 
   canplay = () => {
+    const { api } = this.props;
     this.isCanPlay = true
+    api.play()
   }
   errorHandle = () => {
     this.isPlayError = true;
