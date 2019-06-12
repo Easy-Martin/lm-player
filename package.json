@@ -22,7 +22,6 @@
   "main": "dist/LMPlayer.js",
   "dependencies": {
     "flv.js": "^1.5.0",
-    "flv.ly.js": "^1.5.0",
     "hls.js": "^0.12.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
