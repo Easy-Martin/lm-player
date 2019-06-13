@@ -1,5 +1,6 @@
-import flvjs from "flv.js";
-import Hls from "hls.js";
+import flvjs from "./libs/flv.ly.min.js";
+import * as Hls from "./libs/hls.min.js";
+
 
 /**
  * 创建HLS对象
