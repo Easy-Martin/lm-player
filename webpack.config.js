@@ -52,7 +52,7 @@ module.exports = {
   entry: "./src/index.js",
   devtool: "source-map",
   output: {
-    filename: "LMPlayer.js",
+    filename: "player.js",
     path: path.resolve(__dirname, "dist"),
     umdNamedDefine: true,
     libraryTarget: "umd",
@@ -180,8 +180,8 @@ module.exports = {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: "LMPlayer.css",
-      chunkFilename: "LMPlayer.chunk.css"
+      filename: "player.css",
+      chunkFilename: "player.chunk.css"
     })
   ]
 };
