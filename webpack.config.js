@@ -48,7 +48,7 @@ const getStyleLoaders = (cssOptions, preProcessor, otherOptions) => {
   return loaders;
 };
 module.exports = {
-  mode: "production",
+  mode: "development",
   entry: "./src/index.js",
   devtool: "source-map",
   output: {

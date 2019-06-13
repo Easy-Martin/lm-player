@@ -1,5 +1,5 @@
-import flvjs from "./libs/flv.ly.min.js";
-import * as Hls from "./libs/hls.min.js";
+import "./libs/flv.ly.min.js";
+import "./libs/hls.min.js";
 
 
 /**
