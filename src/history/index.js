@@ -52,6 +52,7 @@ class HistoryPlayer extends React.Component {
     this.hls = null;
     this.playContainerRef = React.createRef();
     this.playContainer = null;
+    this.willReCreatePlayer = false;
   }
   componentDidMount() {
     this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
@@ -68,6 +69,18 @@ class HistoryPlayer extends React.Component {
       this.api.play();
     }
   }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.historyList !== nextProps.historyList) {
+      this.willReCreatePlayer = true;
+    }
+  }
+  componentDidUpdate() {
+    if (this.willReCreatePlayer) {
+      this.playIndex = 0;
+      this.initPlayer(this.playIndex);
+      this.willReCreatePlayer = false;
+    }
+  }
   componentWillUnmount() {
     this.event.destroy();
     this.api.destroy();
@@ -77,6 +90,7 @@ class HistoryPlayer extends React.Component {
     this.hls = null;
     this.playContainerRef = null;
     this.playContainer = null;
+    this.willReCreatePlayer = null;
   }
   initPlayer = index => {
     const { historyList } = this.props;
@@ -216,7 +230,15 @@ class HistoryPlayer extends React.Component {
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+          <video
+            autoPlay={autoplay}
+            preload={preload}
+            muted={muted}
+            poster={poster}
+            controls={false}
+            playsInline={playsinline}
+            loop={loop}
+          />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

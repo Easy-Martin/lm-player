@@ -50,6 +50,7 @@ class LMPlayer extends React.Component {
     this.hls = null;
     this.playContainerRef = React.createRef();
     this.playContainer = null;
+    this.willReCreatePlayer = false
   }
   componentDidMount() {
     this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
@@ -63,6 +64,17 @@ class LMPlayer extends React.Component {
       this.api.play();
     }
   }
+  componentWillReceiveProps(nextProps){
+    if(this.props.file !== nextProps.file){
+      this.willReCreatePlayer = true
+    }
+  }
+  componentDidUpdate(){
+    if(this.willReCreatePlayer){
+      this.initPlayer()
+      this.willReCreatePlayer = false
+    }
+  }
   componentWillUnmount() {
     this.event.destroy();
     this.api.destroy();
@@ -72,6 +84,7 @@ class LMPlayer extends React.Component {
     this.hls = null;
     this.playContainerRef = null;
     this.playContainer = null;
+    this.willReCreatePlayer = null
   }
 
   initPlayer = () => {
