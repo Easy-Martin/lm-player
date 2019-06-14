@@ -55,7 +55,7 @@ module.exports = {
     filename: "player.js",
     path: path.resolve(__dirname, "dist"),
     umdNamedDefine: true,
-    libraryTarget: "umd",
+    libraryTarget: "commonjs",
     libraryExport: "default",
     library: "LMPlayer"
   },
@@ -164,9 +164,9 @@ module.exports = {
       root: "PropTypes"
     },
     "flv.lm.js": {
-      commonjs: "flv.js",
-      commonjs2: "flv.js",
-      amd: "flv.js",
+      commonjs: "flv.lm.js",
+      commonjs2: "flv.lm.js",
+      amd: "flv.lm.js",
       root: "flvjs"
     },
     "hls.js": {

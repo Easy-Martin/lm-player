@@ -1,8 +1,8 @@
 import React from "react";
 import { videoDec } from "../context";
 import EventName from "./eventName";
-import  "../libs/flv.ly.min.js";
-import  "../libs/hls.min.js";
+import flvjs from "flv.lm.js";
+import * as Hls from "hls.js";
 
 @videoDec
 class ErrorEvent extends React.Component {
