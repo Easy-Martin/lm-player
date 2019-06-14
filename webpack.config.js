@@ -163,7 +163,7 @@ module.exports = {
       amd: "prop-types",
       root: "PropTypes"
     },
-    "flv.js": {
+    "flv.lm.js": {
       commonjs: "flv.js",
       commonjs2: "flv.js",
       amd: "flv.js",
