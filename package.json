@@ -1,6 +1,6 @@
 {
   "name": "lm-player",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "video for html5 support flv m3u8",
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Easy-Martin/lm-player",
   "main": "dist/player.js",
   "dependencies": {
+    "aes-js": "^3.1.2",
     "flv.lm.js": "^0.0.1",
     "hls.js": "^0.12.4",
     "prop-types": "^15.7.2",
@@ -28,15 +29,13 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "flv.lm.js": "^1.5.0",
-    "hls.js": "^0.12.4",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "aes-js": "^3.1.2",
     "babel-loader": "^8.0.5",
     "babel-plugin-named-asset-import": "^0.3.1",
     "babel-preset-react-app": "^7.0.2",
     "css-loader": "^2.1.1",
+    "flv.lm.js": "^1.5.0",
+    "hls.js": "^0.12.4",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.6.0",
@@ -45,6 +44,9 @@
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.6.0",
     "postcss-safe-parser": "^4.0.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "webpack": "^4.6.0",
     "webpack-cli": "^3.3.0"
   },
