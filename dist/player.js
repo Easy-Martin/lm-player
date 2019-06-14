@@ -1,4 +1,4 @@
-exports["LMPlayer"] =
+module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -642,15 +642,23 @@ function IconFont(_ref){var type=_ref.type,_ref$className=_ref.className,classNa
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
-/*! exports provided: default */
+/*! exports provided: default, HistoryPlayer, createHistoryPlayer, createPlayer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./player */ "./src/player.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _player__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
 /* harmony import */ var _history__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./history */ "./src/history/index.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "HistoryPlayer", function() { return _history__WEBPACK_IMPORTED_MODULE_1__["default"]; });
+
 /* harmony import */ var _createPlayer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createPlayer */ "./src/createPlayer.js");
-_player__WEBPACK_IMPORTED_MODULE_0__["default"].HistoryPlayer=_history__WEBPACK_IMPORTED_MODULE_1__["default"];_player__WEBPACK_IMPORTED_MODULE_0__["default"].createHistoryPlayer=_createPlayer__WEBPACK_IMPORTED_MODULE_2__["createHistoryPlayer"];_player__WEBPACK_IMPORTED_MODULE_0__["default"].createPlayer=_createPlayer__WEBPACK_IMPORTED_MODULE_2__["createPlayer"];/* harmony default export */ __webpack_exports__["default"] = (_player__WEBPACK_IMPORTED_MODULE_0__["default"]);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createHistoryPlayer", function() { return _createPlayer__WEBPACK_IMPORTED_MODULE_2__["createHistoryPlayer"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createPlayer", function() { return _createPlayer__WEBPACK_IMPORTED_MODULE_2__["createPlayer"]; });
+
+
 
 /***/ }),
 
@@ -966,5 +974,5 @@ module.exports = require("react-dom");
 
 /***/ })
 
-/******/ })["default"];
+/******/ });
 //# sourceMappingURL=player.js.map

@@ -48,14 +48,14 @@ const getStyleLoaders = (cssOptions, preProcessor, otherOptions) => {
   return loaders;
 };
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: "./src/index.js",
   devtool: "source-map",
   output: {
-    filename: "player.js",
+    filename: "player.min.js",
     path: path.resolve(__dirname, "dist"),
     umdNamedDefine: true,
-    libraryTarget: "commonjs2",
+    libraryTarget: "umd",
     library: "LMPlayer"
   },
   optimization: {
@@ -179,8 +179,8 @@ module.exports = {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
-      filename: "player.css",
-      chunkFilename: "player.chunk.css"
+      filename: "player.min.css",
+      chunkFilename: "player.chunk.min.css"
     })
   ]
 };
