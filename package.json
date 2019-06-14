@@ -21,7 +21,7 @@
   "homepage": "https://github.com/Easy-Martin/lm-player",
   "main": "dist/player.js",
   "dependencies": {
-    "flv.lm.js": "^1.5.0",
+    "flv.lm.js": "^0.0.1",
     "hls.js": "^0.12.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
