@@ -75,7 +75,6 @@ class ErrorEvent extends React.Component {
     if (timer > playerProps.errorReloadTimer) {
       isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload();
     } else {
-      console.log(111111111111)
       event.emit(EventName.ERROR_RELOAD, timer, ...args);
       console.error(`视频播放出错，正在进行重连${timer}`, ...args);
       this.errorTimer = timer;
