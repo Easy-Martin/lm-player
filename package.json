@@ -1,6 +1,6 @@
 {
   "name": "lm-player",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "video for html5 support flv m3u8",
   "repository": {
     "type": "git",

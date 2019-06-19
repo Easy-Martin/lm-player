@@ -57,7 +57,7 @@ class LiveHeart extends React.Component {
     this.timer = setInterval(() => {
       const timeNow = Date.now();
       const currentTime = api.getCurrentTime();
-      if (this.isPlayError || !this.isCanPlay) {
+      if (this.isPlayError) {
         return;
       }
       if (currentTime > 0) {
