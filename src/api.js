@@ -51,7 +51,7 @@ export default class Api {
       this.flv.destroy();
     }
     if (this.hls) {
-      this.flv.destroy();
+      this.hls.destroy();
     }
     this.scale = null;
     this.position = null;

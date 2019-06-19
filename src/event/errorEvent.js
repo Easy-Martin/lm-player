@@ -27,7 +27,7 @@ class ErrorEvent extends React.Component {
     event.addEventListener("canplay", this.clearError, false);
 
     //历史视频切换播放索引时清除错误次数
-    event.on(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer)
+    event.on(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer);
 
     //历史视频主动清除错误次数
     event.on(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
@@ -45,8 +45,9 @@ class ErrorEvent extends React.Component {
     event.removeEventListener("error", this.errorHandle, false);
     flvPlayer && flvPlayer.off(flvjs.Events.ERROR, this.errorHandle);
     hlsPlayer && hlsPlayer.off(Hls.Events.ERROR, this.errorHandle);
+    
     event.off(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
-    event.off(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer)
+    event.off(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer);
     clearTimeout(this.reconnectTimer);
   }
 

@@ -83,11 +83,14 @@ class HistoryPlayer extends React.Component {
   }
   componentWillUnmount() {
     this.event.destroy();
-    this.api.destroy();
     this.player = null;
     this.event = null;
-    this.flv = null;
-    this.hls = null;
+    setTimeout(() => {
+      this.api.destroy();
+
+      this.flv = null;
+      this.hls = null;
+    }, 200);
     this.playContainerRef = null;
     this.playContainer = null;
     this.willReCreatePlayer = null;

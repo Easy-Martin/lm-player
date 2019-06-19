@@ -13,9 +13,11 @@ class LeftBar extends React.Component {
       openSliderVolume: false
     };
     this.historyEnd = false;
+    this.mounted = false;
   }
   componentDidMount() {
     const { event } = this.props;
+    this.mounted = true;
     event.addEventListener("play", this.updateRender);
     event.addEventListener("pause", this.updateRender);
     event.addEventListener("volumechange", this.volumechange);
@@ -24,6 +26,7 @@ class LeftBar extends React.Component {
   }
   componentWillUnmount() {
     const { event } = this.props;
+    this.mounted = false;
     event.removeEventListener("play", this.updateRender);
     event.removeEventListener("pause", this.updateRender);
     event.removeEventListener("volumechange", this.volumechange);
@@ -32,21 +35,20 @@ class LeftBar extends React.Component {
   }
   seek = () => {
     this.historyEnd = false;
-  }
+  };
   historyPlayEnd = () => {
     this.historyEnd = true;
   };
   updateRender = () => {
-    this.forceUpdate();
+    this.mounted && this.forceUpdate();
   };
   changePlayStatus = () => {
     const { api, video } = this.props;
-    if(this.historyEnd){
+    if (this.historyEnd) {
       this.props.reloadHistory();
-    }else{
+    } else {
       video.paused ? api.play() : api.pause();
     }
-    
   };
   mutedChange = () => {
     const { api, video } = this.props;
@@ -78,7 +80,7 @@ class LeftBar extends React.Component {
     } else {
       this.props.api.reload();
     }
-    this.props.event.emit(EventName.CLEAR_ERROR_TIMER)
+    this.props.event.emit(EventName.CLEAR_ERROR_TIMER);
   };
   render() {
     const { openSliderVolume } = this.state;
@@ -87,9 +89,17 @@ class LeftBar extends React.Component {
     return (
       <div className="contraller-left-bar">
         <Bar visibel={!playerProps.isLive}>
-          <IconFont onClick={this.changePlayStatus} type={video.paused ? "lm-player-Play_Main" : "lm-player-Pause_Main"} title={video.paused ? "播放" : "暂停"} />
+          <IconFont
+            onClick={this.changePlayStatus}
+            type={video.paused ? "lm-player-Play_Main" : "lm-player-Pause_Main"}
+            title={video.paused ? "播放" : "暂停"}
+          />
         </Bar>
-        <Bar className={`contraller-bar-volume ${openSliderVolume ? "contraller-bar-hover-volume" : ""}`} onMouseOver={this.openSliderVolume} onMouseOut={this.closeSliderVolume}>
+        <Bar
+          className={`contraller-bar-volume ${openSliderVolume ? "contraller-bar-hover-volume" : ""}`}
+          onMouseOver={this.openSliderVolume}
+          onMouseOut={this.closeSliderVolume}
+        >
           <IconFont onClick={this.mutedChange} type={video.muted ? "lm-player-volume-close" : volumeType} title="音量" />
           <div className="volume-slider-layout">
             <Slider

@@ -50,7 +50,7 @@ class LMPlayer extends React.Component {
     this.hls = null;
     this.playContainerRef = React.createRef();
     this.playContainer = null;
-    this.willReCreatePlayer = false
+    this.willReCreatePlayer = false;
   }
   componentDidMount() {
     this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
@@ -64,27 +64,29 @@ class LMPlayer extends React.Component {
       this.api.play();
     }
   }
-  componentWillReceiveProps(nextProps){
-    if(this.props.file !== nextProps.file){
-      this.willReCreatePlayer = true
+  componentWillReceiveProps(nextProps) {
+    if (this.props.file !== nextProps.file) {
+      this.willReCreatePlayer = true;
     }
   }
-  componentDidUpdate(){
-    if(this.willReCreatePlayer){
-      this.initPlayer()
-      this.willReCreatePlayer = false
+  componentDidUpdate() {
+    if (this.willReCreatePlayer) {
+      this.initPlayer();
+      this.willReCreatePlayer = false;
     }
   }
   componentWillUnmount() {
     this.event.destroy();
-    this.api.destroy();
     this.player = null;
     this.event = null;
-    this.flv = null;
-    this.hls = null;
+    setTimeout(() => {
+      this.api.destroy();
+      this.flv = null;
+      this.hls = null;
+    }, 200);
     this.playContainerRef = null;
     this.playContainer = null;
-    this.willReCreatePlayer = null
+    this.willReCreatePlayer = null;
   }
 
   initPlayer = () => {
@@ -145,7 +147,15 @@ class LMPlayer extends React.Component {
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+          <video
+            autoPlay={autoplay}
+            preload={preload}
+            muted={muted}
+            poster={poster}
+            controls={false}
+            playsInline={playsinline}
+            loop={loop}
+          />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}
