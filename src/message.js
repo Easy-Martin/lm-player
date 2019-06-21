@@ -13,10 +13,12 @@ class VideoMessage extends React.Component {
       loading: false,
       status: null
     };
+    this.mounted = false
     this.message = null;
   }
   componentDidMount() {
     const { event } = this.props;
+    this.mounted = true
     event.addEventListener("loadstart", this.openLoading);
     event.addEventListener("waiting", this.openLoading);
     event.addEventListener("seeking", this.openLoading);
@@ -31,6 +33,7 @@ class VideoMessage extends React.Component {
   }
   componentWillUnmount() {
     const { event } = this.props;
+    this.mounted = false
     event.removeEventListener("loadstart", this.openLoading);
     event.removeEventListener("waiting", this.openLoading);
     event.removeEventListener("seeking", this.openLoading);
@@ -45,32 +48,32 @@ class VideoMessage extends React.Component {
   }
   clearReloadMessage = () => {
     this.message = null
-    this.forceUpdate()
+    this.mounted && this.forceUpdate()
   }
   reload = () => {
     this.setState({ status: "reload" });
   };
   errorReload = timer => {
     this.message = <div>视频加载错误，正在进行重连第{timer}重连</div>;
-    this.setState({ status: "reload", loading: true });
+    this.mounted && this.setState({ status: "reload", loading: true });
   };
   reloadFail = () => {
     this.message = <div>视频错误</div>;
-    this.setState({ status: "fail" });
+    this.mounted &&  this.setState({ status: "fail" });
   };
   reloadSuccess = () => {
     this.message = null;
-    this.setState({ status: null });
+    this.mounted && this.setState({ status: null });
   };
   openLoading = () => {
-    this.setState({ loading: true });
+    this.mounted && this.setState({ loading: true });
   };
   closeLoading = () => {
-    this.setState({ loading: false });
+    this.mounted && this.setState({ loading: false });
   };
   historyPlayEnd = () => {
     this.message = null;
-    this.setState({ status: null, loading: false });
+    this.mounted && this.setState({ status: null, loading: false });
     this.props.api.pause();
   };
   render() {
