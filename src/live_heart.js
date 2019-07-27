@@ -1,6 +1,7 @@
 import React from "react";
 import { videoDec } from "./context";
 import EventName from "./event/eventName";
+import BrowserTab from "./event/browserTabEvent";
 
 @videoDec
 class LiveHeart extends React.Component {
@@ -10,31 +11,41 @@ class LiveHeart extends React.Component {
     this.timer = null;
     this.isPlayError = false;
     this.errorTimer = 0;
-    this.isCanPlay = false
+    this.isCanPlay = false;
+    this.progressTimer = null;
   }
   componentDidMount() {
     const { event } = this.props;
-    event.addEventListener("progress", this.updateProgress);
+    BrowserTab.addEventListener(this.browserTabChange);
+    // event.addEventListener("progress", this.updateProgress);
     event.addEventListener("canplay", this.canplay);
     event.on(EventName.ERROR, this.errorHandle);
     event.on(EventName.RELOAD_SUCCESS, this.clearHandle);
-    this.heartAction();
+    // this.heartAction();
   }
 
   componentWillUnmount() {
-    const {event} = this.props
-    event.removeEventListener("progress", this.updateProgress);
+    const { event } = this.props;
+    BrowserTab.removeEventListener(this.browserTabChange);
+    // event.removeEventListener("progress", this.updateProgress);
     event.removeEventListener("canplay", this.canplay);
     event.off(EventName.ERROR, this.errorHandle);
     event.off(EventName.RELOAD_SUCCESS, this.clearHandle);
     clearInterval(this.timer);
   }
 
+  browserTabChange = () => {
+    if (BrowserTab.visibilityState() === "visible") {
+      clearTimeout(this.progressTimer);
+      this.focusSeekAction();
+    }
+  };
+
   canplay = () => {
     const { api } = this.props;
-    this.isCanPlay = true
-    api.play()
-  }
+    this.isCanPlay = true;
+    api.play();
+  };
   errorHandle = () => {
     this.isPlayError = true;
   };
@@ -43,11 +54,16 @@ class LiveHeart extends React.Component {
   };
   /**
    * 监听视频进度
+   * @利用浏览器tab切换来实现暂时屏蔽
+   * 
    */
-  updateProgress = () => {
-    this.progressTime = Date.now();
-    this.focusSeekAction();
-  };
+  // updateProgress = () => {
+  //   this.progressTime = Date.now();
+  //   clearTimeout(this.progressTimer);
+  //   this.timer = setTimeout(() => {
+  //     this.focusSeekAction();
+  //   }, 200);
+  // };
 
   /**
    * 心跳监听是否视频断流了

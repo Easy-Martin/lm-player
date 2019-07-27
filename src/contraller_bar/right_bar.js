@@ -1,6 +1,7 @@
 import React from "react";
 import { videoDec } from "../context";
 import IconFont from "../iconfont";
+import Bar from "./bar";
 import { isFullscreen, fullScreenListener, computedBound } from "../util";
 
 @videoDec
@@ -38,32 +39,39 @@ class RightBar extends React.Component {
   };
   render() {
     const { playContainer, playerProps } = this.props;
-    const { isScale, snapshot } = playerProps;
+    const { isScale, snapshot, rightExtContents = [], rightMidExtContents = [] } = playerProps;
     const isfull = isFullscreen(playContainer);
+
     return (
       <div className="contraller-right-bar">
+        {rightMidExtContents.map((v, i) => (
+          <Bar key={i}>{v}</Bar>
+        ))}
         {isScale && (
           <>
-            <span className="contraller-bar-item">
+            <Bar>
               <IconFont title="缩小" onClick={() => this.setScale(-0.2)} type={"lm-player-ZoomOut_Main"} />
-            </span>
-            <span className="contraller-bar-item">
+            </Bar>
+            <Bar>
               <IconFont title="复位" onClick={() => this.setScale(1, true)} type={"lm-player-ZoomDefault_Main"} />
-            </span>
-            <span className="contraller-bar-item">
+            </Bar>
+            <Bar>
               <IconFont title="放大" onClick={() => this.setScale(0.2)} type={"lm-player-ZoomIn_Main"} />
-            </span>
+            </Bar>
           </>
         )}
 
         {snapshot && (
-          <span className="contraller-bar-item">
+          <Bar>
             <IconFont title="截图" onClick={this.snapshot} type="lm-player-SearchBox" />
-          </span>
+          </Bar>
         )}
-        <span className="contraller-bar-item">
+        <Bar>
           <IconFont title={isfull ? "窗口" : "全屏"} onClick={this.fullscreen} type={isfull ? "lm-player-ExitFull_Main" : "lm-player-Full_Main"} />
-        </span>
+        </Bar>
+        {rightExtContents.map((v, i) => (
+          <Bar key={i}>{v}</Bar>
+        ))}
       </div>
     );
   }
