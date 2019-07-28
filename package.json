@@ -21,7 +21,6 @@
   "homepage": "https://github.com/Easy-Martin/lm-player",
   "main": "dist/player.js",
   "dependencies": {
-    "aes-js": "^3.1.2",
     "flv.lm.js": "^0.0.1",
     "hls.js": "^0.12.4",
     "prop-types": "^15.7.2",
@@ -29,7 +28,6 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "aes-js": "^3.1.2",
     "babel-loader": "^8.0.5",
     "babel-plugin-named-asset-import": "^0.3.1",
     "babel-preset-react-app": "^7.0.2",
