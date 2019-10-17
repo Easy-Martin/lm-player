@@ -87,6 +87,20 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/@babel/runtime/helpers/esm/arrayWithoutHoles.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/arrayWithoutHoles.js ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _arrayWithoutHoles; });
+function _arrayWithoutHoles(arr){if(Array.isArray(arr)){for(var i=0,arr2=new Array(arr.length);i<arr.length;i++){arr2[i]=arr[i];}return arr2;}}
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js":
 /*!**************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js ***!
@@ -158,6 +172,34 @@ function _inherits(subClass,superClass){if(typeof superClass!=="function"&&super
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime/helpers/esm/iterableToArray.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/iterableToArray.js ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _iterableToArray; });
+function _iterableToArray(iter){if(Symbol.iterator in Object(iter)||Object.prototype.toString.call(iter)==="[object Arguments]")return Array.from(iter);}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/nonIterableSpread.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/nonIterableSpread.js ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _nonIterableSpread; });
+function _nonIterableSpread(){throw new TypeError("Invalid attempt to spread non-iterable instance");}
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js":
 /*!****************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js ***!
@@ -217,6 +259,23 @@ function _setPrototypeOf(o,p){_setPrototypeOf=Object.setPrototypeOf||function _s
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _toConsumableArray; });
+/* harmony import */ var _arrayWithoutHoles__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./arrayWithoutHoles */ "./node_modules/@babel/runtime/helpers/esm/arrayWithoutHoles.js");
+/* harmony import */ var _iterableToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./iterableToArray */ "./node_modules/@babel/runtime/helpers/esm/iterableToArray.js");
+/* harmony import */ var _nonIterableSpread__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./nonIterableSpread */ "./node_modules/@babel/runtime/helpers/esm/nonIterableSpread.js");
+function _toConsumableArray(arr){return Object(_arrayWithoutHoles__WEBPACK_IMPORTED_MODULE_0__["default"])(arr)||Object(_iterableToArray__WEBPACK_IMPORTED_MODULE_1__["default"])(arr)||Object(_nonIterableSpread__WEBPACK_IMPORTED_MODULE_2__["default"])();}
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime/helpers/esm/typeof.js":
 /*!***********************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/esm/typeof.js ***!
@@ -258,7 +317,7 @@ var Api=/*#__PURE__*/function(){function Api(video,playContainer,event,flv,hls){
    * @param {*} noEmit
    */},{key:"seekTo",value:function seekTo(seconds,noEmit){var buffered=this.getBufferedTime();if(this.flv&&buffered[0]>seconds){this.flv.unload();this.flv.load();}this.player.currentTime=seconds;if(!noEmit){this.event.emit(_event_eventName__WEBPACK_IMPORTED_MODULE_3__["default"].SEEK,seconds);}}/**
    * 视频重载
-   */},{key:"reload",value:function reload(){this.unload();this.load();this.play();this.event.emit(_event_eventName__WEBPACK_IMPORTED_MODULE_3__["default"].RELOAD);if(this.getCurrentTime!==0){this.seekTo(0);}}},{key:"unload",value:function unload(){this.flv&&this.flv.unload();this.hls&&this.hls.stopLoad();}},{key:"load",value:function load(){this.flv&&this.flv.load();this.hls&&this.hls.loadSource(this.hls.url);}},{key:"setVolume",value:function setVolume(fraction){this.player.volume=fraction;}},{key:"mute",value:function mute(){this.player.muted=true;}},{key:"unmute",value:function unmute(){this.player.muted=false;}/**
+   */},{key:"reload",value:function reload(){this.unload();this.load();this.play();this.event.emit(_event_eventName__WEBPACK_IMPORTED_MODULE_3__["default"].RELOAD);if(this.getCurrentTime!==0){this.seekTo(0);}}},{key:"unload",value:function unload(){this.flv&&this.flv.unload();this.hls&&this.hls.stopLoad();}},{key:"load",value:function load(){this.flv&&this.flv.load();if(this.hls){this.hls.startLoad();this.hls.swapAudioCodec();this.hls.recoverMediaError();}}},{key:"setVolume",value:function setVolume(fraction){this.player.volume=fraction;}},{key:"mute",value:function mute(){this.player.muted=true;}},{key:"unmute",value:function unmute(){this.player.muted=false;}/**
    * 开启画中画功能
    */},{key:"requestPictureInPicture",value:function requestPictureInPicture(){if(this.player.requestPictureInPicture&&document.pictureInPictureElement!==this.player){this.player.requestPictureInPicture();}}/**
    * 关闭画中画功能
@@ -281,7 +340,7 @@ var Api=/*#__PURE__*/function(){function Api(video,playContainer,event,flv,hls){
    * @param {*} second
    */},{key:"backWind",value:function backWind(){var second=arguments.length>0&&arguments[0]!==undefined?arguments[0]:5;var currentTime=this.getCurrentTime();var time=currentTime-second;this.seekTo(time<1?1:time);}/**
    * 视频截屏方法
-   */},{key:"snapshot",value:function snapshot(){var canvas=document.createElement("canvas");var ctx=canvas.getContext("2d");canvas.width=this.player.videoWidth;canvas.height=this.player.videoHeight;ctx.drawImage(this.player,0,0,canvas.width,canvas.height);setTimeout(function(){canvas.remove();canvas=null;ctx=null;},200);return canvas.toDataURL();}},{key:"setScale",value:function setScale(num){var _this=this;var isRest=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;var scale=this.scale+num;if(isRest){scale=num;}else{if(scale<1){scale=1;}if(scale>3){scale=3;}}this.scale=scale;this.player.style.transition="transform 0.3s";this.__setTransform();this.event.emit(_event_eventName__WEBPACK_IMPORTED_MODULE_3__["default"].TRANSFORM);setTimeout(function(){_this.player.style.transition="unset";},500);}},{key:"getScale",value:function getScale(){return this.scale;}},{key:"setPosition",value:function setPosition(position,isAnimate){this.position=position;this.player.style.transition=isAnimate?"transform 0.3s":"unset";this.__setTransform();}},{key:"getPosition",value:function getPosition(){return this.position;}},{key:"__setTransform",value:function __setTransform(){this.player.style.transform="scale(".concat(this.scale,") translate(").concat(this.position[0],"px,").concat(this.position[1],"px)");}},{key:"getApi",value:function getApi(){return{play:this.play.bind(this),reload:this.reload.bind(this),pause:this.pause.bind(this),seekTo:this.seekTo.bind(this),setVolume:this.setVolume.bind(this),mute:this.mute.bind(this),unmute:this.unmute.bind(this),requestPictureInPicture:this.requestPictureInPicture.bind(this),exitPictureInPicture:this.exitPictureInPicture.bind(this),setPlaybackRate:this.setPlaybackRate.bind(this),destroy:this.destroy.bind(this),getDuration:this.getDuration.bind(this),getCurrentTime:this.getCurrentTime.bind(this),getSecondsLoaded:this.getSecondsLoaded.bind(this),getBufferedTime:this.getBufferedTime.bind(this),fastForward:this.fastForward.bind(this),backWind:this.backWind.bind(this),snapshot:this.snapshot.bind(this),requestFullScreen:this.requestFullScreen.bind(this),cancelFullScreen:this.cancelFullScreen.bind(this),__player:this.player};}}]);return Api;}();
+   */},{key:"snapshot",value:function snapshot(){var canvas=document.createElement("canvas");var ctx=canvas.getContext("2d");canvas.width=this.player.videoWidth;canvas.height=this.player.videoHeight;ctx.drawImage(this.player,0,0,canvas.width,canvas.height);setTimeout(function(){canvas.remove();canvas=null;ctx=null;},200);return canvas.toDataURL();}},{key:"setScale",value:function setScale(num){var _this=this;var isRest=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;var scale=this.scale+num;if(isRest){scale=num;}else{if(scale<1){scale=1;}if(scale>3){scale=3;}}this.scale=scale;this.player.style.transition="transform 0.3s";this.__setTransform();this.event.emit(_event_eventName__WEBPACK_IMPORTED_MODULE_3__["default"].TRANSFORM);setTimeout(function(){_this.player.style.transition="unset";},500);}},{key:"getScale",value:function getScale(){return this.scale;}},{key:"setPosition",value:function setPosition(position,isAnimate){this.position=position;this.player.style.transition=isAnimate?"transform 0.3s":"unset";this.__setTransform();}},{key:"getPosition",value:function getPosition(){return this.position;}},{key:"__setTransform",value:function __setTransform(){this.player.style.transform="scale(".concat(this.scale,") translate(").concat(this.position[0],"px,").concat(this.position[1],"px)");}},{key:"getApi",value:function getApi(){return{play:this.play.bind(this),reload:this.reload.bind(this),pause:this.pause.bind(this),seekTo:this.seekTo.bind(this),setVolume:this.setVolume.bind(this),mute:this.mute.bind(this),unmute:this.unmute.bind(this),requestPictureInPicture:this.requestPictureInPicture.bind(this),exitPictureInPicture:this.exitPictureInPicture.bind(this),setPlaybackRate:this.setPlaybackRate.bind(this),destroy:this.destroy.bind(this),getDuration:this.getDuration.bind(this),getCurrentTime:this.getCurrentTime.bind(this),getSecondsLoaded:this.getSecondsLoaded.bind(this),getBufferedTime:this.getBufferedTime.bind(this),fastForward:this.fastForward.bind(this),backWind:this.backWind.bind(this),snapshot:this.snapshot.bind(this),requestFullScreen:this.requestFullScreen.bind(this),cancelFullScreen:this.cancelFullScreen.bind(this),__player:this.player,flv:this.flv,hls:this.hls};}}]);return Api;}();
 
 /***/ }),
 
@@ -475,26 +534,27 @@ var _class,_temp;var DragEvent=Object(_context__WEBPACK_IMPORTED_MODULE_6__["vid
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
-/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
-/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
-/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _context__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../context */ "./src/context.js");
-/* harmony import */ var _eventName__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./eventName */ "./src/event/eventName.js");
-/* harmony import */ var flv_lm_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! flv.lm.js */ "flv.lm.js");
-/* harmony import */ var flv_lm_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(flv_lm_js__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var hls_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! hls.js */ "hls.js");
-/* harmony import */ var hls_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(hls_js__WEBPACK_IMPORTED_MODULE_9__);
-var _class,_temp;var ErrorEvent=Object(_context__WEBPACK_IMPORTED_MODULE_6__["videoDec"])(_class=(_temp=/*#__PURE__*/function(_React$Component){Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__["default"])(ErrorEvent,_React$Component);function ErrorEvent(props){var _this;Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this,ErrorEvent);_this=Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__["default"])(this,Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__["default"])(ErrorEvent).call(this,props));_this.clearErrorTimer=function(){_this.errorTimer=0;};_this.clearError=function(){var event=_this.props.event;if(_this.errorTimer>0){console.warn("视频重连成功！");event.emit(_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].RELOAD_SUCCESS);_this.clearErrorTimer();}};_this.errorHandle=function(){var _this$props=_this.props,event=_this$props.event,api=_this$props.api,isHistory=_this$props.isHistory,changePlayIndex=_this$props.changePlayIndex,playIndex=_this$props.playIndex,playerProps=_this$props.playerProps;var timer=_this.errorTimer+1;for(var _len=arguments.length,args=new Array(_len),_key=0;_key<_len;_key++){args[_key]=arguments[_key];}event.emit.apply(event,[_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].ERROR].concat(args));if(timer>playerProps.errorReloadTimer){isHistory?changePlayIndex(playIndex+1):event.emit(_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].RELOAD_FAIL),api.unload();}else{var _console;event.emit.apply(event,[_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].ERROR_RELOAD,timer].concat(args));(_console=console).error.apply(_console,["\u89C6\u9891\u64AD\u653E\u51FA\u9519\uFF0C\u6B63\u5728\u8FDB\u884C\u91CD\u8FDE".concat(timer)].concat(args));_this.errorTimer=timer;_this.reconnectTimer=setTimeout(function(){api.reload();},1000*5);}};_this.errorTimer=0;return _this;}Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(ErrorEvent,[{key:"componentDidMount",value:function componentDidMount(){var _this$props2=this.props,event=_this$props2.event,flvPlayer=_this$props2.flvPlayer,hlsPlayer=_this$props2.hlsPlayer;if(flvPlayer){//捕获flv错误
-flvPlayer.on(flv_lm_js__WEBPACK_IMPORTED_MODULE_8___default.a.Events.ERROR,this.errorHandle);}if(hlsPlayer){//捕获hls错误
-hlsPlayer.on(hls_js__WEBPACK_IMPORTED_MODULE_9__["Events"].ERROR,this.errorHandle);}//捕获video错误
+/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/toConsumableArray */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
+/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
+/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
+/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
+/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
+/* harmony import */ var D_Project_lm_player_node_modules_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./node_modules/@babel/runtime/helpers/esm/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _context__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../context */ "./src/context.js");
+/* harmony import */ var _eventName__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./eventName */ "./src/event/eventName.js");
+/* harmony import */ var flv_lm_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! flv.lm.js */ "flv.lm.js");
+/* harmony import */ var flv_lm_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(flv_lm_js__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var hls_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! hls.js */ "hls.js");
+/* harmony import */ var hls_js__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(hls_js__WEBPACK_IMPORTED_MODULE_10__);
+var _class,_temp;var ErrorEvent=Object(_context__WEBPACK_IMPORTED_MODULE_7__["videoDec"])(_class=(_temp=/*#__PURE__*/function(_React$Component){Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_5__["default"])(ErrorEvent,_React$Component);function ErrorEvent(props){var _this;Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_1__["default"])(this,ErrorEvent);_this=Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__["default"])(this,Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__["default"])(ErrorEvent).call(this,props));_this.clearErrorTimer=function(){_this.errorTimer=0;clearTimeout(_this.reconnectTimer);};_this.clearError=function(){var event=_this.props.event;if(_this.errorTimer>0){console.warn("视频重连成功！");event.emit(_eventName__WEBPACK_IMPORTED_MODULE_8__["default"].RELOAD_SUCCESS);_this.clearErrorTimer();}};_this.errorHandle=function(){var _console;for(var _len=arguments.length,args=new Array(_len),_key=0;_key<_len;_key++){args[_key]=arguments[_key];}(_console=console).error.apply(_console,args);clearTimeout(_this.reconnectTimer);var _this$props=_this.props,event=_this$props.event,api=_this$props.api,isHistory=_this$props.isHistory,changePlayIndex=_this$props.changePlayIndex,playIndex=_this$props.playIndex,playerProps=_this$props.playerProps;var timer=_this.errorTimer+1;event.emit.apply(event,[_eventName__WEBPACK_IMPORTED_MODULE_8__["default"].ERROR].concat(args));if(timer>playerProps.errorReloadTimer){isHistory?changePlayIndex(playIndex+1):event.emit(_eventName__WEBPACK_IMPORTED_MODULE_8__["default"].RELOAD_FAIL),api.unload();}else{_this.errorTimer=timer;if(args[1]&&args[1].loader||args[0].indexOf&&args[0].indexOf("NetworkError")>-1){_this.reloadAction(timer,args);}_this.reconnectTimer=setTimeout(function(){_this.reloadAction(timer,args);},1000*20);}};_this.reloadAction=function(timer,args){var _this$props2=_this.props,event=_this$props2.event,api=_this$props2.api;event.emit.apply(event,[_eventName__WEBPACK_IMPORTED_MODULE_8__["default"].ERROR_RELOAD,timer].concat(Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__["default"])(args)));console.warn("\u89C6\u9891\u64AD\u653E\u51FA\u9519\uFF0C\u6B63\u5728\u8FDB\u884C\u91CD\u8FDE".concat(timer));api.reload();};_this.errorTimer=0;return _this;}Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_2__["default"])(ErrorEvent,[{key:"componentDidMount",value:function componentDidMount(){var _this$props3=this.props,event=_this$props3.event,flvPlayer=_this$props3.flvPlayer,hlsPlayer=_this$props3.hlsPlayer;if(flvPlayer){//捕获flv错误
+flvPlayer.on(flv_lm_js__WEBPACK_IMPORTED_MODULE_9___default.a.Events.ERROR,this.errorHandle);}if(hlsPlayer){//捕获hls错误
+hlsPlayer.on(hls_js__WEBPACK_IMPORTED_MODULE_10__["Events"].ERROR,this.errorHandle);}//捕获video错误
 event.addEventListener("error",this.errorHandle,false);//获取video状态清除错误状态
 event.addEventListener("canplay",this.clearError,false);//历史视频切换播放索引时清除错误次数
-event.on(_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].CHANGE_PLAY_INDEX,this.clearErrorTimer);//历史视频主动清除错误次数
-event.on(_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].CLEAR_ERROR_TIMER,this.clearErrorTimer);}},{key:"componentWillReceiveProps",value:function componentWillReceiveProps(nextProps){if(nextProps.flvPlayer&&nextProps.flvPlayer!==this.props.flvPlayer){nextProps.flvPlayer.on(flv_lm_js__WEBPACK_IMPORTED_MODULE_8___default.a.Events.ERROR,this.errorHandle);}if(nextProps.hlsPlayer&&nextProps.hlsPlayer!==this.props.hlsPlayer){nextProps.hlsPlayer.on(hls_js__WEBPACK_IMPORTED_MODULE_9__["Events"].ERROR,this.errorHandle);}}},{key:"componentWillUnmount",value:function componentWillUnmount(){var _this$props3=this.props,event=_this$props3.event,flvPlayer=_this$props3.flvPlayer,hlsPlayer=_this$props3.hlsPlayer;event.removeEventListener("error",this.errorHandle,false);flvPlayer&&flvPlayer.off(flv_lm_js__WEBPACK_IMPORTED_MODULE_8___default.a.Events.ERROR,this.errorHandle);hlsPlayer&&hlsPlayer.off(hls_js__WEBPACK_IMPORTED_MODULE_9__["Events"].ERROR,this.errorHandle);event.off(_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].CLEAR_ERROR_TIMER,this.clearErrorTimer);event.off(_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].CHANGE_PLAY_INDEX,this.clearErrorTimer);clearTimeout(this.reconnectTimer);}},{key:"render",value:function render(){return null;}}]);return ErrorEvent;}(react__WEBPACK_IMPORTED_MODULE_5___default.a.Component),_temp))||_class;/* harmony default export */ __webpack_exports__["default"] = (ErrorEvent);
+event.on(_eventName__WEBPACK_IMPORTED_MODULE_8__["default"].CHANGE_PLAY_INDEX,this.clearErrorTimer);//历史视频主动清除错误次数
+event.on(_eventName__WEBPACK_IMPORTED_MODULE_8__["default"].CLEAR_ERROR_TIMER,this.clearErrorTimer);}},{key:"componentWillReceiveProps",value:function componentWillReceiveProps(nextProps){if(nextProps.flvPlayer&&nextProps.flvPlayer!==this.props.flvPlayer){nextProps.flvPlayer.on(flv_lm_js__WEBPACK_IMPORTED_MODULE_9___default.a.Events.ERROR,this.errorHandle);}if(nextProps.hlsPlayer&&nextProps.hlsPlayer!==this.props.hlsPlayer){nextProps.hlsPlayer.on(hls_js__WEBPACK_IMPORTED_MODULE_10__["Events"].ERROR,this.errorHandle);}}},{key:"componentWillUnmount",value:function componentWillUnmount(){var _this$props4=this.props,event=_this$props4.event,flvPlayer=_this$props4.flvPlayer,hlsPlayer=_this$props4.hlsPlayer;event.removeEventListener("error",this.errorHandle,false);flvPlayer&&flvPlayer.off(flv_lm_js__WEBPACK_IMPORTED_MODULE_9___default.a.Events.ERROR,this.errorHandle);hlsPlayer&&hlsPlayer.off(hls_js__WEBPACK_IMPORTED_MODULE_10__["Events"].ERROR,this.errorHandle);event.off(_eventName__WEBPACK_IMPORTED_MODULE_8__["default"].CLEAR_ERROR_TIMER,this.clearErrorTimer);event.off(_eventName__WEBPACK_IMPORTED_MODULE_8__["default"].CHANGE_PLAY_INDEX,this.clearErrorTimer);clearTimeout(this.reconnectTimer);}},{key:"render",value:function render(){return null;}}]);return ErrorEvent;}(react__WEBPACK_IMPORTED_MODULE_6___default.a.Component),_temp))||_class;/* harmony default export */ __webpack_exports__["default"] = (ErrorEvent);
 
 /***/ }),
 
@@ -681,8 +741,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _context__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./context */ "./src/context.js");
-/* harmony import */ var _event_eventName__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./event/eventName */ "./src/event/eventName.js");
-var _class,_temp;var LiveHeart=Object(_context__WEBPACK_IMPORTED_MODULE_6__["videoDec"])(_class=(_temp=/*#__PURE__*/function(_React$Component){Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__["default"])(LiveHeart,_React$Component);function LiveHeart(props){var _this;Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this,LiveHeart);_this=Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__["default"])(this,Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__["default"])(LiveHeart).call(this,props));_this.canplay=function(){var api=_this.props.api;_this.isCanPlay=true;api.play();};_this.errorHandle=function(){_this.isPlayError=true;};_this.clearHandle=function(){_this.isPlayError=false;};_this.updateProgress=function(){_this.progressTime=Date.now();_this.focusSeekAction();};_this.heartAction=function(){var _this$props=_this.props,api=_this$props.api,event=_this$props.event;_this.timer=setInterval(function(){var timeNow=Date.now();var currentTime=api.getCurrentTime();if(_this.isPlayError){return;}if(currentTime>0){if(timeNow-_this.progressTime>10*1000){console.warn("当前实时视频缓存未更新，执行reload操作");api.reload();}else{_this.errorTimer=0;}}else{if(_this.errorTimer>=5){event.emit(_event_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].RELOAD_FAIL,_this.errorTimer);api.unload();}else{_this.errorTimer++;api.reload();event.emit(_event_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].ERROR_RELOAD,_this.errorTimer);}}},1000*5);};_this.focusSeekAction=function(){var api=_this.props.api;var current=api.getCurrentTime();var buffered=api.getSecondsLoaded();if(buffered-current>5){console.warn("\u5F53\u524D\u5EF6\u65F6\u8FC7\u5927current->".concat(current," buffered->").concat(buffered,", \u57FA\u4E8E\u89C6\u9891\u5F53\u524D\u7F13\u5B58\u65F6\u95F4\u66F4\u65B0\u5F53\u524D\u64AD\u653E\u65F6\u95F4 updateTime -> ").concat(buffered-2));api.seekTo(buffered-2>0?buffered-2:0);}};_this.progressTime=Date.now();_this.timer=null;_this.isPlayError=false;_this.errorTimer=0;_this.isCanPlay=false;return _this;}Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(LiveHeart,[{key:"componentDidMount",value:function componentDidMount(){var event=this.props.event;event.addEventListener("progress",this.updateProgress);event.addEventListener("canplay",this.canplay);event.on(_event_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].ERROR,this.errorHandle);event.on(_event_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].RELOAD_SUCCESS,this.clearHandle);this.heartAction();}},{key:"componentWillUnmount",value:function componentWillUnmount(){var event=this.props.event;event.removeEventListener("progress",this.updateProgress);event.removeEventListener("canplay",this.canplay);event.off(_event_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].ERROR,this.errorHandle);event.off(_event_eventName__WEBPACK_IMPORTED_MODULE_7__["default"].RELOAD_SUCCESS,this.clearHandle);clearInterval(this.timer);}},{key:"render",value:function render(){return null;}}]);return LiveHeart;}(react__WEBPACK_IMPORTED_MODULE_5___default.a.Component),_temp))||_class;/* harmony default export */ __webpack_exports__["default"] = (LiveHeart);
+var _class,_temp;var LiveHeart=Object(_context__WEBPACK_IMPORTED_MODULE_6__["videoDec"])(_class=(_temp=/*#__PURE__*/function(_React$Component){Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__["default"])(LiveHeart,_React$Component);function LiveHeart(props){var _this;Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this,LiveHeart);_this=Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__["default"])(this,Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__["default"])(LiveHeart).call(this,props));_this.canplay=function(){var api=_this.props.api;_this.isCanPlay=true;api.play();};_this.focusSeekAction=function(){var api=_this.props.api;var current=api.getCurrentTime();var buffered=api.getSecondsLoaded();if(buffered-current>5){console.warn("\u5F53\u524D\u5EF6\u65F6\u8FC7\u5927current->".concat(current," buffered->").concat(buffered,", \u57FA\u4E8E\u89C6\u9891\u5F53\u524D\u7F13\u5B58\u65F6\u95F4\u66F4\u65B0\u5F53\u524D\u64AD\u653E\u65F6\u95F4 updateTime -> ").concat(buffered-2));api.seekTo(buffered-2>0?buffered-2:0);}};_this.timer=null;_this.isPlayError=false;_this.isCanPlay=false;return _this;}Object(D_Project_lm_player_node_modules_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(LiveHeart,[{key:"componentDidMount",value:function componentDidMount(){var event=this.props.event;event.addEventListener("progress",this.focusSeekAction);event.addEventListener("canplay",this.canplay);}},{key:"componentWillUnmount",value:function componentWillUnmount(){var event=this.props.event;event.removeEventListener("progress",this.focusSeekAction);event.removeEventListener("canplay",this.canplay);}},{key:"render",value:function render(){return null;}}]);return LiveHeart;}(react__WEBPACK_IMPORTED_MODULE_5___default.a.Component),_temp))||_class;/* harmony default export */ __webpack_exports__["default"] = (LiveHeart);
 
 /***/ }),
 
@@ -891,13 +950,12 @@ __webpack_require__.r(__webpack_exports__);
  * 创建HLS对象
  * @param {*} video
  * @param {*} file
- */function createHlsPlayer(video,file){if(hls_js__WEBPACK_IMPORTED_MODULE_1__["isSupported"]()){var player=new hls_js__WEBPACK_IMPORTED_MODULE_1__({liveDurationInfinity:true,levelLoadingTimeOut:15000,fragLoadingTimeOut:25000,enableWorker:true});player.attachMedia(video);player.on(hls_js__WEBPACK_IMPORTED_MODULE_1__["Events"].MEDIA_ATTACHED,function(){player.loadSource(file);player.on(hls_js__WEBPACK_IMPORTED_MODULE_1__["Events"].MANIFEST_PARSED,function(){// console.log(player);
-});});return player;}}/**
+ */function createHlsPlayer(video,file){if(hls_js__WEBPACK_IMPORTED_MODULE_1__["isSupported"]()){var player=new hls_js__WEBPACK_IMPORTED_MODULE_1__({liveDurationInfinity:true,levelLoadingTimeOut:15000,fragLoadingTimeOut:25000,enableWorker:true});player.loadSource(file);player.attachMedia(video);return player;}}/**
  * 创建FLV对象
  * @param {*} video
  * @param {*} options
  */function createFlvPlayer(video,options){var _options$flvOptions=options.flvOptions,flvOptions=_options$flvOptions===void 0?{}:_options$flvOptions,_options$flvConfig=options.flvConfig,flvConfig=_options$flvConfig===void 0?{}:_options$flvConfig;if(flv_lm_js__WEBPACK_IMPORTED_MODULE_0___default.a.isSupported()){var player=flv_lm_js__WEBPACK_IMPORTED_MODULE_0___default.a.createPlayer(Object.assign({},flvOptions,{type:"flv",url:options.file}),Object.assign({},flvConfig,{enableWorker:true,// lazyLoad: false,
-//Indicates how many seconds of data to be kept for lazyLoad.
+// Indicates how many seconds of data to be kept for lazyLoad.
 // lazyLoadMaxDuration: 0,
 // autoCleanupMaxBackwardDuration: 3,
 // autoCleanupMinBackwardDuration: 2,

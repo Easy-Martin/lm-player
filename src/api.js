@@ -92,7 +92,11 @@ export default class Api {
   }
   load() {
     this.flv && this.flv.load();
-    this.hls && this.hls.loadSource(this.hls.url);
+    if (this.hls) {
+      this.hls.startLoad();
+      this.hls.swapAudioCodec();
+      this.hls.recoverMediaError();
+    }
   }
   setVolume(fraction) {
     this.player.volume = fraction;
@@ -264,7 +268,9 @@ export default class Api {
       snapshot: this.snapshot.bind(this),
       requestFullScreen: this.requestFullScreen.bind(this),
       cancelFullScreen: this.cancelFullScreen.bind(this),
-      __player: this.player
+      __player: this.player,
+      flv: this.flv,
+      hls: this.hls
     };
   }
 }

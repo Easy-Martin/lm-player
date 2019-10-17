@@ -1,7 +1,6 @@
 import flvjs from "flv.lm.js";
 import * as Hls from "hls.js";
 
-
 /**
  * 创建HLS对象
  * @param {*} video
@@ -9,14 +8,14 @@ import * as Hls from "hls.js";
  */
 export function createHlsPlayer(video, file) {
   if (Hls.isSupported()) {
-    const player = new Hls({ liveDurationInfinity: true, levelLoadingTimeOut: 15000, fragLoadingTimeOut: 25000, enableWorker: true });
-    player.attachMedia(video);
-    player.on(Hls.Events.MEDIA_ATTACHED, () => {
-      player.loadSource(file);
-      player.on(Hls.Events.MANIFEST_PARSED, () => {
-        // console.log(player);
-      });
+    const player = new Hls({
+      liveDurationInfinity: true,
+      levelLoadingTimeOut: 15000,
+      fragLoadingTimeOut: 25000,
+      enableWorker: true
     });
+    player.loadSource(file);
+    player.attachMedia(video);
     return player;
   }
 }
@@ -37,7 +36,7 @@ export function createFlvPlayer(video, options) {
       Object.assign({}, flvConfig, {
         enableWorker: true,
         // lazyLoad: false,
-        //Indicates how many seconds of data to be kept for lazyLoad.
+        // Indicates how many seconds of data to be kept for lazyLoad.
         // lazyLoadMaxDuration: 0,
         // autoCleanupMaxBackwardDuration: 3,
         // autoCleanupMinBackwardDuration: 2,
@@ -101,7 +100,9 @@ export function dateFormat(timetemp) {
   let hh = date.getHours();
   let mm = date.getMinutes();
   let ss = date.getSeconds();
-  return `${YYYY}.${MM > 10 ? MM : "0" + MM}.${DD > 10 ? DD : "0" + DD} ${hh > 10 ? hh : "0" + hh}.${mm > 10 ? mm : "0" + mm}.${ss > 10 ? ss : "0" + ss}`;
+  return `${YYYY}.${MM > 10 ? MM : "0" + MM}.${DD > 10 ? DD : "0" + DD} ${hh > 10 ? hh : "0" + hh}.${mm > 10 ? mm : "0" + mm}.${
+    ss > 10 ? ss : "0" + ss
+  }`;
 }
 
 /**
@@ -140,7 +141,12 @@ export function exitFullscreen() {
  * 判读是否支持全屏
  */
 export function fullscreenEnabled() {
-  return document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled;
+  return (
+    document.fullscreenEnabled ||
+    document.mozFullScreenEnabled ||
+    document.webkitFullscreenEnabled ||
+    document.msFullscreenEnabled
+  );
 }
 
 /**
@@ -151,7 +157,13 @@ export function isFullscreen(ele) {
   if (!ele) {
     return false;
   }
-  return document.fullscreenElement === ele || document.msFullscreenElement === ele || document.mozFullScreenElement === ele || document.webkitFullscreenElement === ele || false;
+  return (
+    document.fullscreenElement === ele ||
+    document.msFullscreenElement === ele ||
+    document.mozFullScreenElement === ele ||
+    document.webkitFullscreenElement === ele ||
+    false
+  );
 }
 // 添加 / 移除 全屏事件监听
 export function fullScreenListener(isAdd, fullscreenchange) {

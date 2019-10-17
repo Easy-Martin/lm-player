@@ -45,7 +45,7 @@ class ErrorEvent extends React.Component {
     event.removeEventListener("error", this.errorHandle, false);
     flvPlayer && flvPlayer.off(flvjs.Events.ERROR, this.errorHandle);
     hlsPlayer && hlsPlayer.off(Hls.Events.ERROR, this.errorHandle);
-    
+
     event.off(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
     event.off(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer);
     clearTimeout(this.reconnectTimer);
@@ -53,6 +53,7 @@ class ErrorEvent extends React.Component {
 
   clearErrorTimer = () => {
     this.errorTimer = 0;
+    clearTimeout(this.reconnectTimer);
   };
   /**
    * 清除播放错误状态
@@ -70,19 +71,29 @@ class ErrorEvent extends React.Component {
    * 捕获错误
    */
   errorHandle = (...args) => {
+    console.error(...args);
+    clearTimeout(this.reconnectTimer);
     const { event, api, isHistory, changePlayIndex, playIndex, playerProps } = this.props;
     const timer = this.errorTimer + 1;
     event.emit(EventName.ERROR, ...args);
     if (timer > playerProps.errorReloadTimer) {
       isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload();
     } else {
-      event.emit(EventName.ERROR_RELOAD, timer, ...args);
-      console.error(`视频播放出错，正在进行重连${timer}`, ...args);
       this.errorTimer = timer;
+      if ((args[1] && args[1].loader) || (args[0].indexOf && args[0].indexOf("NetworkError") > -1)) {
+        this.reloadAction(timer, args);
+      }
       this.reconnectTimer = setTimeout(() => {
-        api.reload();
-      }, 1000 * 5);
+        this.reloadAction(timer, args);
+      }, 1000 * 20);
     }
+  };
+
+  reloadAction = (timer, args) => {
+    const { event, api } = this.props;
+    event.emit(EventName.ERROR_RELOAD, timer, ...args);
+    console.warn(`视频播放出错，正在进行重连${timer}`);
+    api.reload();
   };
   render() {
     return null;
