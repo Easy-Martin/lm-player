@@ -97,8 +97,11 @@ class HistoryPlayer extends React.Component {
   }
   initPlayer = index => {
     const { historyList } = this.props;
-    if (!historyList || !historyList.fragments[index] || !historyList.fragments[index].file) {
+    if (!historyList || !historyList.fragments[index]) {
       return null;
+    }
+    if (!historyList.fragments[index].file) {
+      return this.changePlayIndex(index + 1);
     }
     if (this.flv) {
       this.flv.unload();
@@ -233,7 +236,15 @@ class HistoryPlayer extends React.Component {
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+          <video
+            autoPlay={autoplay}
+            preload={preload}
+            muted={muted}
+            poster={poster}
+            controls={false}
+            playsInline={playsinline}
+            loop={loop}
+          />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

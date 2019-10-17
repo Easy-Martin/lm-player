@@ -3,7 +3,7 @@ import { videoDec } from "../context";
 import IconFont from "../iconfont";
 import Slider from "../slider";
 import { dateFormat } from "../util";
-import EventName from '../event/eventName'
+import EventName from "../event/eventName";
 import "../style/time-line.less";
 
 @videoDec
@@ -15,7 +15,7 @@ class TineLine extends React.Component {
       currentTime: 0,
       buffered: 0,
       isEnd: false,
-      hideBar:false
+      hideBar: false
     };
   }
   componentDidMount() {
@@ -55,7 +55,7 @@ class TineLine extends React.Component {
    * reload事件触发时 清除结束状态
    */
   reload = () => {
-    const {api} = this.props
+    const { api } = this.props;
     this.setState({
       isEnd: false,
       currentTime: api.getCurrentTime()
@@ -134,7 +134,7 @@ class TineLine extends React.Component {
   renderTimeLineTips = percent => {
     const { historyList } = this.props;
     const currentTime = percent * historyList.duration * 1000;
-    const date = dateFormat(new Date(historyList.beginDate).getTime() + currentTime);
+    const date = dateFormat(historyList.beginDate + currentTime);
     return <span>{date}</span>;
   };
   fastForward = () => {
@@ -156,10 +156,11 @@ class TineLine extends React.Component {
   };
   render() {
     const { historyList, playIndex } = this.props;
-    const { currentTime, buffered, isEnd ,hideBar } = this.state;
+    const { currentTime, buffered, isEnd, hideBar } = this.state;
     const lineList = this.computedLineList(historyList);
     const currentLine = lineList.filter((v, i) => i < playIndex).map(v => v.size);
-    const currentIndexTime = currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0];
+    const currentIndexTime =
+      currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0];
     const playPercent = Math.round((currentTime / historyList.duration) * 100 + currentIndexTime);
     const bufferedPercent = Math.round((buffered / historyList.duration) * 100 + currentIndexTime);
     return (
@@ -175,9 +176,18 @@ class TineLine extends React.Component {
           <>
             {lineList.map((v, i) => {
               const currentSizeLine = lineList.filter((v, i2) => i2 < i).map(v => v.size);
-              const currentIndexSize = currentSizeLine.length === 0 ? 0 : currentSizeLine.length > 1 ? currentSizeLine.reduce((p, c) => p + c) : currentSizeLine[0];
+              const currentIndexSize =
+                currentSizeLine.length === 0
+                  ? 0
+                  : currentSizeLine.length > 1
+                  ? currentSizeLine.reduce((p, c) => p + c)
+                  : currentSizeLine[0];
               return (
-                <div className={`history-time-line-item ${v.disabled ? "history-time-line-disabled" : ""}`} key={i} style={{ width: `${v.size}%`, left: `${currentIndexSize}%` }} />
+                <div
+                  className={`history-time-line-item ${v.disabled ? "history-time-line-disabled" : ""}`}
+                  key={i}
+                  style={{ width: `${v.size}%`, left: `${currentIndexSize}%` }}
+                />
               );
             })}
           </>
