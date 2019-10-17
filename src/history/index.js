@@ -87,9 +87,9 @@ class HistoryPlayer extends React.Component {
     this.event = null;
     setTimeout(() => {
       this.api.destroy();
-
       this.flv = null;
       this.hls = null;
+      this.api = null;
     }, 200);
     this.playContainerRef = null;
     this.playContainer = null;
@@ -233,15 +233,7 @@ class HistoryPlayer extends React.Component {
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video
-            autoPlay={autoplay}
-            preload={preload}
-            muted={muted}
-            poster={poster}
-            controls={false}
-            playsInline={playsinline}
-            loop={loop}
-          />
+          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

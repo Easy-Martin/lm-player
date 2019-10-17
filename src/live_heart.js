@@ -1,25 +1,32 @@
 import React from "react";
 import { videoDec } from "./context";
+import EventName from "./event/eventName";
+import BrowserTab from "./event/browserTabEvent";
 
 @videoDec
 class LiveHeart extends React.Component {
   constructor(props) {
     super(props);
     this.timer = null;
-    this.isPlayError = false;
     this.isCanPlay = false;
   }
   componentDidMount() {
     const { event } = this.props;
-    event.addEventListener("progress", this.focusSeekAction);
+    BrowserTab.addEventListener(this.browserTabChange);
     event.addEventListener("canplay", this.canplay);
   }
 
   componentWillUnmount() {
     const { event } = this.props;
-    event.removeEventListener("progress", this.focusSeekAction);
+    BrowserTab.removeEventListener(this.browserTabChange);
     event.removeEventListener("canplay", this.canplay);
   }
+
+  browserTabChange = () => {
+    if (BrowserTab.visibilityState() === "visible") {
+      this.focusSeekAction();
+    }
+  };
 
   canplay = () => {
     const { api } = this.props;
