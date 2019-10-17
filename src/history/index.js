@@ -130,7 +130,7 @@ class HistoryPlayer extends React.Component {
   changePlayIndex = index => {
     const { historyList } = this.props;
     if (!historyList.fragments[index]) {
-      this.event.emit(EventName.HISTORY_PLAY_END);
+      this.event && this.event.emit(EventName.HISTORY_PLAY_END);
       return;
     }
     if (!historyList.fragments[index].file) {
