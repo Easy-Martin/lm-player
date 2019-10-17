@@ -138,8 +138,8 @@ class HistoryPlayer extends React.Component {
     } else {
       this.initPlayer(index);
     }
-    this.api.play();
-    this.event.emit(EventName.CHANGE_PLAY_INDEX, index);
+    this.api && this.api.play();
+    this.event && this.event.emit(EventName.CHANGE_PLAY_INDEX, index);
   };
 
   /**
@@ -233,7 +233,15 @@ class HistoryPlayer extends React.Component {
     return (
       <div className="lm-player-container" ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+          <video
+            autoPlay={autoplay}
+            preload={preload}
+            muted={muted}
+            poster={poster}
+            controls={false}
+            playsInline={playsinline}
+            loop={loop}
+          />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}
