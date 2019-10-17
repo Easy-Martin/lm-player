@@ -93,9 +93,11 @@ export default class Api {
   load() {
     this.flv && this.flv.load();
     if (this.hls) {
+      try {
+        this.hls.swapAudioCodec();
+        this.hls.recoverMediaError();
+      } catch (e) {}
       this.hls.startLoad();
-      this.hls.swapAudioCodec();
-      this.hls.recoverMediaError();
     }
   }
   setVolume(fraction) {

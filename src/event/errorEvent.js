@@ -90,9 +90,13 @@ class ErrorEvent extends React.Component {
   };
 
   reloadAction = (timer, args) => {
-    const { event, api } = this.props;
+    const { event, api, hlsPlayer } = this.props;
     event.emit(EventName.ERROR_RELOAD, timer, ...args);
     console.warn(`视频播放出错，正在进行重连${timer}`);
+    if (hlsPlayer) {
+      hlsPlayer.swapAudioCodec();
+      hlsPlayer.recoverMediaError();
+    }
     api.reload();
   };
   render() {
