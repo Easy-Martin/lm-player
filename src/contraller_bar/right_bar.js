@@ -39,14 +39,12 @@ class RightBar extends React.Component {
   };
   render() {
     const { playContainer, playerProps } = this.props;
-    const { isScale, snapshot, rightExtContents = [], rightMidExtContents = [] } = playerProps;
+    const { isScale, snapshot, rightExtContents = null, rightMidExtContents = null } = playerProps;
     const isfull = isFullscreen(playContainer);
 
     return (
       <div className="contraller-right-bar">
-        {rightMidExtContents.map((v, i) => (
-          <Bar key={i}>{v}</Bar>
-        ))}
+        {rightMidExtContents}
         {isScale && (
           <>
             <Bar>
@@ -67,11 +65,13 @@ class RightBar extends React.Component {
           </Bar>
         )}
         <Bar>
-          <IconFont title={isfull ? "窗口" : "全屏"} onClick={this.fullscreen} type={isfull ? "lm-player-ExitFull_Main" : "lm-player-Full_Main"} />
+          <IconFont
+            title={isfull ? "窗口" : "全屏"}
+            onClick={this.fullscreen}
+            type={isfull ? "lm-player-ExitFull_Main" : "lm-player-Full_Main"}
+          />
         </Bar>
-        {rightExtContents.map((v, i) => (
-          <Bar key={i}>{v}</Bar>
-        ))}
+        {rightExtContents}
       </div>
     );
   }

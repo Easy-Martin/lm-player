@@ -85,28 +85,37 @@ class LeftBar extends React.Component {
   render() {
     const { openSliderVolume } = this.state;
     const { video, playerProps } = this.props;
-    const { isLive, leftExtContents = [], leftMidExtContents = [] } = playerProps;
+    const { isLive, leftExtContents = null, leftMidExtContents = null } = playerProps;
     const volumeType = video.volume === 1 ? "lm-player-volume-max" : "lm-player-volume-normal-fuben";
     return (
       <div className="contraller-left-bar">
-        {leftExtContents.map((v, i) => (
-          <Bar key={i}>{v}</Bar>
-        ))}
+        {leftExtContents}
         <Bar visibel={!isLive}>
-          <IconFont onClick={this.changePlayStatus} type={video.paused ? "lm-player-Play_Main" : "lm-player-Pause_Main"} title={video.paused ? "播放" : "暂停"} />
+          <IconFont
+            onClick={this.changePlayStatus}
+            type={video.paused ? "lm-player-Play_Main" : "lm-player-Pause_Main"}
+            title={video.paused ? "播放" : "暂停"}
+          />
         </Bar>
-        <Bar className={`contraller-bar-volume ${openSliderVolume ? "contraller-bar-hover-volume" : ""}`} onMouseOver={this.openSliderVolume} onMouseOut={this.closeSliderVolume}>
+        <Bar
+          className={`contraller-bar-volume ${openSliderVolume ? "contraller-bar-hover-volume" : ""}`}
+          onMouseOver={this.openSliderVolume}
+          onMouseOut={this.closeSliderVolume}
+        >
           <IconFont onClick={this.mutedChange} type={video.muted ? "lm-player-volume-close" : volumeType} title="音量" />
           <div className="volume-slider-layout">
-            <Slider className="volume-slider" currentPercent={video.muted ? 0 : video.volume * 100} onChange={this.onChangeVolume} renderTips={precent => <span>{Math.round(precent * 100)}%</span>} />
+            <Slider
+              className="volume-slider"
+              currentPercent={video.muted ? 0 : video.volume * 100}
+              onChange={this.onChangeVolume}
+              renderTips={precent => <span>{Math.round(precent * 100)}%</span>}
+            />
           </div>
         </Bar>
         <Bar>
           <IconFont onClick={this.reload} type="lm-player-Refresh_Main" title="重载" />
         </Bar>
-        {leftMidExtContents.map((v, i) => (
-          <Bar key={i}>{v}</Bar>
-        ))}
+        {leftMidExtContents}
       </div>
     );
   }
