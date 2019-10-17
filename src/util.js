@@ -57,11 +57,18 @@ export function createFlvPlayer(video, options) {
  * @param {*} url
  */
 export function getVideoType(url) {
+  const urlInfo = new URL(url);
+  const path = `${urlInfo.origin}${urlInfo.pathname}`;
   const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;
-  const resultArr = reg.exec(url);
-  if (resultArr) {
-    return resultArr[2].replace(resultArr[4], "");
+  const resultArr = reg.exec(path);
+  if (!resultArr) {
+    return url.indexOf(".flv") > -1 ? "flv" : "hls";
   }
+  const suffix = resultArr[2].replace(resultArr[4], "");
+  if (!suffix) {
+    return url.indexOf(".flv") > -1 ? "flv" : "hls";
+  }
+  return suffix;
 }
 
 /**

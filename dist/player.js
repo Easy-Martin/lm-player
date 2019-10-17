@@ -987,7 +987,7 @@ __webpack_require__.r(__webpack_exports__);
 enableStashBuffer:false,stashInitialSize:128,isLive:options.isLive||true}));player.attachMediaElement(video);player.load();return player;}}/**
  * 获取播放文件类型
  * @param {*} url
- */function getVideoType(url){var reg=/([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;var resultArr=reg.exec(url);if(resultArr){return resultArr[2].replace(resultArr[4],"");}}/**
+ */function getVideoType(url){var urlInfo=new URL(url);var path="".concat(urlInfo.origin).concat(urlInfo.pathname);var reg=/([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;var resultArr=reg.exec(path);if(!resultArr){return url.indexOf(".flv")>-1?"flv":"hls";}var suffix=resultArr[2].replace(resultArr[4],"");if(!suffix){return url.indexOf(".flv")>-1?"flv":"hls";}return suffix;}/**
  * 播放时间转字符串
  * @param {*} second_time
  */function timeStamp(second_time){var time=Math.ceil(second_time);if(time>60){var second=Math.ceil(second_time%60);var min=Math.floor(second_time/60);time="".concat(min<10?"0".concat(min):min,":").concat(second<10?"0".concat(second):second);if(min>60){min=Math.ceil(second_time/60%60);var hour=Math.floor(second_time/60/60);time="".concat(hour<10?"0".concat(hour):hour,":").concat(min<10?"0".concat(min):min,":").concat(second<10?"0".concat(second):second);}else{time="00:".concat(time);}}else{time="00:00:".concat(time<10?"0".concat(time):time);}return time;}/**
