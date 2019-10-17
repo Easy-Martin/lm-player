@@ -173,6 +173,7 @@ class HistoryPlayer extends React.Component {
    * 重写api下的seekTo方法
    */
   seekTo = currentTime => {
+    const { historyList } = this.props;
     const playIndex = this.computedIndexFormTime(currentTime);
     const fragment = historyList.fragments[playIndex];
     const seekTime = currentTime - fragment.begin - 1;
