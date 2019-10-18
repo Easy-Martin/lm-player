@@ -55,18 +55,18 @@ class HistoryPlayer extends React.Component {
     this.willReCreatePlayer = false;
   }
   componentDidMount() {
+    const { defaultTime, historyList } = this.props;
     this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
     this.player = this.playContainer.querySelector("video");
-    if (this.props.defaultTime) {
-      this.seekTo(defaultTime);
-    } else {
-      this.changePlayIndex(this.playIndex);
-    }
+    this.changePlayIndex(this.playIndex);
     this.event = new VideoEvent(this.player);
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
     if (this.props.autoPlay) {
       this.api.play();
+    }
+    if (defaultTime) {
+      this.seekTo((defaultTime - historyList.beginDate) / 1000);
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -176,9 +176,12 @@ class HistoryPlayer extends React.Component {
     const { historyList } = this.props;
     const playIndex = this.computedIndexFormTime(currentTime);
     const fragment = historyList.fragments[playIndex];
+    if (!fragment) {
+      return;
+    }
     const seekTime = currentTime - fragment.begin - 1;
-    this.api.pause();
-    if (playIndex !== this.playIndex) {
+    this.api && this.api.pause();
+    if (playIndex !== this.playIndex || !this.api) {
       this.changePlayIndex(playIndex);
     }
     this.api.seekTo(seekTime, true);
@@ -229,10 +232,10 @@ class HistoryPlayer extends React.Component {
     );
   };
   render() {
-    const { autoplay, poster, preload, muted = "muted", loop = false, playsinline = false } = this.props;
+    const { autoplay, poster, preload, muted = "muted", loop = false, className = "", playsinline = false } = this.props;
     const providerValue = this.getProvider();
     return (
-      <div className="lm-player-container" ref={this.playContainerRef}>
+      <div className={`lm-player-container ${className}`} ref={this.playContainerRef}>
         <div className="player-mask-layout">
           <video
             autoPlay={autoplay}

@@ -107,8 +107,8 @@ export function dateFormat(timetemp) {
   let hh = date.getHours();
   let mm = date.getMinutes();
   let ss = date.getSeconds();
-  return `${YYYY}.${MM > 10 ? MM : "0" + MM}.${DD > 10 ? DD : "0" + DD} ${hh > 10 ? hh : "0" + hh}.${mm > 10 ? mm : "0" + mm}.${
-    ss > 10 ? ss : "0" + ss
+  return `${YYYY}.${MM > 9 ? MM : "0" + MM}.${DD > 9 ? DD : "0" + DD} ${hh > 9 ? hh : "0" + hh}.${mm > 9 ? mm : "0" + mm}.${
+    ss > 9 ? ss : "0" + ss
   }`;
 }
 

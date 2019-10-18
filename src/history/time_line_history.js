@@ -171,7 +171,7 @@ class TineLine extends React.Component {
           currentPercent={isEnd ? "100" : playPercent}
           availablePercent={bufferedPercent}
           onChange={this.changePlayTime}
-          renderTimeLineTips={this.renderTimeLineTips}
+          renderTips={this.renderTimeLineTips}
         >
           <>
             {lineList.map((v, i) => {

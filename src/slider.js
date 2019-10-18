@@ -141,6 +141,7 @@ class Tips extends React.Component {
   }
   render() {
     const { visibel, children, style, className = "" } = this.props;
+
     return ReactDOM.createPortal(
       visibel ? (
         <div className={className} style={style}>

@@ -144,12 +144,20 @@ class LMPlayer extends React.Component {
     };
   };
   render() {
-    const { autoplay, poster, preload = "none", muted = "muted", loop = false, playsinline = false } = this.props;
+    const { autoplay, poster, preload = "none", muted = "muted", className = "", loop = false, playsinline = false } = this.props;
     const providerValue = this.getProvider();
     return (
-      <div className="lm-player-container" ref={this.playContainerRef}>
+      <div className={`lm-player-container ${className}`} ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+          <video
+            autoPlay={autoplay}
+            preload={preload}
+            muted={muted}
+            poster={poster}
+            controls={false}
+            playsInline={playsinline}
+            loop={loop}
+          />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

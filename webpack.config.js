@@ -161,18 +161,6 @@ module.exports = {
       commonjs2: "prop-types",
       amd: "prop-types",
       root: "PropTypes"
-    },
-    "flv.lm.js": {
-      commonjs: "flv.lm.js",
-      commonjs2: "flv.lm.js",
-      amd: "flv.lm.js",
-      root: "flvjs"
-    },
-    "hls.js": {
-      commonjs: "hls.js",
-      commonjs2: "hls.js",
-      amd: "hls.js",
-      root: "Hls"
     }
   },
   plugins: [

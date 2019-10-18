@@ -13,12 +13,12 @@ class VideoMessage extends React.Component {
       loading: false,
       status: null
     };
-    this.mounted = false
+    this.mounted = false;
     this.message = null;
   }
   componentDidMount() {
     const { event } = this.props;
-    this.mounted = true
+    this.mounted = true;
     event.addEventListener("loadstart", this.openLoading);
     event.addEventListener("waiting", this.openLoading);
     event.addEventListener("seeking", this.openLoading);
@@ -33,7 +33,7 @@ class VideoMessage extends React.Component {
   }
   componentWillUnmount() {
     const { event } = this.props;
-    this.mounted = false
+    this.mounted = false;
     event.removeEventListener("loadstart", this.openLoading);
     event.removeEventListener("waiting", this.openLoading);
     event.removeEventListener("seeking", this.openLoading);
@@ -47,9 +47,9 @@ class VideoMessage extends React.Component {
     event.off(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
   }
   clearReloadMessage = () => {
-    this.message = null
-    this.mounted && this.forceUpdate()
-  }
+    this.message = null;
+    this.mounted && this.forceUpdate();
+  };
   reload = () => {
     this.setState({ status: "reload" });
   };
@@ -59,7 +59,7 @@ class VideoMessage extends React.Component {
   };
   reloadFail = () => {
     this.message = <div>视频错误</div>;
-    this.mounted &&  this.setState({ status: "fail" });
+    this.mounted && this.setState({ status: "fail" });
   };
   reloadSuccess = () => {
     this.message = null;
@@ -77,12 +77,22 @@ class VideoMessage extends React.Component {
     this.props.api.pause();
   };
   render() {
+    const { file, isLive, historyList } = this.props.playerProps;
     const { loading, status } = this.state;
+    if ((isLive && !file) || (!isLive && historyList.fragments.filter(v => v.file).length === 0)) {
+      return (
+        <div className="lm-player-message-mask lm-player-mask-loading-animation">
+          <IconFont style={{ fontSize: 80 }} type="lm-player-PlaySource" title="请选择视频源"></IconFont>
+        </div>
+      );
+    }
     return (
       <div className={`lm-player-message-mask ${loading || status === "fail" ? "lm-player-mask-loading-animation" : ""}`}>
         <IconFont
           type={status === "fail" ? "lm-player-YesorNo_No_Dark" : "lm-player-Loading"}
-          className={`${loading && status !== "fail" ? "lm-player-loading-animation" : status === "fail" ? "lm-player-loadfail" : ""} lm-player-loading-icon`}
+          className={`${
+            loading && status !== "fail" ? "lm-player-loading-animation" : status === "fail" ? "lm-player-loadfail" : ""
+          } lm-player-loading-icon`}
         />
         <span className="lm-player-message">{this.message}</span>
       </div>
