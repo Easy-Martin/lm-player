@@ -35,6 +35,7 @@ class Slider extends React.Component {
     this.dragDom.addEventListener("mousedown", this.startDrag, false);
   }
   componentWillUnmount() {
+    clearTimeout(this.timer)
     this.layoutDom.removeEventListener("mousemove", this.renderSliderTips, false);
     this.layoutDom.removeEventListener("mouseout", this.hideSliderTips, false);
     this.lineDom.removeEventListener("click", this.changeCurrentValue, false);
@@ -55,13 +56,17 @@ class Slider extends React.Component {
     if (!renderTips) {
       return;
     }
-    const { x, width, top } = this.layoutDom.getBoundingClientRect();
-    const tipsX = e.pageX;
-    let percent = (e.pageX - x) / width;
-    percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
-    this.setState({ tipsX, tipsY: top, showTips: true, tempValue: percent });
+    clearTimeout(this.timer)
+    this.timer = setTimeout(() => {
+      const { x, width, top } = this.layoutDom.getBoundingClientRect();
+      const tipsX = e.pageX;
+      let percent = (e.pageX - x) / width;
+      percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
+      this.setState({ tipsX, tipsY: top, showTips: true, tempValue: percent });
+    }, 200);
   };
   hideSliderTips = () => {
+    clearTimeout(this.timer)
     this.setState({ showTips: false });
   };
   cancelPropagation = e => {

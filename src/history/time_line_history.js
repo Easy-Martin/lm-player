@@ -111,7 +111,8 @@ class TineLine extends React.Component {
    */
   changePlayTime = percent => {
     const { seekTo, historyList } = this.props;
-    const currentTime = percent * historyList.duration;
+    const numSize = historyList.duration.toString().length;
+    const currentTime = (percent + numSize / Math.pow(10, numSize - 1)) * historyList.duration; //修正一下误差
     const playIndex = historyList.fragments.findIndex(v => v.end > currentTime);
     const fragment = historyList.fragments[playIndex];
     if (fragment.file) {
@@ -161,8 +162,8 @@ class TineLine extends React.Component {
     const currentLine = lineList.filter((v, i) => i < playIndex).map(v => v.size);
     const currentIndexTime =
       currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0];
-    const playPercent = Math.round((currentTime / historyList.duration) * 100 + currentIndexTime);
-    const bufferedPercent = Math.round((buffered / historyList.duration) * 100 + currentIndexTime);
+    const playPercent = (currentTime / historyList.duration) * 100 + currentIndexTime;
+    const bufferedPercent = (buffered / historyList.duration) * 100 + currentIndexTime;
     return (
       <div className={`video-time-line-layout ${hideBar ? "hide-time-line" : ""}`}>
         <IconFont type="lm-player-PrevFast" onClick={this.backWind} className="time-line-action-item" />
