@@ -5,7 +5,7 @@ import { getVideoType, createFlvPlayer, createHlsPlayer } from "./util";
 import { Provider } from "./context";
 import ContrallerBar from "./contraller_bar";
 import ContrallerEvent from "./event/contrallerEvent";
-import VideoMessage from "./message";
+import VideoMessage, { NoSource } from "./message";
 import TimeLine from "./time_line";
 import ErrorEvent from "./event/errorEvent";
 import DragEvent from "./event/dragEvent";
@@ -56,44 +56,50 @@ class LMPlayer extends React.Component {
   componentDidMount() {
     this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
     this.player = this.playContainer.querySelector("video");
-    this.initPlayer();
-    this.event = new VideoEvent(this.player);
-    this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
-    this.forceUpdate();
-    this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
-    if (this.props.autoPlay) {
-      this.api.play();
-    }
+    this.createPlayer();
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.file !== nextProps.file) {
       this.willReCreatePlayer = true;
+      this.api = null;
+      this.event = null;
     }
   }
   componentDidUpdate() {
     if (this.willReCreatePlayer) {
-      this.initPlayer();
       this.willReCreatePlayer = false;
+      this.createPlayer();
     }
   }
   componentWillUnmount() {
-    this.event.destroy();
+    this.event && this.event.destroy();
+    this.api && this.api.destroy();
     this.player = null;
     this.event = null;
-    setTimeout(() => {
-      this.api.destroy();
-      this.flv = null;
-      this.hls = null;
-      this.api = null;
-    }, 200);
+    this.api = null;
     this.playContainerRef = null;
     this.playContainer = null;
     this.willReCreatePlayer = null;
+    this.flv = null;
+    this.hls = null;
+  }
+
+  createPlayer() {
+    const isInit = this.initPlayer();
+    if (isInit) {
+      this.event = new VideoEvent(this.player);
+      this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
+      this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
+      if (this.props.autoPlay) {
+        this.api.play();
+      }
+      this.forceUpdate();
+    }
   }
 
   initPlayer = () => {
     if (!this.props.file) {
-      return null;
+      return false;
     }
     const type = getVideoType(this.props.file);
     if (type === "flv" || this.props.type === "flv") {
@@ -103,11 +109,12 @@ class LMPlayer extends React.Component {
     } else {
       this.player.src = this.props.file;
     }
+    return true;
   };
 
   renderVideoTools = () => {
-    if (!this.player) {
-      return null;
+    if (!this.api) {
+      return <NoSource />;
     }
     return (
       <>

@@ -31,21 +31,6 @@ class VideoMessage extends React.Component {
     event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
     event.on(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
   }
-  componentWillUnmount() {
-    const { event } = this.props;
-    this.mounted = false;
-    event.removeEventListener("loadstart", this.openLoading);
-    event.removeEventListener("waiting", this.openLoading);
-    event.removeEventListener("seeking", this.openLoading);
-    event.removeEventListener("loadeddata", this.closeLoading);
-    event.removeEventListener("canplay", this.closeLoading);
-    event.off(EventName.ERROR_RELOAD, this.errorReload);
-    event.off(EventName.RELOAD_FAIL, this.reloadFail);
-    event.off(EventName.RELOAD_SUCCESS, this.reloadSuccess);
-    event.off(EventName.RELOAD, this.reload);
-    event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
-    event.off(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
-  }
   clearReloadMessage = () => {
     this.message = null;
     this.mounted && this.forceUpdate();
@@ -77,15 +62,8 @@ class VideoMessage extends React.Component {
     this.props.api.pause();
   };
   render() {
-    const { file, isLive, historyList } = this.props.playerProps;
     const { loading, status } = this.state;
-    if ((isLive && !file) || (!isLive && historyList.fragments.filter(v => v.file).length === 0)) {
-      return (
-        <div className="lm-player-message-mask lm-player-mask-loading-animation">
-          <IconFont style={{ fontSize: 80 }} type="lm-player-PlaySource" title="请选择视频源"></IconFont>
-        </div>
-      );
-    }
+
     return (
       <div className={`lm-player-message-mask ${loading || status === "fail" ? "lm-player-mask-loading-animation" : ""}`}>
         <IconFont
@@ -99,5 +77,13 @@ class VideoMessage extends React.Component {
     );
   }
 }
+
+export const NoSource = () => {
+  return (
+    <div className="lm-player-message-mask lm-player-mask-loading-animation">
+      <IconFont style={{ fontSize: 80 }} type="lm-player-PlaySource" title="请选择视频源"></IconFont>
+    </div>
+  );
+};
 
 export default VideoMessage;

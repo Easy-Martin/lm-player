@@ -41,13 +41,6 @@ class ErrorEvent extends React.Component {
     }
   }
   componentWillUnmount() {
-    const { event, flvPlayer, hlsPlayer } = this.props;
-    event.removeEventListener("error", this.errorHandle, false);
-    flvPlayer && flvPlayer.off(flvjs.Events.ERROR, this.errorHandle);
-    hlsPlayer && hlsPlayer.off(Hls.Events.ERROR, this.errorHandle);
-
-    event.off(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
-    event.off(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer);
     clearTimeout(this.reconnectTimer);
   }
 

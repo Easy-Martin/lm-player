@@ -19,7 +19,6 @@ class LiveHeart extends React.Component {
   componentWillUnmount() {
     const { event } = this.props;
     BrowserTab.removeEventListener(this.browserTabChange);
-    event.removeEventListener("canplay", this.canplay);
   }
 
   browserTabChange = () => {

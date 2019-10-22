@@ -23,7 +23,6 @@ class DragEvent extends React.Component {
   }
   componentWillUnmount() {
     this.dragDom.removeEventListener("mousedown", this.openDrag);
-    this.props.event.removeEventListener("transform", this.transformChange);
   }
   openDrag = e => {
     this.position.start = [e.pageX, e.pageY];

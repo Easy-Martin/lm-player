@@ -28,17 +28,7 @@ class TineLine extends React.Component {
     event.on(EventName.HIDE_CONTRALLER, this.hideContraller);
     event.on(EventName.SHOW_CONTRALLER, this.showContraller);
   }
-  componentWillUnmount() {
-    const { event } = this.props;
-    event.removeEventListener("loadedmetadata", this.getDuration);
-    event.removeEventListener("durationchange", this.getDuration);
-    event.removeEventListener("timeupdate", this.getCurrentTime);
-    event.removeEventListener("progress", this.getBuffered);
-    event.removeEventListener("suspend", this.getBuffered);
-    event.removeEventListener("seeked", this.seekendPlay);
-    event.off(EventName.HIDE_CONTRALLER, this.hideContraller);
-    event.off(EventName.SHOW_CONTRALLER, this.showContraller);
-  }
+
   hideContraller = () => {
     this.setState({ hideBar: true });
   };

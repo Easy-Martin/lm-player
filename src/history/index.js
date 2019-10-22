@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { Provider } from "../context";
 import ContrallerBar from "../contraller_bar";
-import VideoMessage from "../message";
+import VideoMessage, { NoSource } from "../message";
 import HistoryTimeLine from "./time_line_history";
 import ErrorEvent from "../event/errorEvent";
 import DragEvent from "../event/dragEvent";
@@ -55,10 +55,43 @@ class HistoryPlayer extends React.Component {
     this.willReCreatePlayer = false;
   }
   componentDidMount() {
-    const { defaultTime, historyList } = this.props;
     this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
     this.player = this.playContainer.querySelector("video");
-    this.changePlayIndex(this.playIndex);
+    this.createPlayer();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.historyList !== nextProps.historyList) {
+      this.willReCreatePlayer = true;
+      this.api = null;
+      this.event = null;
+    }
+  }
+  componentDidUpdate() {
+    if (this.willReCreatePlayer) {
+      this.playIndex = 0;
+      this.willReCreatePlayer = false;
+      this.createPlayer();
+    }
+  }
+  componentWillUnmount() {
+    this.event && this.event.destroy();
+    this.api && this.api.destroy();
+    this.player = null;
+    this.event = null;
+    this.api = null;
+    this.playContainerRef = null;
+    this.playContainer = null;
+    this.willReCreatePlayer = null;
+    this.flv = null;
+    this.hls = null;
+  }
+
+  createPlayer() {
+    const { defaultTime, historyList } = this.props;
+    const isInit = this.changePlayIndex(this.playIndex);
+    if (!isInit) {
+      return;
+    }
     this.event = new VideoEvent(this.player);
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
@@ -69,32 +102,7 @@ class HistoryPlayer extends React.Component {
       this.seekTo((defaultTime - historyList.beginDate) / 1000);
     }
   }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.historyList !== nextProps.historyList) {
-      this.willReCreatePlayer = true;
-    }
-  }
-  componentDidUpdate() {
-    if (this.willReCreatePlayer) {
-      this.playIndex = 0;
-      this.changePlayIndex(this.playIndex);
-      this.willReCreatePlayer = false;
-    }
-  }
-  componentWillUnmount() {
-    this.event.destroy();
-    this.player = null;
-    this.event = null;
-    setTimeout(() => {
-      this.api.destroy();
-      this.flv = null;
-      this.hls = null;
-      this.api = null;
-    }, 200);
-    this.playContainerRef = null;
-    this.playContainer = null;
-    this.willReCreatePlayer = null;
-  }
+
   initPlayer = index => {
     const { historyList } = this.props;
     if (!historyList || !historyList.fragments[index] || !historyList.fragments[index].file) {
@@ -129,9 +137,9 @@ class HistoryPlayer extends React.Component {
    */
   changePlayIndex = index => {
     const { historyList } = this.props;
-    if (!historyList.fragments[index]) {
+    if (!historyList || !historyList.fragments[index]) {
       this.event && this.event.emit(EventName.HISTORY_PLAY_END);
-      return;
+      return false;
     }
     if (!historyList.fragments[index].file) {
       this.changePlayIndex(index + 1);
@@ -140,6 +148,7 @@ class HistoryPlayer extends React.Component {
     }
     this.api && this.api.play();
     this.event && this.event.emit(EventName.CHANGE_PLAY_INDEX, index);
+    return true;
   };
 
   /**
@@ -216,8 +225,8 @@ class HistoryPlayer extends React.Component {
     };
   };
   renderVideoTools = () => {
-    if (!this.player) {
-      return null;
+    if (!this.api) {
+      return <NoSource />;
     }
     return (
       <>

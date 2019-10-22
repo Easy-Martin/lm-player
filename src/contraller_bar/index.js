@@ -18,11 +18,7 @@ class ContrallerBar extends React.Component {
     event.on(EventName.HIDE_CONTRALLER, this.hideContraller);
     event.on(EventName.SHOW_CONTRALLER, this.showContraller);
   }
-  componentWillUnmount() {
-    const { event } = this.props;
-    event.off(EventName.HIDE_CONTRALLER, this.hideContraller);
-    event.off(EventName.SHOW_CONTRALLER, this.showContraller);
-  }
+
   hideContraller = () => {
     this.setState({ hideBar: true });
   };

@@ -15,7 +15,7 @@ class VideoEvent {
   }
   removeEventListener(eventName, handle) {
     if (this.video) {
-      if (!this.playerEvents || this.playerEvents[eventName]) {
+      if (!this.playerEvents || !this.playerEvents[eventName]) {
         return;
       }
       let index = this.playerEvents[eventName].findIndex(v => v === handle);
@@ -44,8 +44,8 @@ class VideoEvent {
         this.removeEventListener(key, fn);
       });
     });
-    this.playerEvents = null;
-    this.events = null;
+    this.playerEvents = {};
+    this.events = {};
   }
 }
 
