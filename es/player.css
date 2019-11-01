@@ -67,10 +67,7 @@
 .slider-layout {
   width: 100%;
   height: 100%;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -256,8 +253,7 @@
 .lm-player-message-mask .lm-player-loading-icon.lm-player-loading-animation {
   visibility: visible;
   z-index: 9;
-  -webkit-animation: loadingAnimation 1s linear infinite;
-          animation: loadingAnimation 1s linear infinite;
+  animation: loadingAnimation 1s linear infinite;
 }
 .lm-player-message-mask .lm-player-loading-icon.lm-player-loadfail {
   visibility: visible;
@@ -267,14 +263,6 @@
   color: #fff;
   font-size: 16px;
   padding: 10px;
-}
-@-webkit-keyframes loadingAnimation {
-  form {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 @keyframes loadingAnimation {
   form {
@@ -305,7 +293,7 @@
   opacity: 0;
 }
 .video-time-line-layout .time-line-box {
-  flex: 1 1;
+  flex: 1;
 }
 .video-time-line-layout .time-line-action-item {
   width: 32px;
@@ -351,6 +339,3 @@
   pointer-events: none;
   background: #000;
 }
-
-
-/*# sourceMappingURL=player.css.map*/
