@@ -1,6 +1,6 @@
 {
   "name": "lm-player",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "video for html5 support flv m3u8",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "url": "https://github.com/Easy-Martin/lm-player/issues"
   },
   "homepage": "https://github.com/Easy-Martin/lm-player",
-  "main": "dist/player.js",
+  "main": "es/player.js",
   "dependencies": {
     "aes-js": "^3.1.2",
     "flv.lm.js": "^0.0.1",
