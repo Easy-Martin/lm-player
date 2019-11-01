@@ -1,6 +1,6 @@
 {
   "name": "lm-player",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "video for html5 support flv m3u8",
   "repository": {
     "type": "git",
@@ -21,22 +21,22 @@
   "homepage": "https://github.com/Easy-Martin/lm-player",
   "main": "dist/player.js",
   "dependencies": {
+    "aes-js": "^3.1.2",
     "flv.lm.js": "^0.0.1",
     "hls.js": "^0.12.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "aes-js": "^3.1.2"
+    "react-dom": "^16.8.6"
   },
   "devDependencies": {
+    "aes-js": "^3.1.2",
     "babel-loader": "^8.0.5",
     "babel-plugin-named-asset-import": "^0.3.1",
     "babel-preset-react-app": "^7.0.2",
     "css-loader": "^2.1.1",
     "flv.lm.js": "^1.5.0",
     "hls.js": "^0.12.4",
-    "aes-js": "^3.1.2",
-    "less": "^3.9.0",
+    "less": "^3.10.3",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.6.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
@@ -47,13 +47,19 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "rollup": "^1.26.2",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-postcss": "^2.0.3",
+    "rollup-plugin-uglify": "^6.0.3",
     "webpack": "^4.6.0",
     "webpack-cli": "^3.3.0"
   },
   "scripts": {
-    "build:umd": "webpack --config webpack.config.umd.js",
-    "build": "webpack --config webpack.config.js && webpack --config webpack.config.umd.js",
-    "start": "webpack -w"
+    "build": "webpack --config webpack.config.js",
+    "es": "rollup --config rollup.config.es.js",
+    "umd": "rollup --config rollup.config.umd.js"
   },
   "babel": {
     "presets": [
