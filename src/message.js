@@ -78,6 +78,11 @@ class VideoMessage extends React.Component {
   }
 }
 
+VideoMessage.propTypes = {
+  api: PropTypes.object,
+  event: PropTypes.object
+}
+
 export const NoSource = () => {
   return (
     <div className="lm-player-message-mask lm-player-mask-loading-animation">

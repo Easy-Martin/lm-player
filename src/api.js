@@ -96,7 +96,9 @@ export default class Api {
       try {
         this.hls.swapAudioCodec();
         this.hls.recoverMediaError();
-      } catch (e) {}
+      } catch (e) {
+        console.warn(e);
+      }
       this.hls.startLoad();
     }
   }
@@ -114,7 +116,10 @@ export default class Api {
    * 开启画中画功能
    */
   requestPictureInPicture() {
-    if (this.player.requestPictureInPicture && document.pictureInPictureElement !== this.player) {
+    if (
+      this.player.requestPictureInPicture &&
+      document.pictureInPictureElement !== this.player
+    ) {
       this.player.requestPictureInPicture();
     }
   }
@@ -122,7 +127,10 @@ export default class Api {
    * 关闭画中画功能
    */
   exitPictureInPicture() {
-    if (document.exitPictureInPicture && document.pictureInPictureElement === this.player) {
+    if (
+      document.exitPictureInPicture &&
+      document.pictureInPictureElement === this.player
+    ) {
       document.exitPictureInPicture();
     }
   }

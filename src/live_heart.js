@@ -1,7 +1,7 @@
 import React from "react";
 import { videoDec } from "./context";
-import EventName from "./event/eventName";
 import BrowserTab from "./event/browserTabEvent";
+import PropTypes from 'prop-types'
 
 @videoDec
 class LiveHeart extends React.Component {
@@ -17,7 +17,6 @@ class LiveHeart extends React.Component {
   }
 
   componentWillUnmount() {
-    const { event } = this.props;
     BrowserTab.removeEventListener(this.browserTabChange);
   }
 
@@ -52,4 +51,10 @@ class LiveHeart extends React.Component {
     return null;
   }
 }
+
+LiveHeart.propTypes = {
+  api: PropTypes.object,
+  event: PropTypes.object
+}
+
 export default LiveHeart;

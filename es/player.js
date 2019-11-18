@@ -1,8 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import flvjs from 'flv.lm.js';
 import * as Hls from 'hls.js';
 import { isSupported, Events } from 'hls.js';
+import ReactDOM from 'react-dom';
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -484,7 +484,7 @@ function videoDec(Component) {
 function IconFont(_ref) {
   var type = _ref.type,
       _ref$className = _ref.className,
-      className = _ref$className === void 0 ? "" : _ref$className,
+      className = _ref$className === void 0 ? '' : _ref$className,
       props = _objectWithoutProperties(_ref, ["type", "className"]);
 
   return React.createElement("i", Object.assign({
@@ -546,8 +546,8 @@ function (_React$Component) {
     _this.startDrag = function (e) {
       e.stopPropagation();
       _this.dragFlag = true;
-      document.body.addEventListener("mousemove", _this.moveChange);
-      document.body.addEventListener("mouseup", _this.stopDrag);
+      document.body.addEventListener('mousemove', _this.moveChange);
+      document.body.addEventListener('mouseup', _this.stopDrag);
     };
 
     _this.moveChange = function (e) {
@@ -562,8 +562,8 @@ function (_React$Component) {
 
     _this.stopDrag = function (e) {
       e.stopPropagation();
-      document.body.removeEventListener("mousemove", _this.moveChange);
-      document.body.removeEventListener("mouseup", _this.stopDrag);
+      document.body.removeEventListener('mousemove', _this.moveChange);
+      document.body.removeEventListener('mouseup', _this.stopDrag);
       _this.dragFlag = false;
       var percent = _this.state.value / 100;
       percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
@@ -597,8 +597,8 @@ function (_React$Component) {
   }
 
   _createClass(Slider, [{
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
+    key: "UNSAFE_componentWillReceiveProps",
+    value: function UNSAFE_componentWillReceiveProps(nextProps) {
       if (!this.dragFlag) {
         this.setState({
           value: nextProps.currentPercent || 0
@@ -608,26 +608,26 @@ function (_React$Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.layoutDom = ReactDOM.findDOMNode(this.sliderDomRef.current);
-      this.dragDom = this.layoutDom.querySelector(".drag-change-icon");
-      this.lineDom = this.layoutDom.querySelector(".slider-content");
-      this.layoutDom.addEventListener("mousemove", this.renderSliderTips, false);
-      this.layoutDom.addEventListener("mouseout", this.hideSliderTips, false);
-      this.lineDom.addEventListener("click", this.changeCurrentValue, false);
-      this.dragDom.addEventListener("click", this.cancelPropagation, false);
-      this.dragDom.addEventListener("mousedown", this.startDrag, false);
+      this.layoutDom = this.sliderDomRef.current;
+      this.dragDom = this.layoutDom.querySelector('.drag-change-icon');
+      this.lineDom = this.layoutDom.querySelector('.slider-content');
+      this.layoutDom.addEventListener('mousemove', this.renderSliderTips, false);
+      this.layoutDom.addEventListener('mouseout', this.hideSliderTips, false);
+      this.lineDom.addEventListener('click', this.changeCurrentValue, false);
+      this.dragDom.addEventListener('click', this.cancelPropagation, false);
+      this.dragDom.addEventListener('mousedown', this.startDrag, false);
     }
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       clearTimeout(this.timer);
-      this.layoutDom.removeEventListener("mousemove", this.renderSliderTips, false);
-      this.layoutDom.removeEventListener("mouseout", this.hideSliderTips, false);
-      this.lineDom.removeEventListener("click", this.changeCurrentValue, false);
-      this.dragDom.removeEventListener("click", this.cancelPropagation, false);
-      this.dragDom.removeEventListener("mousedown", this.startDrag, false);
-      document.body.removeEventListener("mousemove", this.moveChange);
-      document.body.removeEventListener("mouseup", this.stopDrag);
+      this.layoutDom.removeEventListener('mousemove', this.renderSliderTips, false);
+      this.layoutDom.removeEventListener('mouseout', this.hideSliderTips, false);
+      this.lineDom.removeEventListener('click', this.changeCurrentValue, false);
+      this.dragDom.removeEventListener('click', this.cancelPropagation, false);
+      this.dragDom.removeEventListener('mousedown', this.startDrag, false);
+      document.body.removeEventListener('mousemove', this.moveChange);
+      document.body.removeEventListener('mouseup', this.stopDrag);
       this.sliderDomRef = null;
       this.layoutDom = null;
       this.lineDom = null;
@@ -666,7 +666,7 @@ function (_React$Component) {
           _this$props$available = _this$props.availablePercent,
           availablePercent = _this$props$available === void 0 ? 0 : _this$props$available,
           _this$props$className = _this$props.className,
-          className = _this$props$className === void 0 ? "" : _this$props$className;
+          className = _this$props$className === void 0 ? '' : _this$props$className;
       return React.createElement("div", {
         className: "slider-layout ".concat(className),
         ref: this.sliderDomRef
@@ -717,7 +717,7 @@ function (_React$Component2) {
     _classCallCheck(this, Tips);
 
     _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Tips).call(this, props));
-    _this2.ele = document.createElement("div");
+    _this2.ele = document.createElement('div');
     return _this2;
   }
 
@@ -740,7 +740,7 @@ function (_React$Component2) {
           children = _this$props2.children,
           style = _this$props2.style,
           _this$props2$classNam = _this$props2.className,
-          className = _this$props2$classNam === void 0 ? "" : _this$props2$classNam;
+          className = _this$props2$classNam === void 0 ? '' : _this$props2$classNam;
       return ReactDOM.createPortal(visibel ? React.createElement("div", {
         className: className,
         style: style
@@ -1153,8 +1153,8 @@ function (_React$Component) {
       var _this$props = this.props,
           playContainer = _this$props.playContainer,
           event = _this$props.event;
-      playContainer.addEventListener("mousemove", this.showContraller, false);
-      playContainer.addEventListener("mouseout", this.hideContraller, false);
+      playContainer.addEventListener('mousemove', this.showContraller, false);
+      playContainer.addEventListener('mouseout', this.hideContraller, false);
       this.timer = setTimeout(function () {
         event.emit(EventName.HIDE_CONTRALLER);
       }, 5 * 1000);
@@ -1163,8 +1163,8 @@ function (_React$Component) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       var playContainer = this.props.playContainer;
-      playContainer.addEventListener("mousemove", this.showContraller, false);
-      playContainer.addEventListener("mouseout", this.hideContraller, false);
+      playContainer.addEventListener('mousemove', this.showContraller, false);
+      playContainer.addEventListener('mouseout', this.hideContraller, false);
       clearTimeout(this.timer);
     }
   }, {
@@ -1373,9 +1373,7 @@ function (_React$Component) {
     };
 
     _this.seekendPlay = function () {
-      var _this$props = _this.props,
-          video = _this$props.video,
-          api = _this$props.api;
+      var api = _this.props.api;
       api.play();
     };
 
@@ -1408,12 +1406,12 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var event = this.props.event;
-      event.addEventListener("loadedmetadata", this.getDuration);
-      event.addEventListener("durationchange", this.getDuration);
-      event.addEventListener("timeupdate", this.getCurrentTime);
-      event.addEventListener("progress", this.getBuffered);
-      event.addEventListener("suspend", this.getBuffered);
-      event.addEventListener("seeked", this.seekendPlay);
+      event.addEventListener('loadedmetadata', this.getDuration);
+      event.addEventListener('durationchange', this.getDuration);
+      event.addEventListener('timeupdate', this.getCurrentTime);
+      event.addEventListener('progress', this.getBuffered);
+      event.addEventListener('suspend', this.getBuffered);
+      event.addEventListener('seeked', this.seekendPlay);
       event.on(EventName.HIDE_CONTRALLER, this.hideContraller);
       event.on(EventName.SHOW_CONTRALLER, this.showContraller);
     }
@@ -1428,7 +1426,7 @@ function (_React$Component) {
       var playPercent = Math.round(currentTime / duration * 100);
       var bufferedPercent = Math.round(buffered / duration * 100);
       return React.createElement("div", {
-        className: "video-time-line-layout ".concat(hideBar ? "hide-time-line" : "")
+        className: "video-time-line-layout ".concat(hideBar ? 'hide-time-line' : '')
       }, React.createElement(IconFont, {
         type: "lm-player-PrevFast",
         onClick: this.backWind,
@@ -1495,7 +1493,7 @@ function (_React$Component) {
       var event = _this.props.event;
 
       if (_this.errorTimer > 0) {
-        console.warn("视频重连成功！");
+        console.warn('视频重连成功！');
         event.emit(EventName.RELOAD_SUCCESS);
 
         _this.clearErrorTimer();
@@ -1527,7 +1525,7 @@ function (_React$Component) {
       } else {
         _this.errorTimer = timer;
 
-        if (args[1] && args[1].loader || args[0].indexOf && args[0].indexOf("NetworkError") > -1) {
+        if (args[1] && args[1].loader || args[0].indexOf && args[0].indexOf('NetworkError') > -1) {
           _this.reloadAction(timer, args);
         }
 
@@ -1576,17 +1574,17 @@ function (_React$Component) {
       } //捕获video错误
 
 
-      event.addEventListener("error", this.errorHandle, false); //获取video状态清除错误状态
+      event.addEventListener('error', this.errorHandle, false); //获取video状态清除错误状态
 
-      event.addEventListener("canplay", this.clearError, false); //历史视频切换播放索引时清除错误次数
+      event.addEventListener('canplay', this.clearError, false); //历史视频切换播放索引时清除错误次数
 
       event.on(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer); //历史视频主动清除错误次数
 
       event.on(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
     }
   }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
+    key: "UNSAFE_componentWillReceiveProps",
+    value: function UNSAFE_componentWillReceiveProps(nextProps) {
       if (nextProps.flvPlayer && nextProps.flvPlayer !== this.props.flvPlayer) {
         nextProps.flvPlayer.on(flvjs.Events.ERROR, this.errorHandle);
       }
@@ -1825,7 +1823,9 @@ function () {
         try {
           this.hls.swapAudioCodec();
           this.hls.recoverMediaError();
-        } catch (e) {}
+        } catch (e) {
+          console.warn(e);
+        }
 
         this.hls.startLoad();
       }
@@ -2181,7 +2181,6 @@ function (_React$Component) {
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
-      var event = this.props.event;
       BrowserTab.removeEventListener(this.browserTabChange);
     }
   }, {
@@ -2213,9 +2212,9 @@ function (_React$Component) {
 
       var type = getVideoType(_this.props.file);
 
-      if (type === "flv" || _this.props.type === "flv") {
+      if (type === 'flv' || _this.props.type === 'flv') {
         _this.flv = createFlvPlayer(_this.player, _this.props);
-      } else if (type === "m3u8" || _this.props.type === "hls") {
+      } else if (type === 'm3u8' || _this.props.type === 'hls') {
         _this.hls = createHlsPlayer(_this.player, _this.props.file);
       } else {
         _this.player.src = _this.props.file;
@@ -2271,31 +2270,29 @@ function (_React$Component) {
     _this.api = null;
     _this.playContainerRef = React.createRef();
     _this.playContainer = null;
-    _this.willReCreatePlayer = false;
+    _this.state = {
+      playChange: false,
+      file: null
+    };
     return _this;
   }
 
   _createClass(LMPlayer, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
-      this.player = this.playContainer.querySelector("video");
+      this.playContainer = this.playContainerRef.current;
+      this.player = this.playContainer.querySelector('video');
       this.createPlayer();
-    }
-  }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      if (this.props.file !== nextProps.file) {
-        this.willReCreatePlayer = true;
-        this.api = null;
-        this.event = null;
-      }
     }
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
-      if (this.willReCreatePlayer) {
-        this.willReCreatePlayer = false;
+      if (this.state.playChange) {
+        this.setState({
+          playChange: false
+        });
+        this.api.destroy();
+        this.event.destroy();
         this.createPlayer();
       }
     }
@@ -2309,7 +2306,6 @@ function (_React$Component) {
       this.api = null;
       this.playContainerRef = null;
       this.playContainer = null;
-      this.willReCreatePlayer = null;
       this.flv = null;
       this.hls = null;
     }
@@ -2337,11 +2333,11 @@ function (_React$Component) {
           autoplay = _this$props.autoplay,
           poster = _this$props.poster,
           _this$props$preload = _this$props.preload,
-          preload = _this$props$preload === void 0 ? "none" : _this$props$preload,
+          preload = _this$props$preload === void 0 ? 'none' : _this$props$preload,
           _this$props$muted = _this$props.muted,
-          muted = _this$props$muted === void 0 ? "muted" : _this$props$muted,
+          muted = _this$props$muted === void 0 ? 'muted' : _this$props$muted,
           _this$props$className = _this$props.className,
-          className = _this$props$className === void 0 ? "" : _this$props$className,
+          className = _this$props$className === void 0 ? '' : _this$props$className,
           _this$props$loop = _this$props.loop,
           loop = _this$props$loop === void 0 ? false : _this$props$loop,
           _this$props$playsinli = _this$props.playsinline,
@@ -2364,6 +2360,18 @@ function (_React$Component) {
         value: providerValue
       }, this.renderVideoTools()), this.props.children);
     }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      if (props.file !== state.file) {
+        return {
+          file: props.file,
+          playChange: true
+        };
+      }
+
+      return null;
+    }
   }]);
 
   return LMPlayer;
@@ -2374,10 +2382,10 @@ LMPlayer.defaultProps = {
   isDraggable: true,
   isScale: true,
   errorReloadTimer: 5,
-  muted: "muted",
+  muted: 'muted',
   autoPlay: true,
   playsInline: false,
-  preload: "auto",
+  preload: 'auto',
   loop: false
 };
 
@@ -2520,12 +2528,12 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var event = this.props.event;
-      event.addEventListener("loadedmetadata", this.getDuration);
-      event.addEventListener("durationchange", this.getDuration);
-      event.addEventListener("timeupdate", this.getCurrentTime);
-      event.addEventListener("progress", this.getBuffered);
-      event.addEventListener("suspend", this.getBuffered);
-      event.addEventListener("seeked", this.seekendPlay);
+      event.addEventListener('loadedmetadata', this.getDuration);
+      event.addEventListener('durationchange', this.getDuration);
+      event.addEventListener('timeupdate', this.getCurrentTime);
+      event.addEventListener('progress', this.getBuffered);
+      event.addEventListener('suspend', this.getBuffered);
+      event.addEventListener('seeked', this.seekendPlay);
       event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
       event.on(EventName.RELOAD, this.reload);
       event.on(EventName.HIDE_CONTRALLER, this.hideContraller);
@@ -2535,12 +2543,12 @@ function (_React$Component) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       var event = this.props.event;
-      event.removeEventListener("loadedmetadata", this.getDuration);
-      event.removeEventListener("durationchange", this.getDuration);
-      event.removeEventListener("timeupdate", this.getCurrentTime);
-      event.removeEventListener("progress", this.getBuffered);
-      event.removeEventListener("suspend", this.getBuffered);
-      event.removeEventListener("seeked", this.seekendPlay);
+      event.removeEventListener('loadedmetadata', this.getDuration);
+      event.removeEventListener('durationchange', this.getDuration);
+      event.removeEventListener('timeupdate', this.getCurrentTime);
+      event.removeEventListener('progress', this.getBuffered);
+      event.removeEventListener('suspend', this.getBuffered);
+      event.removeEventListener('seeked', this.seekendPlay);
       event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
       event.off(EventName.RELOAD, this.reload);
       event.off(EventName.HIDE_CONTRALLER, this.hideContraller);
@@ -2569,14 +2577,14 @@ function (_React$Component) {
       var playPercent = currentTime / historyList.duration * 100 + currentIndexTime;
       var bufferedPercent = buffered / historyList.duration * 100 + currentIndexTime;
       return React.createElement("div", {
-        className: "video-time-line-layout ".concat(hideBar ? "hide-time-line" : "")
+        className: "video-time-line-layout ".concat(hideBar ? 'hide-time-line' : '')
       }, React.createElement(IconFont, {
         type: "lm-player-PrevFast",
         onClick: this.backWind,
         className: "time-line-action-item"
       }), React.createElement(Slider, {
         className: "time-line-box",
-        currentPercent: isEnd ? "100" : playPercent,
+        currentPercent: isEnd ? '100' : playPercent,
         availablePercent: bufferedPercent,
         onChange: this.changePlayTime,
         renderTips: this.renderTimeLineTips
@@ -2590,7 +2598,7 @@ function (_React$Component) {
           return p + c;
         }) : currentSizeLine[0];
         return React.createElement("div", {
-          className: "history-time-line-item ".concat(v.disabled ? "history-time-line-disabled" : ""),
+          className: "history-time-line-item ".concat(v.disabled ? 'history-time-line-disabled' : ''),
           key: i,
           style: {
             width: "".concat(v.size, "%"),
@@ -2641,13 +2649,13 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var event = this.props.event;
-      event.addEventListener("ended", this.endedHandle, false);
+      event.addEventListener('ended', this.endedHandle, false);
     }
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       var event = this.props.event;
-      event.removeEventListener("ended", this.endedHandle, false);
+      event.removeEventListener('ended', this.endedHandle, false);
     }
   }, {
     key: "render",
@@ -2696,14 +2704,14 @@ function (_React$Component) {
 
       var type = getVideoType(historyList.fragments[index].file);
 
-      if (type === "flv" || _this.props.type === "flv") {
+      if (type === 'flv' || _this.props.type === 'flv') {
         _this.flv = createFlvPlayer(_this.player, {
           file: historyList.fragments[index].file
         });
         _this.api && _this.api.updateChunk({
           flv: _this.flv
         });
-      } else if (type === "m3u8" || _this.props.type === "hls") {
+      } else if (type === 'm3u8' || _this.props.type === 'hls') {
         _this.hls = createHlsPlayer(_this.player, historyList.fragments[index].file);
         _this.api && _this.api.updateChunk({
           hls: _this.hls
@@ -2823,32 +2831,30 @@ function (_React$Component) {
     _this.hls = null;
     _this.playContainerRef = React.createRef();
     _this.playContainer = null;
-    _this.willReCreatePlayer = false;
+    _this.state = {
+      playChange: false,
+      historyList: []
+    };
     return _this;
   }
 
   _createClass(HistoryPlayer, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.playContainer = ReactDOM.findDOMNode(this.playContainerRef.current);
-      this.player = this.playContainer.querySelector("video");
+      this.playContainer = this.playContainerRef.current;
+      this.player = this.playContainer.querySelector('video');
       this.createPlayer();
-    }
-  }, {
-    key: "componentWillReceiveProps",
-    value: function componentWillReceiveProps(nextProps) {
-      if (this.props.historyList !== nextProps.historyList) {
-        this.willReCreatePlayer = true;
-        this.api = null;
-        this.event = null;
-      }
     }
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
-      if (this.willReCreatePlayer) {
+      if (this.state.playChange) {
+        this.setState({
+          playChange: false
+        });
+        this.event.destroy();
+        this.api.destroy();
         this.playIndex = 0;
-        this.willReCreatePlayer = false;
         this.createPlayer();
       }
     }
@@ -2862,7 +2868,6 @@ function (_React$Component) {
       this.api = null;
       this.playContainerRef = null;
       this.playContainer = null;
-      this.willReCreatePlayer = null;
       this.flv = null;
       this.hls = null;
     }
@@ -2898,11 +2903,11 @@ function (_React$Component) {
           poster = _this$props2.poster,
           preload = _this$props2.preload,
           _this$props2$muted = _this$props2.muted,
-          muted = _this$props2$muted === void 0 ? "muted" : _this$props2$muted,
+          muted = _this$props2$muted === void 0 ? 'muted' : _this$props2$muted,
           _this$props2$loop = _this$props2.loop,
           loop = _this$props2$loop === void 0 ? false : _this$props2$loop,
           _this$props2$classNam = _this$props2.className,
-          className = _this$props2$classNam === void 0 ? "" : _this$props2$classNam,
+          className = _this$props2$classNam === void 0 ? '' : _this$props2$classNam,
           _this$props2$playsinl = _this$props2.playsinline,
           playsinline = _this$props2$playsinl === void 0 ? false : _this$props2$playsinl;
       var providerValue = this.getProvider();
@@ -2923,6 +2928,18 @@ function (_React$Component) {
         value: providerValue
       }, this.renderVideoTools()), this.props.children);
     }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(props, state) {
+      if (props.historyList !== state.historyList) {
+        return {
+          historyList: props.historyList,
+          playChange: true
+        };
+      }
+
+      return null;
+    }
   }]);
 
   return HistoryPlayer;
@@ -2933,10 +2950,10 @@ HistoryPlayer.defaultProps = {
   isDraggable: true,
   isScale: true,
   errorReloadTimer: 5,
-  muted: "muted",
+  muted: 'muted',
   autoPlay: true,
   playsInline: false,
-  preload: "auto",
+  preload: 'auto',
   loop: false,
   defaultTime: 0
 };

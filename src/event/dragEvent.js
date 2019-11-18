@@ -1,6 +1,7 @@
 import React from "react";
 import { videoDec } from "../context";
 import { computedBound } from "../util";
+import PropTypes from 'prop-types'
 
 @videoDec
 class DragEvent extends React.Component {
@@ -53,5 +54,12 @@ class DragEvent extends React.Component {
   render() {
     return null;
   }
+}
+
+DragEvent.propTypes = {
+  api: PropTypes.object,
+  event: PropTypes.object,
+  playContainer: PropTypes.node,
+  playerProps:PropTypes.object
 }
 export default DragEvent;
