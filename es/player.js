@@ -406,6 +406,9 @@ function computedBound(ele, currentPosition, scale) {
     return;
   }
 }
+function getRandom() {
+  return Math.random().toString(36).substr(2);
+}
 
 function _objectWithoutPropertiesLoose(source, excluded) {
   if (source == null) return {};
@@ -1063,60 +1066,16 @@ function (_React$Component) {
   return RightBar;
 }(React.Component), _temp$1)) || _class$1;
 
+function ContrallerBar(_ref) {
+  var visibel = _ref.visibel;
+  return React.createElement("div", {
+    className: "contraller-bar-layout ".concat(!visibel ? 'hide-contraller-bar' : '')
+  }, React.createElement(LeftBar, null), React.createElement(RightBar, null));
+}
+
 var _class$2, _temp$2;
 
-var ContrallerBar = videoDec(_class$2 = (_temp$2 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ContrallerBar, _React$Component);
-
-  function ContrallerBar(props) {
-    var _this;
-
-    _classCallCheck(this, ContrallerBar);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ContrallerBar).call(this, props));
-
-    _this.hideContraller = function () {
-      _this.setState({
-        hideBar: true
-      });
-    };
-
-    _this.showContraller = function () {
-      _this.setState({
-        hideBar: false
-      });
-    };
-
-    _this.state = {
-      hideBar: false
-    };
-    return _this;
-  }
-
-  _createClass(ContrallerBar, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var event = this.props.event;
-      event.on(EventName.HIDE_CONTRALLER, this.hideContraller);
-      event.on(EventName.SHOW_CONTRALLER, this.showContraller);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return React.createElement("div", {
-        className: "contraller-bar-layout ".concat(this.state.hideBar ? 'hide-contraller-bar' : '')
-      }, React.createElement(LeftBar, null), React.createElement(RightBar, null));
-    }
-  }]);
-
-  return ContrallerBar;
-}(React.Component), _temp$2)) || _class$2;
-
-var _class$3, _temp$3;
-
-var ContrallerEvent = videoDec(_class$3 = (_temp$3 =
+var ContrallerEvent = videoDec(_class$2 = (_temp$2 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(ContrallerEvent, _React$Component);
@@ -1132,6 +1091,9 @@ function (_React$Component) {
       if (!_this.visibel) {
         var event = _this.props.event;
         _this.visibel = true;
+
+        _this.forceUpdate();
+
         event.emit(EventName.SHOW_CONTRALLER);
       }
 
@@ -1144,6 +1106,8 @@ function (_React$Component) {
       _this.timer = setTimeout(function () {
         _this.visibel = false;
         event.emit(EventName.HIDE_CONTRALLER);
+
+        _this.forceUpdate();
       }, 3 * 1000);
     };
 
@@ -1175,16 +1139,23 @@ function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      return null;
+      var _this2 = this;
+
+      var children = this.props.children;
+      return React.Children.map(children, function (child) {
+        return React.isValidElement(child) ? React.cloneElement(child, {
+          visibel: _this2.visibel
+        }) : child;
+      });
     }
   }]);
 
   return ContrallerEvent;
-}(React.Component), _temp$3)) || _class$3;
+}(React.Component), _temp$2)) || _class$2;
 
-var _class$4, _temp$4;
+var _class$3, _temp$3;
 
-var VideoMessage = videoDec(_class$4 = (_temp$4 =
+var VideoMessage = videoDec(_class$3 = (_temp$3 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(VideoMessage, _React$Component);
@@ -1295,7 +1266,7 @@ function (_React$Component) {
   }]);
 
   return VideoMessage;
-}(React.Component), _temp$4)) || _class$4;
+}(React.Component), _temp$3)) || _class$3;
 
 var NoSource = function NoSource() {
   return React.createElement("div", {
@@ -1309,9 +1280,9 @@ var NoSource = function NoSource() {
   }));
 };
 
-var _class$5, _temp$5;
+var _class$4, _temp$4;
 
-var TineLine = videoDec(_class$5 = (_temp$5 =
+var TineLine = videoDec(_class$4 = (_temp$4 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(TineLine, _React$Component);
@@ -1322,18 +1293,6 @@ function (_React$Component) {
     _classCallCheck(this, TineLine);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(TineLine).call(this, props));
-
-    _this.hideContraller = function () {
-      _this.setState({
-        hideBar: true
-      });
-    };
-
-    _this.showContraller = function () {
-      _this.setState({
-        hideBar: false
-      });
-    };
 
     _this.getDuration = function () {
       var api = _this.props.api;
@@ -1401,8 +1360,7 @@ function (_React$Component) {
     _this.state = {
       duration: 0,
       currentTime: 0,
-      buffered: 0,
-      hideBar: false
+      buffered: 0
     };
     return _this;
   }
@@ -1417,8 +1375,6 @@ function (_React$Component) {
       event.addEventListener('progress', this.getBuffered);
       event.addEventListener('suspend', this.getBuffered);
       event.addEventListener('seeked', this.seekendPlay);
-      event.on(EventName.HIDE_CONTRALLER, this.hideContraller);
-      event.on(EventName.SHOW_CONTRALLER, this.showContraller);
     }
   }, {
     key: "render",
@@ -1426,12 +1382,11 @@ function (_React$Component) {
       var _this$state = this.state,
           duration = _this$state.duration,
           currentTime = _this$state.currentTime,
-          buffered = _this$state.buffered,
-          hideBar = _this$state.hideBar;
+          buffered = _this$state.buffered;
       var playPercent = Math.round(currentTime / duration * 100);
       var bufferedPercent = Math.round(buffered / duration * 100);
       return React.createElement("div", {
-        className: "video-time-line-layout ".concat(hideBar ? 'hide-time-line' : '')
+        className: "video-time-line-layout ".concat(!this.props.visibel ? 'hide-time-line' : '')
       }, React.createElement(IconFont, {
         type: "lm-player-PrevFast",
         onClick: this.backWind,
@@ -1451,7 +1406,7 @@ function (_React$Component) {
   }]);
 
   return TineLine;
-}(React.Component), _temp$5)) || _class$5;
+}(React.Component), _temp$4)) || _class$4;
 
 function _arrayWithoutHoles(arr) {
   if (Array.isArray(arr)) {
@@ -1475,9 +1430,9 @@ function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
 }
 
-var _class$6, _temp$6;
+var _class$5, _temp$5;
 
-var ErrorEvent = videoDec(_class$6 = (_temp$6 =
+var ErrorEvent = videoDec(_class$5 = (_temp$5 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(ErrorEvent, _React$Component);
@@ -1611,11 +1566,11 @@ function (_React$Component) {
   }]);
 
   return ErrorEvent;
-}(React.Component), _temp$6)) || _class$6;
+}(React.Component), _temp$5)) || _class$5;
 
-var _class$7, _temp$7;
+var _class$6, _temp$6;
 
-var DragEvent = videoDec(_class$7 = (_temp$7 =
+var DragEvent = videoDec(_class$6 = (_temp$6 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(DragEvent, _React$Component);
@@ -1692,7 +1647,7 @@ function (_React$Component) {
   }]);
 
   return DragEvent;
-}(React.Component), _temp$7)) || _class$7;
+}(React.Component), _temp$6)) || _class$6;
 
 var Api =
 /*#__PURE__*/
@@ -2134,9 +2089,9 @@ var BrowserTab = {
   visibilityState: visibilityState
 };
 
-var _class$8, _temp$8;
+var _class$7, _temp$7;
 
-var LiveHeart = videoDec(_class$8 = (_temp$8 =
+var LiveHeart = videoDec(_class$7 = (_temp$7 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(LiveHeart, _React$Component);
@@ -2196,7 +2151,7 @@ function (_React$Component) {
   }]);
 
   return LiveHeart;
-}(React.Component), _temp$8)) || _class$8;
+}(React.Component), _temp$7)) || _class$7;
 
 var LMPlayer =
 /*#__PURE__*/
@@ -2229,17 +2184,17 @@ function (_React$Component) {
     };
 
     _this.renderVideoTools = function () {
-      if (!_this.event) {
+      if (!_this.isInit || !_this.props.file) {
         return React.createElement(NoSource, null);
       }
 
-      return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null), React.createElement(ErrorEvent, {
+      return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), !_this.props.isLive && React.createElement(TineLine, null)), React.createElement(ErrorEvent, {
         flvPlayer: _this.flv,
         hlsPlayer: _this.hls,
         key: "".concat(_this.props.file, "_error")
-      }), _this.props.isLive ? React.createElement(LiveHeart, {
+      }), _this.props.isLive && React.createElement(LiveHeart, {
         key: _this.props.file
-      }) : React.createElement(TineLine, null));
+      }));
     };
 
     _this.getPlayUrl = function () {
@@ -2289,6 +2244,7 @@ function (_React$Component) {
       this.playContainer = this.playContainerRef.current;
       this.player = this.playContainer.querySelector('video');
       this.createPlayer();
+      this.isInit = true;
     }
   }, {
     key: "componentDidUpdate",
@@ -2323,7 +2279,7 @@ function (_React$Component) {
         this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
         this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
 
-        if (this.props.autoPlay) {
+        if (this.props.autoPlay && this.props.file) {
           this.api.play();
         }
 
@@ -2345,7 +2301,8 @@ function (_React$Component) {
           _this$props$loop = _this$props.loop,
           loop = _this$props$loop === void 0 ? false : _this$props$loop,
           _this$props$playsinli = _this$props.playsinline,
-          playsinline = _this$props$playsinli === void 0 ? false : _this$props$playsinli;
+          playsinline = _this$props$playsinli === void 0 ? false : _this$props$playsinli,
+          file = _this$props.file;
       var providerValue = this.getProvider();
       return React.createElement("div", {
         className: "lm-player-container ".concat(className),
@@ -2353,7 +2310,7 @@ function (_React$Component) {
       }, React.createElement("div", {
         className: "player-mask-layout"
       }, React.createElement("video", {
-        autoPlay: autoplay,
+        autoPlay: autoplay && !!file,
         preload: preload,
         muted: muted,
         poster: poster,
@@ -2393,9 +2350,9 @@ LMPlayer.defaultProps = {
   loop: false
 };
 
-var _class$9, _temp$9;
+var _class$8, _temp$8;
 
-var TineLine$1 = videoDec(_class$9 = (_temp$9 =
+var TineLine$1 = videoDec(_class$8 = (_temp$8 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(TineLine, _React$Component);
@@ -2406,18 +2363,6 @@ function (_React$Component) {
     _classCallCheck(this, TineLine);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(TineLine).call(this, props));
-
-    _this.hideContraller = function () {
-      _this.setState({
-        hideBar: true
-      });
-    };
-
-    _this.showContraller = function () {
-      _this.setState({
-        hideBar: false
-      });
-    };
 
     _this.reload = function () {
       var api = _this.props.api;
@@ -2522,8 +2467,7 @@ function (_React$Component) {
       duration: 1,
       currentTime: 0,
       buffered: 0,
-      isEnd: false,
-      hideBar: false
+      isEnd: false
     };
     return _this;
   }
@@ -2540,8 +2484,6 @@ function (_React$Component) {
       event.addEventListener('seeked', this.seekendPlay);
       event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
       event.on(EventName.RELOAD, this.reload);
-      event.on(EventName.HIDE_CONTRALLER, this.hideContraller);
-      event.on(EventName.SHOW_CONTRALLER, this.showContraller);
     }
   }, {
     key: "componentWillUnmount",
@@ -2558,17 +2500,21 @@ function (_React$Component) {
       event.off(EventName.HIDE_CONTRALLER, this.hideContraller);
       event.off(EventName.SHOW_CONTRALLER, this.showContraller);
     }
+    /**
+     * reload事件触发时 清除结束状态
+     */
+
   }, {
     key: "render",
     value: function render() {
       var _this$props2 = this.props,
           historyList = _this$props2.historyList,
-          playIndex = _this$props2.playIndex;
+          playIndex = _this$props2.playIndex,
+          visibel = _this$props2.visibel;
       var _this$state = this.state,
           currentTime = _this$state.currentTime,
           buffered = _this$state.buffered,
-          isEnd = _this$state.isEnd,
-          hideBar = _this$state.hideBar;
+          isEnd = _this$state.isEnd;
       var lineList = this.computedLineList(historyList);
       var currentLine = lineList.filter(function (v, i) {
         return i < playIndex;
@@ -2581,7 +2527,7 @@ function (_React$Component) {
       var playPercent = currentTime / historyList.duration * 100 + currentIndexTime;
       var bufferedPercent = buffered / historyList.duration * 100 + currentIndexTime;
       return React.createElement("div", {
-        className: "video-time-line-layout ".concat(hideBar ? 'hide-time-line' : '')
+        className: "video-time-line-layout ".concat(!visibel ? 'hide-time-line' : '')
       }, React.createElement(IconFont, {
         type: "lm-player-PrevFast",
         onClick: this.backWind,
@@ -2618,11 +2564,11 @@ function (_React$Component) {
   }]);
 
   return TineLine;
-}(React.Component), _temp$9)) || _class$9;
+}(React.Component), _temp$8)) || _class$8;
 
-var _class$a, _temp$a;
+var _class$9, _temp$9;
 
-var PlayEnd = videoDec(_class$a = (_temp$a =
+var PlayEnd = videoDec(_class$9 = (_temp$9 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(PlayEnd, _React$Component);
@@ -2669,7 +2615,7 @@ function (_React$Component) {
   }]);
 
   return PlayEnd;
-}(React.Component), _temp$a)) || _class$a;
+}(React.Component), _temp$9)) || _class$9;
 
 var HistoryPlayer =
 /*#__PURE__*/
@@ -2818,15 +2764,17 @@ function (_React$Component) {
     };
 
     _this.renderVideoTools = function () {
-      if (!_this.event) {
+      var file = _this.getCurrentFile();
+
+      if (!_this.isInit || !file) {
         return React.createElement(NoSource, null);
       }
 
-      return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(TineLine$1, null), React.createElement(ErrorEvent, {
+      return React.createElement(React.Fragment, null, React.createElement(VideoMessage, null), React.createElement(ErrorEvent, {
         flvPlayer: _this.flv,
         hlsPlayer: _this.hls,
-        key: _this.props.historyList.fragments[_this.playIndex].file
-      }), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null), React.createElement(PlayEnd, null));
+        key: file
+      }), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), React.createElement(TineLine$1, null)), React.createElement(PlayEnd, null));
     };
 
     _this.playIndex = 0;
@@ -2848,6 +2796,7 @@ function (_React$Component) {
     value: function componentDidMount() {
       this.playContainer = this.playContainerRef.current;
       this.player = this.playContainer.querySelector('video');
+      this.isInit = true;
       this.createPlayer();
     }
   }, {
@@ -2890,13 +2839,31 @@ function (_React$Component) {
       this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
       this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
 
-      if (this.props.autoPlay) {
+      if (this.props.autoPlay && this.getCurrentFile()) {
         this.api.play();
       }
 
       if (defaultTime) {
         this.seekTo((defaultTime - historyList.beginDate) / 1000);
       }
+    }
+  }, {
+    key: "getErrorKey",
+    value: function getErrorKey() {
+      return this.getCurrentFile() || getRandom();
+    }
+  }, {
+    key: "getCurrentFile",
+    value: function getCurrentFile() {
+      var file;
+
+      try {
+        file = this.props.historyList.fragments[this.playIndex].file;
+      } catch (error) {
+        console.warn(error);
+      }
+
+      return file;
     }
   }, {
     key: "render",
@@ -2914,13 +2881,14 @@ function (_React$Component) {
           _this$props2$playsinl = _this$props2.playsinline,
           playsinline = _this$props2$playsinl === void 0 ? false : _this$props2$playsinl;
       var providerValue = this.getProvider();
+      var file = this.getCurrentFile();
       return React.createElement("div", {
         className: "lm-player-container ".concat(className),
         ref: this.playContainerRef
       }, React.createElement("div", {
         className: "player-mask-layout"
       }, React.createElement("video", {
-        autoPlay: autoplay,
+        autoPlay: autoplay && !!file,
         preload: preload,
         muted: muted,
         poster: poster,

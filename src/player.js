@@ -68,7 +68,7 @@ class LMPlayer extends React.Component {
       this.event = new VideoEvent(this.player)
       this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls)
       this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext())
-      if (this.props.autoPlay) {
+      if (this.props.autoPlay && this.props.file) {
         this.api.play()
       }
       this.forceUpdate()
@@ -91,7 +91,7 @@ class LMPlayer extends React.Component {
   }
 
   renderVideoTools = () => {
-    if (!this.isInit) {
+    if (!this.isInit || !this.props.file) {
       return <NoSource />
     }
     return (
@@ -132,12 +132,20 @@ class LMPlayer extends React.Component {
     }
   }
   render() {
-    const { autoplay, poster, preload = 'none', muted = 'muted', className = '', loop = false, playsinline = false } = this.props
+    const { autoplay, poster, preload = 'none', muted = 'muted', className = '', loop = false, playsinline = false, file } = this.props
     const providerValue = this.getProvider()
     return (
       <div className={`lm-player-container ${className}`} ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+          <video
+            autoPlay={autoplay && !!file}
+            preload={preload}
+            muted={muted}
+            poster={poster}
+            controls={false}
+            playsInline={playsinline}
+            loop={loop}
+          />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}

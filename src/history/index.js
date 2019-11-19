@@ -11,7 +11,7 @@ import VideoEvent from '../event'
 import PlayEnd from './play_end'
 import EventName from '../event/eventName'
 import ContrallerEvent from '../event/contrallerEvent'
-import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util'
+import { getVideoType, createFlvPlayer, createHlsPlayer, getRandom } from '../util'
 
 class HistoryPlayer extends React.Component {
   constructor(props) {
@@ -69,7 +69,7 @@ class HistoryPlayer extends React.Component {
     this.event = new VideoEvent(this.player)
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls)
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext())
-    if (this.props.autoPlay) {
+    if (this.props.autoPlay && this.getCurrentFile()) {
       this.api.play()
     }
     if (defaultTime) {
@@ -201,13 +201,14 @@ class HistoryPlayer extends React.Component {
     }
   }
   renderVideoTools = () => {
-    if (!this.isInit) {
+    const file = this.getCurrentFile()
+    if (!this.isInit || !file) {
       return <NoSource />
     }
     return (
       <>
         <VideoMessage />
-        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={this.props.historyList.fragments[this.playIndex].file} />
+        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={file} />
         <DragEvent />
         <ContrallerEvent>
           <ContrallerBar />
@@ -217,13 +218,36 @@ class HistoryPlayer extends React.Component {
       </>
     )
   }
+  getErrorKey() {
+    return this.getCurrentFile() || getRandom()
+  }
+
+  getCurrentFile() {
+    let file
+    try {
+      file = this.props.historyList.fragments[this.playIndex].file
+    } catch (error) {
+      console.warn(error)
+    }
+    return file
+  }
+
   render() {
     const { autoplay, poster, preload, muted = 'muted', loop = false, className = '', playsinline = false } = this.props
     const providerValue = this.getProvider()
+    const file = this.getCurrentFile()
     return (
       <div className={`lm-player-container ${className}`} ref={this.playContainerRef}>
         <div className="player-mask-layout">
-          <video autoPlay={autoplay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+          <video
+            autoPlay={autoplay && !!file}
+            preload={preload}
+            muted={muted}
+            poster={poster}
+            controls={false}
+            playsInline={playsinline}
+            loop={loop}
+          />
         </div>
         <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
         {this.props.children}
