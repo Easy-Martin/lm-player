@@ -90,7 +90,7 @@ class LMPlayer extends React.Component {
   }
 
   renderVideoTools = () => {
-    if (!this.api) {
+    if (this.state.playChange) {
       return <NoSource />
     }
     return (

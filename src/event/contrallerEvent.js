@@ -8,6 +8,7 @@ class ContrallerEvent extends React.Component {
   constructor(props) {
     super(props)
     this.timer = null
+    this.visibel = true
   }
   componentDidMount() {
     const { playContainer, event } = this.props
@@ -24,14 +25,18 @@ class ContrallerEvent extends React.Component {
     clearTimeout(this.timer)
   }
   showContraller = () => {
-    const { event } = this.props
-    event.emit(EventName.SHOW_CONTRALLER)
+    if (!this.visibel) {
+      const { event } = this.props
+      this.visibel = true
+      event.emit(EventName.SHOW_CONTRALLER)
+    }
     this.hideContraller()
   }
   hideContraller = () => {
     const { event } = this.props
     clearTimeout(this.timer)
     this.timer = setTimeout(() => {
+      this.visibel = false
       event.emit(EventName.HIDE_CONTRALLER)
     }, 3 * 1000)
   }

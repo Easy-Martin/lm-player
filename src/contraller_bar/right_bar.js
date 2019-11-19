@@ -3,6 +3,7 @@ import { videoDec } from "../context";
 import IconFont from "../iconfont";
 import Bar from "./bar";
 import { isFullscreen, fullScreenListener, computedBound } from "../util";
+import PropTypes from 'prop-types'
 
 @videoDec
 class RightBar extends React.Component {
@@ -75,5 +76,14 @@ class RightBar extends React.Component {
       </div>
     );
   }
+}
+
+RightBar.propTypes = {
+  api: PropTypes.object,
+  event: PropTypes.object,
+  playerProps: PropTypes.object,
+  playContainer: PropTypes.node,
+  reloadHistory: PropTypes.func,
+  isHistory: PropTypes.bool
 }
 export default RightBar;

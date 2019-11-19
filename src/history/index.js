@@ -25,7 +25,8 @@ class HistoryPlayer extends React.Component {
     this.playContainer = null
     this.state = {
       playChange: false,
-      historyList: []
+      historyList: [],
+      videoKey: getRandom()
     }
   }
   static getDerivedStateFromProps(props, state) {
@@ -104,7 +105,7 @@ class HistoryPlayer extends React.Component {
       this.player.src = historyList.fragments[index].file
     }
     this.playIndex = index
-    this.forceUpdate()
+    this.setState({ videoKey: getRandom() })
   }
   /**
    * @历史视频
@@ -200,17 +201,18 @@ class HistoryPlayer extends React.Component {
     }
   }
   renderVideoTools = () => {
-    if (!this.api) {
+    if (this.state.playChange) {
       return <NoSource />
     }
+    const { videoKey } = this.state
     return (
       <>
-        <ContrallerBar />
-        <VideoMessage />
-        <HistoryTimeLine />
-        <ContrallerEvent />
-        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
+        <ContrallerBar key={`${videoKey}_0`} />
+        <VideoMessage key={`${videoKey}_1`} />
+        <HistoryTimeLine key={`${videoKey}_2`} />
+        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={`${videoKey}_3`} />
         <DragEvent />
+        <ContrallerEvent />
         <PlayEnd />
       </>
     )
