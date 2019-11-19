@@ -11,7 +11,7 @@ import VideoEvent from '../event'
 import PlayEnd from './play_end'
 import EventName from '../event/eventName'
 import ContrallerEvent from '../event/contrallerEvent'
-import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util'
+import { getVideoType, createFlvPlayer, createHlsPlayer, getRandom } from '../util'
 
 class HistoryPlayer extends React.Component {
   constructor(props) {
@@ -43,8 +43,6 @@ class HistoryPlayer extends React.Component {
   componentDidUpdate() {
     if (this.state.playChange) {
       this.setState({ playChange: false })
-      this.event.destroy()
-      this.api.destroy()
       this.playIndex = 0
       this.createPlayer()
     }

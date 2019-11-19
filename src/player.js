@@ -14,37 +14,6 @@ import PropTypes from 'prop-types'
 import './style/index.less'
 
 class LMPlayer extends React.Component {
-  static propTypes = {
-    file: PropTypes.string.isRequired, //播放地址 必填
-    isLive: PropTypes.bool, //是否实时视频
-    errorReloadTimer: PropTypes.number, //视频错误重连次数
-    type: PropTypes.oneOf(['flv', 'hls', 'native']), //强制视频流类型
-    onInitPlayer: PropTypes.func,
-    isDraggable: PropTypes.bool,
-    isScale: PropTypes.bool,
-    muted: PropTypes.string,
-    autoPlay: PropTypes.bool,
-    playsInline: PropTypes.bool,
-    preload: PropTypes.string,
-    poster: PropTypes.string,
-    loop: PropTypes.bool,
-    snapshot: PropTypes.func,
-    className: PropTypes.string,
-    playsinline: PropTypes.bool,
-    children: PropTypes.any,
-    autoplay: PropTypes.bool
-  }
-  static defaultProps = {
-    isLive: true,
-    isDraggable: true,
-    isScale: true,
-    errorReloadTimer: 5,
-    muted: 'muted',
-    autoPlay: true,
-    playsInline: false,
-    preload: 'auto',
-    loop: false
-  }
   constructor(props) {
     super(props)
     this.player = null
@@ -61,7 +30,10 @@ class LMPlayer extends React.Component {
   }
   static getDerivedStateFromProps(props, state) {
     if (props.file !== state.file) {
-      return { file: props.file, playChange: true }
+      return {
+        file: props.file,
+        playChange: true
+      }
     }
     return null
   }
@@ -74,8 +46,6 @@ class LMPlayer extends React.Component {
   componentDidUpdate() {
     if (this.state.playChange) {
       this.setState({ playChange: false })
-      this.api.destroy()
-      this.event.destroy()
       this.createPlayer()
     }
   }
@@ -170,6 +140,38 @@ class LMPlayer extends React.Component {
       </div>
     )
   }
+}
+
+LMPlayer.propTypes = {
+  file: PropTypes.string.isRequired, //播放地址 必填
+  isLive: PropTypes.bool, //是否实时视频
+  errorReloadTimer: PropTypes.number, //视频错误重连次数
+  type: PropTypes.oneOf(['flv', 'hls', 'native']), //强制视频流类型
+  onInitPlayer: PropTypes.func,
+  isDraggable: PropTypes.bool,
+  isScale: PropTypes.bool,
+  muted: PropTypes.string,
+  autoPlay: PropTypes.bool,
+  playsInline: PropTypes.bool,
+  preload: PropTypes.string,
+  poster: PropTypes.string,
+  loop: PropTypes.bool,
+  snapshot: PropTypes.func,
+  className: PropTypes.string,
+  playsinline: PropTypes.bool,
+  children: PropTypes.any,
+  autoplay: PropTypes.bool
+}
+LMPlayer.defaultProps = {
+  isLive: true,
+  isDraggable: true,
+  isScale: true,
+  errorReloadTimer: 5,
+  muted: 'muted',
+  autoPlay: true,
+  playsInline: false,
+  preload: 'auto',
+  loop: false
 }
 
 export default LMPlayer

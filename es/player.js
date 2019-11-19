@@ -209,7 +209,7 @@ function createFlvPlayer(video, options) {
 
   if (flvjs.isSupported()) {
     var player = flvjs.createPlayer(Object.assign({}, flvOptions, {
-      type: "flv",
+      type: 'flv',
       url: options.file
     }), Object.assign({}, flvConfig, {
       enableWorker: true,
@@ -240,13 +240,13 @@ function getVideoType(url) {
   var resultArr = reg.exec(path);
 
   if (!resultArr) {
-    return url.indexOf(".flv") > -1 ? "flv" : "hls";
+    return url.indexOf('.flv') > -1 ? 'flv' : 'hls';
   }
 
-  var suffix = resultArr[2].replace(resultArr[4], "");
+  var suffix = resultArr[2].replace(resultArr[4], '');
 
   if (!suffix) {
-    return url.indexOf(".flv") > -1 ? "flv" : "hls";
+    return url.indexOf('.flv') > -1 ? 'flv' : 'hls';
   }
 
   return suffix;
@@ -290,7 +290,7 @@ function dateFormat(timetemp) {
   var hh = date.getHours();
   var mm = date.getMinutes();
   var ss = date.getSeconds();
-  return "".concat(YYYY, ".").concat(MM > 9 ? MM : "0" + MM, ".").concat(DD > 9 ? DD : "0" + DD, " ").concat(hh > 9 ? hh : "0" + hh, ".").concat(mm > 9 ? mm : "0" + mm, ".").concat(ss > 9 ? ss : "0" + ss);
+  return "".concat(YYYY, ".").concat(MM > 9 ? MM : '0' + MM, ".").concat(DD > 9 ? DD : '0' + DD, " ").concat(hh > 9 ? hh : '0' + hh, ".").concat(mm > 9 ? mm : '0' + mm, ".").concat(ss > 9 ? ss : '0' + ss);
 }
 /**
  * 全屏
@@ -338,8 +338,8 @@ function isFullscreen(ele) {
 } // 添加 / 移除 全屏事件监听
 
 function fullScreenListener(isAdd, fullscreenchange) {
-  var funcName = isAdd ? "addEventListener" : "removeEventListener";
-  var fullScreenEvents = ["fullscreenchange", "mozfullscreenchange", "webkitfullscreenchange", "msfullscreenchange"];
+  var funcName = isAdd ? 'addEventListener' : 'removeEventListener';
+  var fullScreenEvents = ['fullscreenchange', 'mozfullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange'];
   fullScreenEvents.map(function (v) {
     return document[funcName](v, fullscreenchange);
   });
@@ -1198,14 +1198,14 @@ function (_React$Component) {
 
     _this.reload = function () {
       _this.setState({
-        status: "reload"
+        status: 'reload'
       });
     };
 
     _this.errorReload = function (timer) {
       _this.message = React.createElement("div", null, "\u89C6\u9891\u52A0\u8F7D\u9519\u8BEF\uFF0C\u6B63\u5728\u8FDB\u884C\u91CD\u8FDE\u7B2C", timer, "\u91CD\u8FDE");
       _this.mounted && _this.setState({
-        status: "reload",
+        status: 'reload',
         loading: true
       });
     };
@@ -1213,7 +1213,7 @@ function (_React$Component) {
     _this.reloadFail = function () {
       _this.message = React.createElement("div", null, "\u89C6\u9891\u9519\u8BEF");
       _this.mounted && _this.setState({
-        status: "fail"
+        status: 'fail'
       });
     };
 
@@ -1260,11 +1260,11 @@ function (_React$Component) {
     value: function componentDidMount() {
       var event = this.props.event;
       this.mounted = true;
-      event.addEventListener("loadstart", this.openLoading);
-      event.addEventListener("waiting", this.openLoading);
-      event.addEventListener("seeking", this.openLoading);
-      event.addEventListener("loadeddata", this.closeLoading);
-      event.addEventListener("canplay", this.closeLoading);
+      event.addEventListener('loadstart', this.openLoading);
+      event.addEventListener('waiting', this.openLoading);
+      event.addEventListener('seeking', this.openLoading);
+      event.addEventListener('loadeddata', this.closeLoading);
+      event.addEventListener('canplay', this.closeLoading);
       event.on(EventName.ERROR_RELOAD, this.errorReload);
       event.on(EventName.RELOAD_FAIL, this.reloadFail);
       event.on(EventName.RELOAD_SUCCESS, this.reloadSuccess);
@@ -1279,10 +1279,10 @@ function (_React$Component) {
           loading = _this$state.loading,
           status = _this$state.status;
       return React.createElement("div", {
-        className: "lm-player-message-mask ".concat(loading || status === "fail" ? "lm-player-mask-loading-animation" : "")
+        className: "lm-player-message-mask ".concat(loading || status === 'fail' ? 'lm-player-mask-loading-animation' : '')
       }, React.createElement(IconFont, {
-        type: status === "fail" ? "lm-player-YesorNo_No_Dark" : "lm-player-Loading",
-        className: "".concat(loading && status !== "fail" ? "lm-player-loading-animation" : status === "fail" ? "lm-player-loadfail" : "", " lm-player-loading-icon")
+        type: status === 'fail' ? 'lm-player-YesorNo_No_Dark' : 'lm-player-Loading',
+        className: "".concat(loading && status !== 'fail' ? 'lm-player-loading-animation' : status === 'fail' ? 'lm-player-loadfail' : '', " lm-player-loading-icon")
       }), React.createElement("span", {
         className: "lm-player-message"
       }, this.message));
@@ -2291,8 +2291,6 @@ function (_React$Component) {
         this.setState({
           playChange: false
         });
-        this.api.destroy();
-        this.event.destroy();
         this.createPlayer();
       }
     }
@@ -2852,8 +2850,6 @@ function (_React$Component) {
         this.setState({
           playChange: false
         });
-        this.event.destroy();
-        this.api.destroy();
         this.playIndex = 0;
         this.createPlayer();
       }

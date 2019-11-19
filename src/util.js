@@ -1,5 +1,5 @@
-import flvjs from "flv.lm.js";
-import * as Hls from "hls.js";
+import flvjs from 'flv.lm.js'
+import * as Hls from 'hls.js'
 
 /**
  * 创建HLS对象
@@ -13,10 +13,10 @@ export function createHlsPlayer(video, file) {
       levelLoadingTimeOut: 15000,
       fragLoadingTimeOut: 25000,
       enableWorker: true
-    });
-    player.loadSource(file);
-    player.attachMedia(video);
-    return player;
+    })
+    player.loadSource(file)
+    player.attachMedia(video)
+    return player
   }
 }
 
@@ -26,11 +26,11 @@ export function createHlsPlayer(video, file) {
  * @param {*} options
  */
 export function createFlvPlayer(video, options) {
-  const { flvOptions = {}, flvConfig = {} } = options;
+  const { flvOptions = {}, flvConfig = {} } = options
   if (flvjs.isSupported()) {
     const player = flvjs.createPlayer(
       Object.assign({}, flvOptions, {
-        type: "flv",
+        type: 'flv',
         url: options.file
       }),
       Object.assign({}, flvConfig, {
@@ -45,10 +45,10 @@ export function createFlvPlayer(video, options) {
         stashInitialSize: 128,
         isLive: options.isLive || true
       })
-    );
-    player.attachMediaElement(video);
-    player.load();
-    return player;
+    )
+    player.attachMediaElement(video)
+    player.load()
+    return player
   }
 }
 
@@ -57,18 +57,18 @@ export function createFlvPlayer(video, options) {
  * @param {*} url
  */
 export function getVideoType(url) {
-  const urlInfo = new URL(url);
-  const path = `${urlInfo.origin}${urlInfo.pathname}`;
-  const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;
-  const resultArr = reg.exec(path);
+  const urlInfo = new URL(url)
+  const path = `${urlInfo.origin}${urlInfo.pathname}`
+  const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i
+  const resultArr = reg.exec(path)
   if (!resultArr) {
-    return url.indexOf(".flv") > -1 ? "flv" : "hls";
+    return url.indexOf('.flv') > -1 ? 'flv' : 'hls'
   }
-  const suffix = resultArr[2].replace(resultArr[4], "");
+  const suffix = resultArr[2].replace(resultArr[4], '')
   if (!suffix) {
-    return url.indexOf(".flv") > -1 ? "flv" : "hls";
+    return url.indexOf('.flv') > -1 ? 'flv' : 'hls'
   }
-  return suffix;
+  return suffix
 }
 
 /**
@@ -76,23 +76,23 @@ export function getVideoType(url) {
  * @param {*} second_time
  */
 export function timeStamp(second_time) {
-  let time = Math.ceil(second_time);
+  let time = Math.ceil(second_time)
   if (time > 60) {
-    let second = Math.ceil(second_time % 60);
-    let min = Math.floor(second_time / 60);
-    time = `${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`;
+    let second = Math.ceil(second_time % 60)
+    let min = Math.floor(second_time / 60)
+    time = `${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`
     if (min > 60) {
-      min = Math.ceil((second_time / 60) % 60);
-      let hour = Math.floor(second_time / 60 / 60);
-      time = `${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`;
+      min = Math.ceil((second_time / 60) % 60)
+      let hour = Math.floor(second_time / 60 / 60)
+      time = `${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`
     } else {
-      time = `00:${time}`;
+      time = `00:${time}`
     }
   } else {
-    time = `00:00:${time < 10 ? `0${time}` : time}`;
+    time = `00:00:${time < 10 ? `0${time}` : time}`
   }
 
-  return time;
+  return time
 }
 
 /**
@@ -100,16 +100,14 @@ export function timeStamp(second_time) {
  * @param {*} timetemp
  */
 export function dateFormat(timetemp) {
-  const date = new Date(timetemp);
-  let YYYY = date.getFullYear();
-  let DD = date.getDate();
-  let MM = date.getMonth() + 1;
-  let hh = date.getHours();
-  let mm = date.getMinutes();
-  let ss = date.getSeconds();
-  return `${YYYY}.${MM > 9 ? MM : "0" + MM}.${DD > 9 ? DD : "0" + DD} ${hh > 9 ? hh : "0" + hh}.${mm > 9 ? mm : "0" + mm}.${
-    ss > 9 ? ss : "0" + ss
-  }`;
+  const date = new Date(timetemp)
+  let YYYY = date.getFullYear()
+  let DD = date.getDate()
+  let MM = date.getMonth() + 1
+  let hh = date.getHours()
+  let mm = date.getMinutes()
+  let ss = date.getSeconds()
+  return `${YYYY}.${MM > 9 ? MM : '0' + MM}.${DD > 9 ? DD : '0' + DD} ${hh > 9 ? hh : '0' + hh}.${mm > 9 ? mm : '0' + mm}.${ss > 9 ? ss : '0' + ss}`
 }
 
 /**
@@ -118,13 +116,13 @@ export function dateFormat(timetemp) {
  */
 export function fullscreen(element) {
   if (element.requestFullScreen) {
-    element.requestFullScreen();
+    element.requestFullScreen()
   } else if (element.webkitRequestFullScreen) {
-    element.webkitRequestFullScreen();
+    element.webkitRequestFullScreen()
   } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
+    element.mozRequestFullScreen()
   } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen();
+    element.msRequestFullscreen()
   }
 }
 
@@ -134,13 +132,13 @@ export function fullscreen(element) {
  */
 export function exitFullscreen() {
   if (document.exitFullscreen) {
-    document.exitFullscreen();
+    document.exitFullscreen()
   } else if (document.mozCancelFullScreen) {
-    document.mozCancelFullScreen();
+    document.mozCancelFullScreen()
   } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen();
+    document.webkitExitFullscreen()
   } else if (document.msExitFullscreen) {
-    document.msExitFullscreen();
+    document.msExitFullscreen()
   }
 }
 
@@ -148,12 +146,7 @@ export function exitFullscreen() {
  * 判读是否支持全屏
  */
 export function fullscreenEnabled() {
-  return (
-    document.fullscreenEnabled ||
-    document.mozFullScreenEnabled ||
-    document.webkitFullscreenEnabled ||
-    document.msFullscreenEnabled
-  );
+  return document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled
 }
 
 /**
@@ -162,7 +155,7 @@ export function fullscreenEnabled() {
  */
 export function isFullscreen(ele) {
   if (!ele) {
-    return false;
+    return false
   }
   return (
     document.fullscreenElement === ele ||
@@ -170,13 +163,13 @@ export function isFullscreen(ele) {
     document.mozFullScreenElement === ele ||
     document.webkitFullscreenElement === ele ||
     false
-  );
+  )
 }
 // 添加 / 移除 全屏事件监听
 export function fullScreenListener(isAdd, fullscreenchange) {
-  const funcName = isAdd ? "addEventListener" : "removeEventListener";
-  const fullScreenEvents = ["fullscreenchange", "mozfullscreenchange", "webkitfullscreenchange", "msfullscreenchange"];
-  fullScreenEvents.map(v => document[funcName](v, fullscreenchange));
+  const funcName = isAdd ? 'addEventListener' : 'removeEventListener'
+  const fullScreenEvents = ['fullscreenchange', 'mozfullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange']
+  fullScreenEvents.map(v => document[funcName](v, fullscreenchange))
 }
 
 /**
@@ -186,49 +179,55 @@ export function fullScreenListener(isAdd, fullscreenchange) {
  * @param {*} scale
  */
 export function computedBound(ele, currentPosition, scale) {
-  const data = currentPosition;
-  const eleRect = ele.getBoundingClientRect();
-  const w = eleRect.width;
-  const h = eleRect.height;
+  const data = currentPosition
+  const eleRect = ele.getBoundingClientRect()
+  const w = eleRect.width
+  const h = eleRect.height
   let lx = 0,
-    ly = 0;
+    ly = 0
   if (scale === 1) {
-    return [0, 0];
+    return [0, 0]
   }
-  lx = (w * (scale - 1)) / 2 / scale;
-  ly = (h * (scale - 1)) / 2 / scale;
+  lx = (w * (scale - 1)) / 2 / scale
+  ly = (h * (scale - 1)) / 2 / scale
   let x = 0,
-    y = 0;
+    y = 0
   if (data[0] >= 0 && data[0] > lx) {
-    x = lx;
+    x = lx
   }
   if (data[0] >= 0 && data[0] < lx) {
-    x = data[0];
+    x = data[0]
   }
 
   if (data[0] < 0 && data[0] < -lx) {
-    x = -lx;
+    x = -lx
   }
   if (data[0] < 0 && data[0] > -lx) {
-    x = data[0];
+    x = data[0]
   }
 
   if (data[1] >= 0 && data[1] > ly) {
-    y = ly;
+    y = ly
   }
   if (data[1] >= 0 && data[1] < ly) {
-    y = data[1];
+    y = data[1]
   }
 
   if (data[1] < 0 && data[1] < -ly) {
-    y = -ly;
+    y = -ly
   }
   if (data[1] < 0 && data[1] > -ly) {
-    y = data[1];
+    y = data[1]
   }
   if (x !== data[0] || y !== data[1]) {
-    return [x, y];
+    return [x, y]
   } else {
-    return;
+    return
   }
+}
+
+export function getRandom() {
+  return Math.random()
+    .toString(36)
+    .substr(2)
 }
