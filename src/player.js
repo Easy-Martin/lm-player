@@ -41,6 +41,7 @@ class LMPlayer extends React.Component {
     this.playContainer = this.playContainerRef.current
     this.player = this.playContainer.querySelector('video')
     this.createPlayer()
+    this.isInit = true
   }
 
   componentDidUpdate() {
@@ -90,7 +91,7 @@ class LMPlayer extends React.Component {
   }
 
   renderVideoTools = () => {
-    if (this.state.playChange) {
+    if (!this.isInit) {
       return <NoSource />
     }
     return (
@@ -98,9 +99,12 @@ class LMPlayer extends React.Component {
         <ContrallerBar />
         <VideoMessage />
         <DragEvent />
-        <ContrallerEvent />
-        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
-        {this.props.isLive ? <LiveHeart key={this.props.file} /> : <TimeLine />}
+        <ContrallerEvent>
+          <ContrallerBar />
+          {!this.props.isLive && <TimeLine />}
+        </ContrallerEvent>
+        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={`${this.props.file}_error`} />
+        {this.props.isLive && <LiveHeart key={this.props.file} />}
       </>
     )
   }

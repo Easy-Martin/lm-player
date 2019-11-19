@@ -3,7 +3,6 @@ import { videoDec } from './context'
 import IconFont from './iconfont'
 import Slider from './slider'
 import { timeStamp } from './util'
-import EventName from './event/eventName'
 import PropTypes from 'prop-types'
 import './style/time-line.less'
 
@@ -14,8 +13,7 @@ class TineLine extends React.Component {
     this.state = {
       duration: 0,
       currentTime: 0,
-      buffered: 0,
-      hideBar: false
+      buffered: 0
     }
   }
   componentDidMount() {
@@ -26,16 +24,8 @@ class TineLine extends React.Component {
     event.addEventListener('progress', this.getBuffered)
     event.addEventListener('suspend', this.getBuffered)
     event.addEventListener('seeked', this.seekendPlay)
-    event.on(EventName.HIDE_CONTRALLER, this.hideContraller)
-    event.on(EventName.SHOW_CONTRALLER, this.showContraller)
   }
 
-  hideContraller = () => {
-    this.setState({ hideBar: true })
-  }
-  showContraller = () => {
-    this.setState({ hideBar: false })
-  }
   getDuration = () => {
     const { api } = this.props
     this.setState({
@@ -84,11 +74,11 @@ class TineLine extends React.Component {
     api.backWind()
   }
   render() {
-    const { duration, currentTime, buffered, hideBar } = this.state
+    const { duration, currentTime, buffered } = this.state
     const playPercent = Math.round((currentTime / duration) * 100)
     const bufferedPercent = Math.round((buffered / duration) * 100)
     return (
-      <div className={`video-time-line-layout ${hideBar ? 'hide-time-line' : ''}`}>
+      <div className={`video-time-line-layout ${!this.props.visibel ? 'hide-time-line' : ''}`}>
         <IconFont type="lm-player-PrevFast" onClick={this.backWind} className="time-line-action-item" />
         <Slider
           className="time-line-box"
@@ -110,7 +100,8 @@ TineLine.propTypes = {
   playIndex: PropTypes.number,
   historyList: PropTypes.array,
   seekTo: PropTypes.func,
-  video: PropTypes.element
+  video: PropTypes.element,
+  visibel: PropTypes.bool
 }
 
 export default TineLine

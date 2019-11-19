@@ -887,9 +887,9 @@ function (_React$Component) {
     value: function componentDidMount() {
       var event = this.props.event;
       this.mounted = true;
-      event.addEventListener("play", this.updateRender);
-      event.addEventListener("pause", this.updateRender);
-      event.addEventListener("volumechange", this.volumechange);
+      event.addEventListener('play', this.updateRender);
+      event.addEventListener('pause', this.updateRender);
+      event.addEventListener('volumechange', this.volumechange);
       event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
       event.on(EventName.SEEK, this.seek);
     }
@@ -905,22 +905,22 @@ function (_React$Component) {
           leftExtContents = _playerProps$leftExtC === void 0 ? null : _playerProps$leftExtC,
           _playerProps$leftMidE = playerProps.leftMidExtContents,
           leftMidExtContents = _playerProps$leftMidE === void 0 ? null : _playerProps$leftMidE;
-      var volumeType = video.volume === 1 ? "lm-player-volume-max" : "lm-player-volume-normal-fuben";
+      var volumeType = video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben';
       return React.createElement("div", {
         className: "contraller-left-bar"
       }, leftExtContents, React.createElement(Bar, {
         visibel: !isLive
       }, React.createElement(IconFont, {
         onClick: this.changePlayStatus,
-        type: video.paused ? "lm-player-Play_Main" : "lm-player-Pause_Main",
-        title: video.paused ? "播放" : "暂停"
+        type: video.paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main',
+        title: video.paused ? '播放' : '暂停'
       })), React.createElement(Bar, {
-        className: "contraller-bar-volume ".concat(openSliderVolume ? "contraller-bar-hover-volume" : ""),
+        className: "contraller-bar-volume ".concat(openSliderVolume ? 'contraller-bar-hover-volume' : ''),
         onMouseOver: this.openSliderVolume,
         onMouseOut: this.closeSliderVolume
       }, React.createElement(IconFont, {
         onClick: this.mutedChange,
-        type: video.muted ? "lm-player-volume-close" : volumeType,
+        type: video.muted ? 'lm-player-volume-close' : volumeType,
         title: "\u97F3\u91CF"
       }), React.createElement("div", {
         className: "volume-slider-layout"
@@ -1106,7 +1106,7 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       return React.createElement("div", {
-        className: "contraller-bar-layout ".concat(this.state.hideBar ? "hide-contraller-bar" : "")
+        className: "contraller-bar-layout ".concat(this.state.hideBar ? 'hide-contraller-bar' : '')
       }, React.createElement(LeftBar, null), React.createElement(RightBar, null));
     }
   }]);
@@ -1129,8 +1129,11 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ContrallerEvent).call(this, props));
 
     _this.showContraller = function () {
-      var event = _this.props.event;
-      event.emit(EventName.SHOW_CONTRALLER);
+      if (!_this.visibel) {
+        var event = _this.props.event;
+        _this.visibel = true;
+        event.emit(EventName.SHOW_CONTRALLER);
+      }
 
       _this.hideContraller();
     };
@@ -1139,11 +1142,13 @@ function (_React$Component) {
       var event = _this.props.event;
       clearTimeout(_this.timer);
       _this.timer = setTimeout(function () {
+        _this.visibel = false;
         event.emit(EventName.HIDE_CONTRALLER);
       }, 3 * 1000);
     };
 
     _this.timer = null;
+    _this.visibel = true;
     return _this;
   }
 
@@ -2224,13 +2229,14 @@ function (_React$Component) {
     };
 
     _this.renderVideoTools = function () {
-      if (!_this.api) {
+      if (!_this.event) {
         return React.createElement(NoSource, null);
       }
 
       return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null), React.createElement(ErrorEvent, {
         flvPlayer: _this.flv,
-        hlsPlayer: _this.hls
+        hlsPlayer: _this.hls,
+        key: "".concat(_this.props.file, "_error")
       }), _this.props.isLive ? React.createElement(LiveHeart, {
         key: _this.props.file
       }) : React.createElement(TineLine, null));
@@ -2812,14 +2818,15 @@ function (_React$Component) {
     };
 
     _this.renderVideoTools = function () {
-      if (!_this.api) {
+      if (!_this.event) {
         return React.createElement(NoSource, null);
       }
 
-      return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(TineLine$1, null), React.createElement(ContrallerEvent, null), React.createElement(ErrorEvent, {
+      return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(TineLine$1, null), React.createElement(ErrorEvent, {
         flvPlayer: _this.flv,
-        hlsPlayer: _this.hls
-      }), React.createElement(DragEvent, null), React.createElement(PlayEnd, null));
+        hlsPlayer: _this.hls,
+        key: _this.props.historyList.fragments[_this.playIndex].file
+      }), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null), React.createElement(PlayEnd, null));
     };
 
     _this.playIndex = 0;

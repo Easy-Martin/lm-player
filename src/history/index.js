@@ -11,7 +11,7 @@ import VideoEvent from '../event'
 import PlayEnd from './play_end'
 import EventName from '../event/eventName'
 import ContrallerEvent from '../event/contrallerEvent'
-import { getVideoType, createFlvPlayer, createHlsPlayer, getRandom } from '../util'
+import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util'
 
 class HistoryPlayer extends React.Component {
   constructor(props) {
@@ -25,8 +25,7 @@ class HistoryPlayer extends React.Component {
     this.playContainer = null
     this.state = {
       playChange: false,
-      historyList: [],
-      videoKey: getRandom()
+      historyList: []
     }
   }
   static getDerivedStateFromProps(props, state) {
@@ -38,6 +37,7 @@ class HistoryPlayer extends React.Component {
   componentDidMount() {
     this.playContainer = this.playContainerRef.current
     this.player = this.playContainer.querySelector('video')
+    this.isInit = true
     this.createPlayer()
   }
 
@@ -105,7 +105,7 @@ class HistoryPlayer extends React.Component {
       this.player.src = historyList.fragments[index].file
     }
     this.playIndex = index
-    this.setState({ videoKey: getRandom() })
+    this.forceUpdate()
   }
   /**
    * @历史视频
@@ -201,18 +201,18 @@ class HistoryPlayer extends React.Component {
     }
   }
   renderVideoTools = () => {
-    if (this.state.playChange) {
+    if (!this.isInit) {
       return <NoSource />
     }
-    const { videoKey } = this.state
     return (
       <>
-        <ContrallerBar key={`${videoKey}_0`} />
-        <VideoMessage key={`${videoKey}_1`} />
-        <HistoryTimeLine key={`${videoKey}_2`} />
-        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={`${videoKey}_3`} />
+        <VideoMessage />
+        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={this.props.historyList.fragments[this.playIndex].file} />
         <DragEvent />
-        <ContrallerEvent />
+        <ContrallerEvent>
+          <ContrallerBar />
+          <HistoryTimeLine />
+        </ContrallerEvent>
         <PlayEnd />
       </>
     )

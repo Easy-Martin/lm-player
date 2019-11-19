@@ -28,6 +28,7 @@ class ContrallerEvent extends React.Component {
     if (!this.visibel) {
       const { event } = this.props
       this.visibel = true
+      this.forceUpdate()
       event.emit(EventName.SHOW_CONTRALLER)
     }
     this.hideContraller()
@@ -38,17 +39,20 @@ class ContrallerEvent extends React.Component {
     this.timer = setTimeout(() => {
       this.visibel = false
       event.emit(EventName.HIDE_CONTRALLER)
+      this.forceUpdate()
     }, 3 * 1000)
   }
   render() {
-    return null
+    const { children } = this.props
+    return React.Children.map(children, child => (React.isValidElement(child) ? React.cloneElement(child, { visibel: this.visibel }) : child))
   }
 }
 
 ContrallerEvent.propTypes = {
   api: PropTypes.object,
   event: PropTypes.object,
-  playContainer: PropTypes.node
+  playContainer: PropTypes.node,
+  children: PropTypes.element
 }
 
 export default ContrallerEvent
