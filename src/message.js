@@ -31,6 +31,19 @@ class VideoMessage extends React.Component {
     event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd)
     event.on(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage)
   }
+  componentWillUnmount(){
+    event.removeEventListener('loadstart', this.openLoading)
+    event.removeEventListener('waiting', this.openLoading)
+    event.removeEventListener('seeking', this.openLoading)
+    event.removeEventListener('loadeddata', this.closeLoading)
+    event.removeEventListener('canplay', this.closeLoading)
+    event.off(EventName.ERROR_RELOAD, this.errorReload)
+    event.off(EventName.RELOAD_FAIL, this.reloadFail)
+    event.off(EventName.RELOAD_SUCCESS, this.reloadSuccess)
+    event.off(EventName.RELOAD, this.reload)
+    event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd)
+    event.off(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage)
+  }
   clearReloadMessage = () => {
     this.message = null
     this.mounted && this.forceUpdate()

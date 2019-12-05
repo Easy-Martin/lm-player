@@ -25,6 +25,13 @@ class LeftBar extends React.Component {
     event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd)
     event.on(EventName.SEEK, this.seek)
   }
+  componentWillUnmount() {
+    event.removeEventListener('play', this.updateRender)
+    event.removeEventListener('pause', this.updateRender)
+    event.removeEventListener('volumechange', this.volumechange)
+    event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd)
+    event.off(EventName.SEEK, this.seek)
+  }
 
   seek = () => {
     this.historyEnd = false

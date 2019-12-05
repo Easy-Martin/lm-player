@@ -69,9 +69,7 @@ class HistoryPlayer extends React.Component {
     this.event = new VideoEvent(this.player)
     this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls)
     this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext())
-    if (this.props.autoPlay && this.getCurrentFile()) {
-      this.api.play()
-    }
+
     if (defaultTime) {
       this.seekTo((defaultTime - historyList.beginDate) / 1000)
     }
@@ -85,27 +83,27 @@ class HistoryPlayer extends React.Component {
     if (this.flv) {
       this.flv.unload()
       this.flv.destroy()
-      this.flv = null
     }
     if (this.hls) {
       this.hls.stopLoad()
       this.hls.destroy()
-      this.hls = null
     }
+    this.playIndex = index
     const type = getVideoType(historyList.fragments[index].file)
     if (type === 'flv' || this.props.type === 'flv') {
       this.flv = createFlvPlayer(this.player, {
         file: historyList.fragments[index].file
       })
       this.api && this.api.updateChunk({ flv: this.flv })
-    } else if (type === 'm3u8' || this.props.type === 'hls') {
+      return this.forceUpdate()
+    }
+    if (type === 'm3u8' || this.props.type === 'hls') {
       this.hls = createHlsPlayer(this.player, historyList.fragments[index].file)
       this.api && this.api.updateChunk({ hls: this.hls })
-    } else {
-      this.player.src = historyList.fragments[index].file
+      return this.forceUpdate()
     }
-    this.playIndex = index
-    this.forceUpdate()
+    this.player.src = historyList.fragments[index].file
+    return this.forceUpdate()
   }
   /**
    * @历史视频
@@ -131,19 +129,10 @@ class HistoryPlayer extends React.Component {
    * 覆盖Player中暴漏的api，重写seek相关的方法
    */
   getPlayerApiContext = () => {
-    const api = this.api ? this.api.getApi() : {}
-    const event = this.event
-      ? {
-          on: this.event.on.bind(this.event),
-          off: this.event.off.bind(this.event),
-          emit: this.event.emit.bind(this.event)
-        }
-      : {}
-
-    const historyApi = {
-      seekTo: this.seekTo
+    if (this.api && this.event) {
+      return Object.assign({}, this.api.getApi(), this.event.getApi(), { seekTo: this.seekTo })
     }
-    return Object.assign({}, api, event, historyApi)
+    return {}
   }
 
   /**
@@ -202,21 +191,21 @@ class HistoryPlayer extends React.Component {
   }
   renderVideoTools = () => {
     const file = this.getCurrentFile()
-    if (!this.isInit || !file) {
-      return <NoSource />
+    if (this.isInit && file && this.api && this.event) {
+      return (
+        <>
+          <VideoMessage />
+          <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={file} />
+          <DragEvent />
+          <ContrallerEvent>
+            <ContrallerBar />
+            <HistoryTimeLine />
+          </ContrallerEvent>
+          <PlayEnd />
+        </>
+      )
     }
-    return (
-      <>
-        <VideoMessage />
-        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={file} />
-        <DragEvent />
-        <ContrallerEvent>
-          <ContrallerBar />
-          <HistoryTimeLine />
-        </ContrallerEvent>
-        <PlayEnd />
-      </>
-    )
+    return <NoSource />
   }
   getErrorKey() {
     return this.getCurrentFile() || getRandom()

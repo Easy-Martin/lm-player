@@ -1,29 +1,29 @@
-import { fullscreen, isFullscreen, exitFullscreen } from "./util";
-import EventName from "./event/eventName";
+import { fullscreen, isFullscreen, exitFullscreen } from './util'
+import EventName from './event/eventName'
 export default class Api {
   constructor(video, playContainer, event, flv, hls) {
-    this.player = video;
-    this.playContainer = playContainer;
-    this.flv = flv;
-    this.hls = hls;
-    this.event = event;
-    this.scale = 1;
-    this.position = [0, 0];
+    this.player = video
+    this.playContainer = playContainer
+    this.flv = flv
+    this.hls = hls
+    this.event = event
+    this.scale = 1
+    this.position = [0, 0]
   }
   /**
    * 播放器销毁后 动态跟新api下的flv，hls对象
    * @param {*} param0
    */
   updateChunk({ flv, hls }) {
-    this.flv = flv;
-    this.hls = hls;
+    this.flv = flv
+    this.hls = hls
   }
   /**
    * 全屏
    */
   requestFullScreen() {
     if (!isFullscreen(this.playContainer)) {
-      fullscreen(this.playContainer);
+      fullscreen(this.playContainer)
     }
   }
   /**
@@ -31,30 +31,28 @@ export default class Api {
    */
   cancelFullScreen() {
     if (isFullscreen(this.playContainer)) {
-      exitFullscreen();
+      exitFullscreen()
     }
   }
   play() {
     if (this.player.paused) {
-      this.player.play();
+      this.player.play()
     }
   }
   pause() {
     if (!this.player.paused) {
-      this.player.pause();
+      this.player.pause()
     }
   }
   destroy() {
-    this.player.removeAttribute("src");
-    this.unload();
+    this.player.removeAttribute('src')
+    this.unload()
     if (this.flv) {
-      this.flv.destroy();
+      this.flv.destroy()
     }
     if (this.hls) {
-      this.hls.destroy();
+      this.hls.destroy()
     }
-    this.scale = null;
-    this.position = null;
   }
 
   /**
@@ -63,14 +61,14 @@ export default class Api {
    * @param {*} noEmit
    */
   seekTo(seconds, noEmit) {
-    const buffered = this.getBufferedTime();
+    const buffered = this.getBufferedTime()
     if (this.flv && buffered[0] > seconds) {
-      this.flv.unload();
-      this.flv.load();
+      this.flv.unload()
+      this.flv.load()
     }
-    this.player.currentTime = seconds;
+    this.player.currentTime = seconds
     if (!noEmit) {
-      this.event.emit(EventName.SEEK, seconds);
+      this.event.emit(EventName.SEEK, seconds)
     }
   }
 
@@ -78,60 +76,54 @@ export default class Api {
    * 视频重载
    */
   reload() {
-    this.unload();
-    this.load();
-    this.play();
-    this.event.emit(EventName.RELOAD);
+    this.unload()
+    this.load()
+    this.play()
+    this.event.emit(EventName.RELOAD)
     if (this.getCurrentTime !== 0) {
-      this.seekTo(0);
+      this.seekTo(0)
     }
   }
   unload() {
-    this.flv && this.flv.unload();
-    this.hls && this.hls.stopLoad();
+    this.flv && this.flv.unload()
+    this.hls && this.hls.stopLoad()
   }
   load() {
-    this.flv && this.flv.load();
+    this.flv && this.flv.load()
     if (this.hls) {
       try {
-        this.hls.swapAudioCodec();
-        this.hls.recoverMediaError();
+        this.hls.swapAudioCodec()
+        this.hls.recoverMediaError()
       } catch (e) {
-        console.warn(e);
+        console.warn(e)
       }
-      this.hls.startLoad();
+      this.hls.startLoad()
     }
   }
   setVolume(fraction) {
-    this.player.volume = fraction;
+    this.player.volume = fraction
   }
   mute() {
-    this.player.muted = true;
+    this.player.muted = true
   }
   unmute() {
-    this.player.muted = false;
+    this.player.muted = false
   }
 
   /**
    * 开启画中画功能
    */
   requestPictureInPicture() {
-    if (
-      this.player.requestPictureInPicture &&
-      document.pictureInPictureElement !== this.player
-    ) {
-      this.player.requestPictureInPicture();
+    if (this.player.requestPictureInPicture && document.pictureInPictureElement !== this.player) {
+      this.player.requestPictureInPicture()
     }
   }
   /**
    * 关闭画中画功能
    */
   exitPictureInPicture() {
-    if (
-      document.exitPictureInPicture &&
-      document.pictureInPictureElement === this.player
-    ) {
-      document.exitPictureInPicture();
+    if (document.exitPictureInPicture && document.pictureInPictureElement === this.player) {
+      document.exitPictureInPicture()
     }
   }
 
@@ -140,60 +132,60 @@ export default class Api {
    * @param {*} rate
    */
   setPlaybackRate(rate) {
-    this.player.playbackRate = rate;
+    this.player.playbackRate = rate
   }
   /**
    * 获取视频总时长
    */
   getDuration() {
-    if (!this.player) return null;
-    const { duration, seekable } = this.player;
+    if (!this.player) return null
+    const { duration, seekable } = this.player
     if (duration === Infinity && seekable.length > 0) {
-      return seekable.end(seekable.length - 1);
+      return seekable.end(seekable.length - 1)
     }
-    return duration;
+    return duration
   }
   /**
    * 获取当前播放时间
    */
   getCurrentTime() {
-    if (!this.player) return null;
-    return this.player.currentTime;
+    if (!this.player) return null
+    return this.player.currentTime
   }
 
   /**
    * 获取缓存时间
    */
   getSecondsLoaded() {
-    return this.getBufferedTime()[1];
+    return this.getBufferedTime()[1]
   }
 
   /**
    * 获取当前视频缓存的起止时间
    */
   getBufferedTime() {
-    if (!this.player) return null;
-    const { buffered } = this.player;
+    if (!this.player) return null
+    const { buffered } = this.player
     if (buffered.length === 0) {
-      return [0, 0];
+      return [0, 0]
     }
-    const end = buffered.end(buffered.length - 1);
-    const start = buffered.start(buffered.length - 1);
-    const duration = this.getDuration();
+    const end = buffered.end(buffered.length - 1)
+    const start = buffered.start(buffered.length - 1)
+    const duration = this.getDuration()
     if (end > duration) {
-      return duration;
+      return duration
     }
-    return [start, end];
+    return [start, end]
   }
   /**
    * 快进通过seekTo方法实现
    * @param {*} second
    */
   fastForward(second = 5) {
-    const duration = this.getDuration();
-    const currentTime = this.getCurrentTime();
-    const time = currentTime + second;
-    this.seekTo(time > duration - 1 ? duration - 1 : time);
+    const duration = this.getDuration()
+    const currentTime = this.getCurrentTime()
+    const time = currentTime + second
+    this.seekTo(time > duration - 1 ? duration - 1 : time)
   }
 
   /**
@@ -201,60 +193,60 @@ export default class Api {
    * @param {*} second
    */
   backWind(second = 5) {
-    const currentTime = this.getCurrentTime();
-    const time = currentTime - second;
-    this.seekTo(time < 1 ? 1 : time);
+    const currentTime = this.getCurrentTime()
+    const time = currentTime - second
+    this.seekTo(time < 1 ? 1 : time)
   }
 
   /**
    * 视频截屏方法
    */
   snapshot() {
-    let canvas = document.createElement("canvas");
-    let ctx = canvas.getContext("2d");
-    canvas.width = this.player.videoWidth;
-    canvas.height = this.player.videoHeight;
-    ctx.drawImage(this.player, 0, 0, canvas.width, canvas.height);
+    let canvas = document.createElement('canvas')
+    let ctx = canvas.getContext('2d')
+    canvas.width = this.player.videoWidth
+    canvas.height = this.player.videoHeight
+    ctx.drawImage(this.player, 0, 0, canvas.width, canvas.height)
     setTimeout(() => {
-      canvas.remove();
-      canvas = null;
-      ctx = null;
-    }, 200);
-    return canvas.toDataURL();
+      canvas.remove()
+      canvas = null
+      ctx = null
+    }, 200)
+    return canvas.toDataURL()
   }
   setScale(num, isRest = false) {
-    let scale = this.scale + num;
+    let scale = this.scale + num
     if (isRest) {
-      scale = num;
+      scale = num
     } else {
       if (scale < 1) {
-        scale = 1;
+        scale = 1
       }
       if (scale > 3) {
-        scale = 3;
+        scale = 3
       }
     }
-    this.scale = scale;
-    this.player.style.transition = "transform 0.3s";
-    this.__setTransform();
-    this.event.emit(EventName.TRANSFORM);
+    this.scale = scale
+    this.player.style.transition = 'transform 0.3s'
+    this.__setTransform()
+    this.event.emit(EventName.TRANSFORM)
     setTimeout(() => {
-      this.player.style.transition = "unset";
-    }, 500);
+      this.player.style.transition = 'unset'
+    }, 500)
   }
   getScale() {
-    return this.scale;
+    return this.scale
   }
   setPosition(position, isAnimate) {
-    this.position = position;
-    this.player.style.transition = isAnimate ? "transform 0.3s" : "unset";
-    this.__setTransform();
+    this.position = position
+    this.player.style.transition = isAnimate ? 'transform 0.3s' : 'unset'
+    this.__setTransform()
   }
   getPosition() {
-    return this.position;
+    return this.position
   }
   __setTransform() {
-    this.player.style.transform = `scale(${this.scale}) translate(${this.position[0]}px,${this.position[1]}px)`;
+    this.player.style.transform = `scale(${this.scale}) translate(${this.position[0]}px,${this.position[1]}px)`
   }
   getApi() {
     return {
@@ -281,6 +273,6 @@ export default class Api {
       __player: this.player,
       flv: this.flv,
       hls: this.hls
-    };
+    }
   }
 }

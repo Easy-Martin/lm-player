@@ -159,6 +159,15 @@ function () {
       index > -1 && this.events[eventName].listener.splice(index, 1);
     }
   }, {
+    key: "getApi",
+    value: function getApi() {
+      return {
+        on: this.on.bind(this),
+        off: this.off.bind(this),
+        emit: this.emit.bind(this)
+      };
+    }
+  }, {
     key: "destroy",
     value: function destroy() {
       var _this = this;
@@ -758,7 +767,7 @@ function Bar(_ref) {
   var _ref$visibel = _ref.visibel,
       visibel = _ref$visibel === void 0 ? true : _ref$visibel,
       _ref$className = _ref.className,
-      className = _ref$className === void 0 ? "" : _ref$className,
+      className = _ref$className === void 0 ? '' : _ref$className,
       children = _ref.children,
       props = _objectWithoutProperties(_ref, ["visibel", "className", "children"]);
 
@@ -895,6 +904,15 @@ function (_React$Component) {
       event.addEventListener('volumechange', this.volumechange);
       event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
       event.on(EventName.SEEK, this.seek);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      event.removeEventListener('play', this.updateRender);
+      event.removeEventListener('pause', this.updateRender);
+      event.removeEventListener('volumechange', this.volumechange);
+      event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
+      event.off(EventName.SEEK, this.seek);
     }
   }, {
     key: "render",
@@ -1247,6 +1265,21 @@ function (_React$Component) {
       event.on(EventName.RELOAD, this.reload);
       event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
       event.on(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      event.removeEventListener('loadstart', this.openLoading);
+      event.removeEventListener('waiting', this.openLoading);
+      event.removeEventListener('seeking', this.openLoading);
+      event.removeEventListener('loadeddata', this.closeLoading);
+      event.removeEventListener('canplay', this.closeLoading);
+      event.off(EventName.ERROR_RELOAD, this.errorReload);
+      event.off(EventName.RELOAD_FAIL, this.reloadFail);
+      event.off(EventName.RELOAD_SUCCESS, this.reloadSuccess);
+      event.off(EventName.RELOAD, this.reload);
+      event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
+      event.off(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
     }
   }, {
     key: "render",
@@ -1716,7 +1749,7 @@ function () {
   }, {
     key: "destroy",
     value: function destroy() {
-      this.player.removeAttribute("src");
+      this.player.removeAttribute('src');
       this.unload();
 
       if (this.flv) {
@@ -1932,8 +1965,8 @@ function () {
   }, {
     key: "snapshot",
     value: function snapshot() {
-      var canvas = document.createElement("canvas");
-      var ctx = canvas.getContext("2d");
+      var canvas = document.createElement('canvas');
+      var ctx = canvas.getContext('2d');
       canvas.width = this.player.videoWidth;
       canvas.height = this.player.videoHeight;
       ctx.drawImage(this.player, 0, 0, canvas.width, canvas.height);
@@ -1965,13 +1998,13 @@ function () {
       }
 
       this.scale = scale;
-      this.player.style.transition = "transform 0.3s";
+      this.player.style.transition = 'transform 0.3s';
 
       this.__setTransform();
 
       this.event.emit(EventName.TRANSFORM);
       setTimeout(function () {
-        _this.player.style.transition = "unset";
+        _this.player.style.transition = 'unset';
       }, 500);
     }
   }, {
@@ -1983,7 +2016,7 @@ function () {
     key: "setPosition",
     value: function setPosition(position, isAnimate) {
       this.position = position;
-      this.player.style.transition = isAnimate ? "transform 0.3s" : "unset";
+      this.player.style.transition = isAnimate ? 'transform 0.3s' : 'unset';
 
       this.__setTransform();
     }
@@ -2174,27 +2207,30 @@ function (_React$Component) {
 
       if (type === 'flv' || _this.props.type === 'flv') {
         _this.flv = createFlvPlayer(_this.player, _this.props);
-      } else if (type === 'm3u8' || _this.props.type === 'hls') {
-        _this.hls = createHlsPlayer(_this.player, _this.props.file);
-      } else {
-        _this.player.src = _this.props.file;
+        return true;
       }
 
+      if (type === 'm3u8' || _this.props.type === 'hls') {
+        _this.hls = createHlsPlayer(_this.player, _this.props.file);
+        return true;
+      }
+
+      _this.player.src = _this.props.file;
       return true;
     };
 
     _this.renderVideoTools = function () {
-      if (!_this.isInit || !_this.props.file) {
-        return React.createElement(NoSource, null);
+      if (_this.isInit && _this.props.file && _this.api && _this.event) {
+        return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), !_this.props.isLive && React.createElement(TineLine, null)), React.createElement(ErrorEvent, {
+          flvPlayer: _this.flv,
+          hlsPlayer: _this.hls,
+          key: "".concat(_this.props.file, "_error")
+        }), _this.props.isLive && React.createElement(LiveHeart, {
+          key: _this.props.file
+        }));
       }
 
-      return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), !_this.props.isLive && React.createElement(TineLine, null)), React.createElement(ErrorEvent, {
-        flvPlayer: _this.flv,
-        hlsPlayer: _this.hls,
-        key: "".concat(_this.props.file, "_error")
-      }), _this.props.isLive && React.createElement(LiveHeart, {
-        key: _this.props.file
-      }));
+      return React.createElement(NoSource, null);
     };
 
     _this.getPlayUrl = function () {
@@ -2202,16 +2238,14 @@ function (_React$Component) {
     };
 
     _this.getPlayerApiContext = function () {
-      var api = _this.api ? _this.api.getApi() : {};
-      var event = _this.event ? {
-        on: _this.event.on.bind(_this.event),
-        off: _this.event.off.bind(_this.event),
-        emit: _this.event.emit.bind(_this.event)
-      } : {};
-      return Object.assign({}, api, event, {
-        getPlayUrl: _this.getPlayUrl,
-        playContainer: _this.playContainer
-      });
+      if (_this.api && _this.event) {
+        return Object.assign({}, _this.api.getApi(), _this.event.getApi(), {
+          getPlayUrl: _this.getPlayUrl,
+          playContainer: _this.playContainer
+        });
+      }
+
+      return {};
     };
 
     _this.getProvider = function () {
@@ -2278,11 +2312,6 @@ function (_React$Component) {
         this.event = new VideoEvent(this.player);
         this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
         this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
-
-        if (this.props.autoPlay && this.props.file) {
-          this.api.play();
-        }
-
         this.forceUpdate();
       }
     }
@@ -2640,18 +2669,15 @@ function (_React$Component) {
         _this.flv.unload();
 
         _this.flv.destroy();
-
-        _this.flv = null;
       }
 
       if (_this.hls) {
         _this.hls.stopLoad();
 
         _this.hls.destroy();
-
-        _this.hls = null;
       }
 
+      _this.playIndex = index;
       var type = getVideoType(historyList.fragments[index].file);
 
       if (type === 'flv' || _this.props.type === 'flv') {
@@ -2661,18 +2687,19 @@ function (_React$Component) {
         _this.api && _this.api.updateChunk({
           flv: _this.flv
         });
-      } else if (type === 'm3u8' || _this.props.type === 'hls') {
+        return _this.forceUpdate();
+      }
+
+      if (type === 'm3u8' || _this.props.type === 'hls') {
         _this.hls = createHlsPlayer(_this.player, historyList.fragments[index].file);
         _this.api && _this.api.updateChunk({
           hls: _this.hls
         });
-      } else {
-        _this.player.src = historyList.fragments[index].file;
+        return _this.forceUpdate();
       }
 
-      _this.playIndex = index;
-
-      _this.forceUpdate();
+      _this.player.src = historyList.fragments[index].file;
+      return _this.forceUpdate();
     };
 
     _this.changePlayIndex = function (index) {
@@ -2695,16 +2722,13 @@ function (_React$Component) {
     };
 
     _this.getPlayerApiContext = function () {
-      var api = _this.api ? _this.api.getApi() : {};
-      var event = _this.event ? {
-        on: _this.event.on.bind(_this.event),
-        off: _this.event.off.bind(_this.event),
-        emit: _this.event.emit.bind(_this.event)
-      } : {};
-      var historyApi = {
-        seekTo: _this.seekTo
-      };
-      return Object.assign({}, api, event, historyApi);
+      if (_this.api && _this.event) {
+        return Object.assign({}, _this.api.getApi(), _this.event.getApi(), {
+          seekTo: _this.seekTo
+        });
+      }
+
+      return {};
     };
 
     _this.computedIndexFormTime = function (time) {
@@ -2766,15 +2790,15 @@ function (_React$Component) {
     _this.renderVideoTools = function () {
       var file = _this.getCurrentFile();
 
-      if (!_this.isInit || !file) {
-        return React.createElement(NoSource, null);
+      if (_this.isInit && file && _this.api && _this.event) {
+        return React.createElement(React.Fragment, null, React.createElement(VideoMessage, null), React.createElement(ErrorEvent, {
+          flvPlayer: _this.flv,
+          hlsPlayer: _this.hls,
+          key: file
+        }), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), React.createElement(TineLine$1, null)), React.createElement(PlayEnd, null));
       }
 
-      return React.createElement(React.Fragment, null, React.createElement(VideoMessage, null), React.createElement(ErrorEvent, {
-        flvPlayer: _this.flv,
-        hlsPlayer: _this.hls,
-        key: file
-      }), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), React.createElement(TineLine$1, null)), React.createElement(PlayEnd, null));
+      return React.createElement(NoSource, null);
     };
 
     _this.playIndex = 0;
@@ -2838,10 +2862,6 @@ function (_React$Component) {
       this.event = new VideoEvent(this.player);
       this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
       this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
-
-      if (this.props.autoPlay && this.getCurrentFile()) {
-        this.api.play();
-      }
 
       if (defaultTime) {
         this.seekTo((defaultTime - historyList.beginDate) / 1000);

@@ -53,13 +53,6 @@ class LMPlayer extends React.Component {
   componentWillUnmount() {
     this.event && this.event.destroy()
     this.api && this.api.destroy()
-    this.player = null
-    this.event = null
-    this.api = null
-    this.playContainerRef = null
-    this.playContainer = null
-    this.flv = null
-    this.hls = null
   }
 
   createPlayer() {
@@ -68,9 +61,6 @@ class LMPlayer extends React.Component {
       this.event = new VideoEvent(this.player)
       this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls)
       this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext())
-      if (this.props.autoPlay && this.props.file) {
-        this.api.play()
-      }
       this.forceUpdate()
     }
   }
@@ -82,45 +72,42 @@ class LMPlayer extends React.Component {
     const type = getVideoType(this.props.file)
     if (type === 'flv' || this.props.type === 'flv') {
       this.flv = createFlvPlayer(this.player, this.props)
-    } else if (type === 'm3u8' || this.props.type === 'hls') {
-      this.hls = createHlsPlayer(this.player, this.props.file)
-    } else {
-      this.player.src = this.props.file
+      return true
     }
+    if (type === 'm3u8' || this.props.type === 'hls') {
+      this.hls = createHlsPlayer(this.player, this.props.file)
+      return true
+    }
+    this.player.src = this.props.file
     return true
   }
 
   renderVideoTools = () => {
-    if (!this.isInit || !this.props.file) {
-      return <NoSource />
-    }
-    return (
-      <>
-        <ContrallerBar />
-        <VideoMessage />
-        <DragEvent />
-        <ContrallerEvent>
+    if (this.isInit && this.props.file && this.api && this.event) {
+      return (
+        <>
           <ContrallerBar />
-          {!this.props.isLive && <TimeLine />}
-        </ContrallerEvent>
-        <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={`${this.props.file}_error`} />
-        {this.props.isLive && <LiveHeart key={this.props.file} />}
-      </>
-    )
+          <VideoMessage />
+          <DragEvent />
+          <ContrallerEvent>
+            <ContrallerBar />
+            {!this.props.isLive && <TimeLine />}
+          </ContrallerEvent>
+          <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={`${this.props.file}_error`} />
+          {this.props.isLive && <LiveHeart key={this.props.file} />}
+        </>
+      )
+    }
+    return <NoSource />
   }
   getPlayUrl = () => {
     return this.props.file
   }
   getPlayerApiContext = () => {
-    const api = this.api ? this.api.getApi() : {}
-    const event = this.event
-      ? {
-          on: this.event.on.bind(this.event),
-          off: this.event.off.bind(this.event),
-          emit: this.event.emit.bind(this.event)
-        }
-      : {}
-    return Object.assign({}, api, event, { getPlayUrl: this.getPlayUrl, playContainer: this.playContainer })
+    if (this.api && this.event) {
+      return Object.assign({}, this.api.getApi(), this.event.getApi(), { getPlayUrl: this.getPlayUrl, playContainer: this.playContainer })
+    }
+    return {}
   }
   getProvider = () => {
     return {
