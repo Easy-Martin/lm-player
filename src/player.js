@@ -36,7 +36,10 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
     playerObj.event = new VideoEvent(playerObject.video)
     playerObj.api = new Api(playerObject)
     setPlayerObj(playerObj)
-    onInitPlayer && onInitPlayer(playerObj)
+
+    if (onInitPlayer) {
+      onInitPlayer(Object.assign({}, playerObj.api.getApi(), playerObj.event.getApi()))
+    }
   }, [file])
 
   return (
