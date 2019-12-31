@@ -88,7 +88,7 @@ function VideoTools({ playerObj, draggable, isLive, hideContrallerBar, scale, sn
             leftExtContents={leftExtContents}
             leftMidExtContents={leftMidExtContents}
           />
-          {!isLive && <TimeLine />}
+          {!isLive && <TimeLine api={playerObj.api} event={playerObj.event} />}
         </ContrallerEvent>
       )}
       <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
