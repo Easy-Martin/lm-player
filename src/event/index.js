@@ -1,4 +1,4 @@
-class VideoEvent {
+class VideoEventInstance {
   constructor(video) {
     this.video = video
     this.events = {}
@@ -54,4 +54,4 @@ class VideoEvent {
   }
 }
 
-export default VideoEvent
+export default VideoEventInstance

@@ -2,6 +2,7 @@ import React from 'react';
 import flvjs from 'flv.lm.js';
 import * as Hls from 'hls.js';
 import { isSupported, Events } from 'hls.js';
+import PropTypes$1 from 'prop-types';
 import ReactDOM from 'react-dom';
 
 function _classCallCheck(instance, Constructor) {
@@ -26,36 +27,37 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
-function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
 
-function _typeof(obj) {
-  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
-    _typeof = function _typeof(obj) {
-      return _typeof2(obj);
-    };
-  } else {
-    _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
-    };
-  }
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
 
-  return _typeof(obj);
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
 }
 
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
   }
 
-  return self;
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
-    return call;
-  }
-
-  return _assertThisInitialized(self);
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
 }
 
 function _getPrototypeOf(o) {
@@ -74,33 +76,90 @@ function _setPrototypeOf(o, p) {
   return _setPrototypeOf(o, p);
 }
 
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
   }
 
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
+  return target;
 }
 
-var VideoEvent =
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+var VideoEventInstance =
 /*#__PURE__*/
 function () {
-  function VideoEvent(video) {
-    _classCallCheck(this, VideoEvent);
+  function VideoEventInstance(video) {
+    _classCallCheck(this, VideoEventInstance);
 
     this.video = video;
     this.events = {};
     this.playerEvents = {};
   }
 
-  _createClass(VideoEvent, [{
+  _createClass(VideoEventInstance, [{
     key: "on",
     value: function on(eventName, handle) {
       this.events && this.events[eventName] ? this.events[eventName].listener.push(handle) : this.events[eventName] = {
@@ -182,7 +241,7 @@ function () {
     }
   }]);
 
-  return VideoEvent;
+  return VideoEventInstance;
 }();
 
 /**
@@ -419,40 +478,6 @@ function getRandom() {
   return Math.random().toString(36).substr(2);
 }
 
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
-
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose(source, excluded);
-  var key, i;
-
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-
-  return target;
-}
-
 var videoContext = React.createContext(null);
 var Provider = videoContext.Provider;
 var Consumer = videoContext.Consumer;
@@ -476,7 +501,7 @@ function videoDec(Component) {
             props = _objectWithoutProperties(_this$props, ["forwardRef"]);
 
         return React.createElement(Consumer, null, function (context) {
-          return React.createElement(Component, Object.assign({}, props, context, {
+          return React.createElement(Component, _extends({}, props, context, {
             ref: forwardRef
           }));
         });
@@ -486,8 +511,11 @@ function videoDec(Component) {
     return ComponentWithVideoDec;
   }(React.Component);
 
+  ComponentWithVideoDec.propTypes = {
+    forwardRef: PropTypes$1.ref
+  };
   return React.forwardRef(function (props, ref) {
-    return React.createElement(ComponentWithVideoDec, Object.assign({}, props, {
+    return React.createElement(ComponentWithVideoDec, _extends({}, props, {
       forwardRef: ref
     }));
   });
@@ -499,10 +527,14 @@ function IconFont(_ref) {
       className = _ref$className === void 0 ? '' : _ref$className,
       props = _objectWithoutProperties(_ref, ["type", "className"]);
 
-  return React.createElement("i", Object.assign({
+  return React.createElement("i", _extends({
     className: "lm-player-iconfont ".concat(type, " ").concat(className)
   }, props));
 }
+IconFont.propTypes = {
+  type: PropTypes$1.string,
+  className: PropTypes$1.string
+};
 
 var Slider =
 /*#__PURE__*/
@@ -718,6 +750,17 @@ function (_React$Component) {
   return Slider;
 }(React.Component);
 
+Slider.propTypes = {
+  currentPercent: PropTypes$1.number,
+  seekTo: PropTypes$1.func,
+  video: PropTypes$1.element,
+  renderTips: func,
+  availablePercent: PropTypes$1.number,
+  onChange: PropTypes$1.func,
+  children: PropTypes$1.any,
+  className: PropTypes$1.string
+};
+
 var Tips =
 /*#__PURE__*/
 function (_React$Component2) {
@@ -763,6 +806,13 @@ function (_React$Component2) {
   return Tips;
 }(React.Component);
 
+Tips.propTypes = {
+  visibel: PropTypes$1.bool,
+  children: PropTypes$1.element,
+  style: PropTypes$1.any,
+  className: PropTypes$1.string
+};
+
 function Bar(_ref) {
   var _ref$visibel = _ref.visibel,
       visibel = _ref$visibel === void 0 ? true : _ref$visibel,
@@ -775,10 +825,15 @@ function Bar(_ref) {
     return null;
   }
 
-  return React.createElement("span", Object.assign({
+  return React.createElement("span", _extends({
     className: "contraller-bar-item ".concat(className)
   }, props), children);
 }
+Bar.propTypes = {
+  visibel: PropTypes$1.bool,
+  className: PropTypes$1.string,
+  children: PropTypes$1.any
+};
 
 var EventName = {
   RELOAD: "reload",
@@ -963,6 +1018,15 @@ function (_React$Component) {
   return LeftBar;
 }(React.Component), _temp)) || _class;
 
+LeftBar.propTypes = {
+  api: PropTypes$1.object,
+  event: PropTypes$1.object,
+  playerProps: PropTypes$1.object,
+  video: PropTypes$1.node,
+  reloadHistory: PropTypes$1.func,
+  isHistory: PropTypes$1.bool
+};
+
 var _class$1, _temp$1;
 
 var RightBar = videoDec(_class$1 = (_temp$1 =
@@ -1084,12 +1148,25 @@ function (_React$Component) {
   return RightBar;
 }(React.Component), _temp$1)) || _class$1;
 
+RightBar.propTypes = {
+  api: PropTypes$1.object,
+  event: PropTypes$1.object,
+  playerProps: PropTypes$1.object,
+  playContainer: PropTypes$1.node,
+  reloadHistory: PropTypes$1.func,
+  isHistory: PropTypes$1.bool
+};
+
 function ContrallerBar(_ref) {
   var visibel = _ref.visibel;
   return React.createElement("div", {
     className: "contraller-bar-layout ".concat(!visibel ? 'hide-contraller-bar' : '')
   }, React.createElement(LeftBar, null), React.createElement(RightBar, null));
 }
+
+ContrallerBar.propTypes = {
+  visibel: PropTypes$1.bool
+};
 
 var _class$2, _temp$2;
 
@@ -1170,6 +1247,13 @@ function (_React$Component) {
 
   return ContrallerEvent;
 }(React.Component), _temp$2)) || _class$2;
+
+ContrallerEvent.propTypes = {
+  api: PropTypes$1.object,
+  event: PropTypes$1.object,
+  playContainer: PropTypes$1.node,
+  children: PropTypes$1.element
+};
 
 var _class$3, _temp$3;
 
@@ -1301,6 +1385,10 @@ function (_React$Component) {
   return VideoMessage;
 }(React.Component), _temp$3)) || _class$3;
 
+VideoMessage.propTypes = {
+  api: PropTypes.object,
+  event: PropTypes.object
+};
 var NoSource = function NoSource() {
   return React.createElement("div", {
     className: "lm-player-message-mask lm-player-mask-loading-animation"
@@ -1441,27 +1529,16 @@ function (_React$Component) {
   return TineLine;
 }(React.Component), _temp$4)) || _class$4;
 
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
-    }
-
-    return arr2;
-  }
-}
-
-function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-}
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
-}
-
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-}
+TineLine.propTypes = {
+  event: PropTypes$1.object,
+  api: PropTypes$1.object,
+  changePlayIndex: PropTypes$1.func,
+  playIndex: PropTypes$1.number,
+  historyList: PropTypes$1.array,
+  seekTo: PropTypes$1.func,
+  video: PropTypes$1.element,
+  visibel: PropTypes$1.bool
+};
 
 var _class$5, _temp$5;
 
@@ -1601,6 +1678,18 @@ function (_React$Component) {
   return ErrorEvent;
 }(React.Component), _temp$5)) || _class$5;
 
+ErrorEvent.propTypes = {
+  api: PropTypes$1.object,
+  event: PropTypes$1.object,
+  playContainer: PropTypes$1.node,
+  playerProps: PropTypes$1.object,
+  hlsPlayer: PropTypes$1.object,
+  flvPlayer: PropTypes$1.object,
+  isHistory: PropTypes$1.bool,
+  changePlayIndex: PropTypes$1.func,
+  playIndex: PropTypes$1.number
+};
+
 var _class$6, _temp$6;
 
 var DragEvent = videoDec(_class$6 = (_temp$6 =
@@ -1682,6 +1771,13 @@ function (_React$Component) {
   return DragEvent;
 }(React.Component), _temp$6)) || _class$6;
 
+DragEvent.propTypes = {
+  api: PropTypes$1.object,
+  event: PropTypes$1.object,
+  playContainer: PropTypes$1.node,
+  playerProps: PropTypes$1.object
+};
+
 var Api =
 /*#__PURE__*/
 function () {
@@ -1759,9 +1855,6 @@ function () {
       if (this.hls) {
         this.hls.destroy();
       }
-
-      this.scale = null;
-      this.position = null;
     }
     /**
      * 设置currentTime实现seek
@@ -2186,6 +2279,11 @@ function (_React$Component) {
   return LiveHeart;
 }(React.Component), _temp$7)) || _class$7;
 
+LiveHeart.propTypes = {
+  api: PropTypes$1.object,
+  event: PropTypes$1.object
+};
+
 var LMPlayer =
 /*#__PURE__*/
 function (_React$Component) {
@@ -2295,13 +2393,6 @@ function (_React$Component) {
     value: function componentWillUnmount() {
       this.event && this.event.destroy();
       this.api && this.api.destroy();
-      this.player = null;
-      this.event = null;
-      this.api = null;
-      this.playContainerRef = null;
-      this.playContainer = null;
-      this.flv = null;
-      this.hls = null;
     }
   }, {
     key: "createPlayer",
@@ -2309,7 +2400,7 @@ function (_React$Component) {
       var isInit = this.initPlayer();
 
       if (isInit) {
-        this.event = new VideoEvent(this.player);
+        this.event = new VideoEventInstance(this.player);
         this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
         this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
         this.forceUpdate();
@@ -2367,6 +2458,30 @@ function (_React$Component) {
   return LMPlayer;
 }(React.Component);
 
+LMPlayer.propTypes = {
+  file: PropTypes$1.string.isRequired,
+  //播放地址 必填
+  isLive: PropTypes$1.bool,
+  //是否实时视频
+  errorReloadTimer: PropTypes$1.number,
+  //视频错误重连次数
+  type: PropTypes$1.oneOf(['flv', 'hls', 'native']),
+  //强制视频流类型
+  onInitPlayer: PropTypes$1.func,
+  isDraggable: PropTypes$1.bool,
+  isScale: PropTypes$1.bool,
+  muted: PropTypes$1.string,
+  autoPlay: PropTypes$1.bool,
+  playsInline: PropTypes$1.bool,
+  preload: PropTypes$1.string,
+  poster: PropTypes$1.string,
+  loop: PropTypes$1.bool,
+  snapshot: PropTypes$1.func,
+  className: PropTypes$1.string,
+  playsinline: PropTypes$1.bool,
+  children: PropTypes$1.any,
+  autoplay: PropTypes$1.bool
+};
 LMPlayer.defaultProps = {
   isLive: true,
   isDraggable: true,
@@ -2595,6 +2710,16 @@ function (_React$Component) {
   return TineLine;
 }(React.Component), _temp$8)) || _class$8;
 
+TineLine$1.propTypes = {
+  event: PropTypes$1.object,
+  api: PropTypes$1.object,
+  changePlayIndex: PropTypes$1.func,
+  playIndex: PropTypes$1.number,
+  historyList: PropTypes$1.array,
+  seekTo: PropTypes$1.func,
+  visibel: PropTypes$1.bool
+};
+
 var _class$9, _temp$9;
 
 var PlayEnd = videoDec(_class$9 = (_temp$9 =
@@ -2645,6 +2770,12 @@ function (_React$Component) {
 
   return PlayEnd;
 }(React.Component), _temp$9)) || _class$9;
+
+PlayEnd.propTypes = {
+  event: PropTypes$1.object,
+  changePlayIndex: PropTypes$1.func,
+  playIndex: PropTypes$1.number
+};
 
 var HistoryPlayer =
 /*#__PURE__*/
@@ -2859,7 +2990,7 @@ function (_React$Component) {
         return;
       }
 
-      this.event = new VideoEvent(this.player);
+      this.event = new VideoEventInstance(this.player);
       this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
       this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
 
@@ -2936,6 +3067,30 @@ function (_React$Component) {
   return HistoryPlayer;
 }(React.Component);
 
+HistoryPlayer.propTypes = {
+  historyList: PropTypes$1.object.isRequired,
+  //播放地址 必填
+  isLive: PropTypes$1.bool,
+  //是否实时视频
+  errorReloadTimer: PropTypes$1.number,
+  //视频错误重连次数
+  type: PropTypes$1.oneOf(['flv', 'hls', 'native']),
+  //强制视频流类型
+  onInitPlayer: PropTypes$1.func,
+  isDraggable: PropTypes$1.bool,
+  isScale: PropTypes$1.bool,
+  muted: PropTypes$1.string,
+  autoPlay: PropTypes$1.bool,
+  playsInline: PropTypes$1.bool,
+  preload: PropTypes$1.string,
+  poster: PropTypes$1.string,
+  loop: PropTypes$1.bool,
+  defaultTime: PropTypes$1.number,
+  className: PropTypes$1.string,
+  playsinline: PropTypes$1.bool,
+  children: PropTypes$1.any,
+  autoplay: PropTypes$1.bool
+};
 HistoryPlayer.defaultProps = {
   isLive: true,
   isDraggable: true,
@@ -2955,7 +3110,7 @@ function createPlayer(_ref) {
       _onInitPlayer = _ref.onInitPlayer,
       props = _objectWithoutProperties(_ref, ["container", "children", "onInitPlayer"]);
 
-  ReactDOM.render(React.createElement(LMPlayer, Object.assign({}, props, {
+  ReactDOM.render(React.createElement(LMPlayer, _extends({}, props, {
     onInitPlayer: function onInitPlayer(player) {
       player.destroy = function () {
         ReactDOM.unmountComponentAtNode(container);
@@ -2971,7 +3126,7 @@ function createHistoryPlayer(_ref2) {
       _onInitPlayer2 = _ref2.onInitPlayer,
       props = _objectWithoutProperties(_ref2, ["container", "children", "onInitPlayer"]);
 
-  ReactDOM.render(React.createElement(HistoryPlayer, Object.assign({}, props, {
+  ReactDOM.render(React.createElement(HistoryPlayer, _extends({}, props, {
     onInitPlayer: function onInitPlayer(player) {
       player.destroy = function () {
         ReactDOM.unmountComponentAtNode(container);
