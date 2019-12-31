@@ -1,7 +1,7 @@
 import { fullscreen, isFullscreen, exitFullscreen } from './util'
 import EventName from './event/eventName'
 export default class Api {
-  constructor({video, playContainer, event, flv, hls}) {
+  constructor(video, playContainer, event, flv, hls) {
     this.player = video
     this.playContainer = playContainer
     this.flv = flv

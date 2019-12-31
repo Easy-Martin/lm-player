@@ -6,7 +6,7 @@ import replace from 'rollup-plugin-replace'
 import pkg from './package.json'
 import postcss from 'rollup-plugin-postcss'
 import image from 'rollup-plugin-image'
-import { uglify } from 'rollup-plugin-uglify'
+// import { uglify } from 'rollup-plugin-uglify'
 
 // PostCSS plugins
 import simplevars from 'postcss-simple-vars'
@@ -52,7 +52,7 @@ export default {
       exclude: 'node_modules/**',
       ENV: JSON.stringify(process.env.NODE_ENV || 'development')
     }),
-    process.env.NODE_ENV === 'production' && uglify()
+    // process.env.NODE_ENV === 'production' && uglify({ ecma: 8 }) //压缩仅支持es5
   ],
   external: id => Object.keys(pkg.dependencies).some(e => id.indexOf(e) === 0)
 }

@@ -137,7 +137,7 @@ Slider.propTypes = {
   currentPercent: PropTypes.number,
   seekTo: PropTypes.func,
   video: PropTypes.element,
-  renderTips: PropTypes.func,
+  renderTips: func,
   availablePercent: PropTypes.number,
   onChange: PropTypes.func,
   children: PropTypes.any,

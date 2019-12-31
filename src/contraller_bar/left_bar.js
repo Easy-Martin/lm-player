@@ -1,125 +1,87 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import IconFont from '../iconfont'
-import { videoDec } from '../context'
 import Slider from '../slider'
 import Bar from './bar'
 import EventName from '../event/eventName'
 import PropTypes from 'prop-types'
 
-@videoDec
-class LeftBar extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      openSliderVolume: false
+function LeftBar({ api, event, video, isHistory, reloadHistory, isLive, leftExtContents, leftMidExtContents }) {
+  const [openSliderVolume, setOpenSliderVolume] = useState(false)
+  const [dep, setDep] = useState(Date.now())
+  useEffect(() => {
+    const updateRender = () => {
+      setDep(Date.now())
     }
-    this.historyEnd = false
-    this.mounted = false
-  }
-  componentDidMount() {
-    const { event } = this.props
-    this.mounted = true
-    event.addEventListener('play', this.updateRender)
-    event.addEventListener('pause', this.updateRender)
-    event.addEventListener('volumechange', this.volumechange)
-    event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd)
-    event.on(EventName.SEEK, this.seek)
-  }
-  componentWillUnmount() {
-    event.removeEventListener('play', this.updateRender)
-    event.removeEventListener('pause', this.updateRender)
-    event.removeEventListener('volumechange', this.volumechange)
-    event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd)
-    event.off(EventName.SEEK, this.seek)
-  }
+    event.addEventListener('play', updateRender)
+    event.addEventListener('pause', updateRender)
+    event.addEventListener('volumechange', updateRender)
 
-  seek = () => {
-    this.historyEnd = false
-  }
-  historyPlayEnd = () => {
-    this.historyEnd = true
-  }
-  updateRender = () => {
-    this.mounted && this.forceUpdate()
-  }
-  changePlayStatus = () => {
-    const { api, video } = this.props
-    if (this.historyEnd) {
-      this.props.reloadHistory()
-    } else {
-      video.paused ? api.play() : api.pause()
+    return () => {
+      event.removeEventListener('play', updateRender)
+      event.removeEventListener('pause', updateRender)
+      event.removeEventListener('volumechange', updateRender)
     }
-  }
-  mutedChange = () => {
-    const { api, video } = this.props
-    video.muted ? api.unmute() : api.mute()
-  }
-  volumechange = () => {
-    this.forceUpdate()
-  }
-  openSliderVolume = () => {
-    this.setState({
-      openSliderVolume: true
-    })
-  }
-  closeSliderVolume = () => {
-    this.setState({
-      openSliderVolume: false
-    })
-  }
-  onChangeVolume = volume => {
-    const { api, video } = this.props
-    api.setVolume(parseFloat(volume.toFixed(1)))
-    if (volume > 0 && video.muted) {
-      api.unmute()
-    }
-  }
-  reload = () => {
-    if (this.props.isHistory) {
-      this.props.reloadHistory()
-    } else {
-      this.props.api.reload()
-    }
-    this.props.event.emit(EventName.CLEAR_ERROR_TIMER)
-  }
-  render() {
-    const { openSliderVolume } = this.state
-    const { video, playerProps } = this.props
-    const { isLive, leftExtContents = null, leftMidExtContents = null } = playerProps
-    const volumeType = video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben'
-    return (
-      <div className="contraller-left-bar">
-        {leftExtContents}
-        <Bar visibel={!isLive}>
-          <IconFont
-            onClick={this.changePlayStatus}
-            type={video.paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main'}
-            title={video.paused ? '播放' : '暂停'}
+  }, [event])
+
+  //缓存值
+  const paused = useMemo(() => video.paused, [dep, video])
+  const statusIconClassName = useMemo(() => (paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main'), [paused])
+  const statusText = useMemo(() => (paused ? '播放' : '暂停'), [paused])
+  const volumeVal = useMemo(() => (video.muted ? 0 : video.volume), [dep, video])
+  const volumeIcon = useMemo(
+    () => (volumeVal === 0 ? 'lm-player-volume-close' : video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben'),
+    [volumeVal]
+  )
+  const volumePercent = useMemo(() => (volumeVal === 0 ? 0 : volumeVal * 100), [volumeVal])
+  const sliderClassName = useMemo(() => (openSliderVolume ? 'contraller-bar-hover-volume' : ''), [openSliderVolume])
+
+  //TODO 方法
+  const changePlayStatus = useCallback(() => (video.paused ? api.play() : api.pause()), [video, api])
+
+  const mutedChantgeStatus = useCallback(() => (video.muted ? api.unmute() : api.mute()), [api, video])
+
+  const onChangeVolume = useCallback(
+    volume => {
+      api.setVolume(parseFloat(volume.toFixed(1)))
+      volume > 0 && video.muted && api.unmute()
+    },
+    [api, video]
+  )
+
+  const reload = useCallback(() => {
+    isHistory ? reloadHistory() : api.reload()
+    event.emit(EventName.CLEAR_ERROR_TIMER)
+  }, [event, isHistory, api])
+
+  return (
+    <div className="contraller-left-bar">
+      {leftExtContents}
+      <Bar visibel={!isLive}>
+        <IconFont onClick={changePlayStatus} type={statusIconClassName} title={statusText} />
+      </Bar>
+      <Bar
+        className={`contraller-bar-volume ${sliderClassName}`}
+        onMouseOver={() => setOpenSliderVolume(true)}
+        onMouseOut={() => setOpenSliderVolume(false)}
+      >
+        <IconFont onClick={mutedChantgeStatus} type={volumeIcon} title="音量" />
+        <div className="volume-slider-layout">
+          <Slider
+            className="volume-slider"
+            currentPercent={volumePercent}
+            onChange={onChangeVolume}
+            renderTips={precent => <span>{Math.round(precent * 100)}%</span>}
           />
-        </Bar>
-        <Bar
-          className={`contraller-bar-volume ${openSliderVolume ? 'contraller-bar-hover-volume' : ''}`}
-          onMouseOver={this.openSliderVolume}
-          onMouseOut={this.closeSliderVolume}
-        >
-          <IconFont onClick={this.mutedChange} type={video.muted ? 'lm-player-volume-close' : volumeType} title="音量" />
-          <div className="volume-slider-layout">
-            <Slider
-              className="volume-slider"
-              currentPercent={video.muted ? 0 : video.volume * 100}
-              onChange={this.onChangeVolume}
-              renderTips={precent => <span>{Math.round(precent * 100)}%</span>}
-            />
-          </div>
-        </Bar>
-        <Bar>
-          <IconFont onClick={this.reload} type="lm-player-Refresh_Main" title="重载" />
-        </Bar>
-        {leftMidExtContents}
-      </div>
-    )
-  }
+        </div>
+      </Bar>
+      <Bar>
+        <IconFont onClick={reload} type="lm-player-Refresh_Main" title="重载" />
+      </Bar>
+      {leftMidExtContents}
+    </div>
+  )
 }
+
 LeftBar.propTypes = {
   api: PropTypes.object,
   event: PropTypes.object,

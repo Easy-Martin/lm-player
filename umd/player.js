@@ -1,1 +1,1974 @@
-!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports,require("react"),require("flv.lm.js"),require("hls.js"),require("prop-types"),require("react-dom")):"function"==typeof define&&define.amd?define(["exports","react","flv.lm.js","hls.js","prop-types","react-dom"],t):t((e=e||self).LMPlayer={},e.React,e.flvjs,e.Hls,e.PropTypes$1,e.ReactDOM)}(this,function(e,v,l,i,t,o){"use strict";function s(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function r(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}function u(e,t,n){return t&&r(e.prototype,t),n&&r(e,n),e}function c(){return(c=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e}).apply(this,arguments)}function p(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),t&&n(e,t)}function h(e){return(h=Object.setPrototypeOf?Object.getPrototypeOf:function(e){return e.__proto__||Object.getPrototypeOf(e)})(e)}function n(e,t){return(n=Object.setPrototypeOf||function(e,t){return e.__proto__=t,e})(e,t)}function d(e,t){if(null==e)return{};var n,r,i=function(e,t){if(null==e)return{};var n,r,i={},a=Object.keys(e);for(r=0;r<a.length;r++)n=a[r],0<=t.indexOf(n)||(i[n]=e[n]);return i}(e,t);if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(e);for(r=0;r<a.length;r++)n=a[r],0<=t.indexOf(n)||Object.prototype.propertyIsEnumerable.call(e,n)&&(i[n]=e[n])}return i}function m(e,t){return!t||"object"!=typeof t&&"function"!=typeof t?function(e){if(void 0===e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return e}(e):t}function f(e){return function(e){if(Array.isArray(e)){for(var t=0,n=new Array(e.length);t<e.length;t++)n[t]=e[t];return n}}(e)||function(e){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e))return Array.from(e)}(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance")}()}v=v&&v.hasOwnProperty("default")?v.default:v,l=l&&l.hasOwnProperty("default")?l.default:l,t=t&&t.hasOwnProperty("default")?t.default:t,o=o&&o.hasOwnProperty("default")?o.default:o;var a=function(){function t(e){s(this,t),this.video=e,this.events={},this.playerEvents={}}return u(t,[{key:"on",value:function(e,t){this.events&&this.events[e]?this.events[e].listener.push(t):this.events[e]={type:e,listener:[t]}}},{key:"addEventListener",value:function(e,t){this.video&&(this.playerEvents[e]?this.playerEvents[e].push(t):this.playerEvents[e]=[t],this.video.addEventListener(e,t,!1))}},{key:"removeEventListener",value:function(e,t){if(this.video){if(!this.playerEvents||!this.playerEvents[e])return;var n=this.playerEvents[e].findIndex(function(e){return e===t});-1<n&&this.playerEvents[e].splice(n,1),this.video.removeEventListener(e,t,!1)}}},{key:"emit",value:function(e){for(var t=arguments.length,n=new Array(1<t?t-1:0),r=1;r<t;r++)n[r-1]=arguments[r];this.events&&this.events[e]&&this.events[e].listener.forEach(function(e){e.apply(void 0,n)})}},{key:"off",value:function(e,t){if(this.events&&this.events.eventName){var n=this.events[e].listener.findIndex(function(e){return e===t});-1<n&&this.events[e].listener.splice(n,1)}}},{key:"getApi",value:function(){return{on:this.on.bind(this),off:this.off.bind(this),emit:this.emit.bind(this)}}},{key:"destroy",value:function(){var n=this;Object.keys(this.playerEvents).forEach(function(t){n.playerEvents[t].forEach(function(e){n.removeEventListener(t,e)})}),this.playerEvents={},this.events={}}}]),t}();function y(e,t){if(i.isSupported()){var n=new i({liveDurationInfinity:!0,levelLoadingTimeOut:15e3,fragLoadingTimeOut:25e3,enableWorker:!0});return n.loadSource(t),n.attachMedia(e),n}}function g(e,t){var n=t.flvOptions,r=void 0===n?{}:n,i=t.flvConfig,a=void 0===i?{}:i;if(l.isSupported()){var o=l.createPlayer(Object.assign({},r,{type:"flv",url:t.file}),Object.assign({},a,{enableWorker:!0,enableStashBuffer:!1,stashInitialSize:128,isLive:t.isLive||!0}));return o.attachMediaElement(e),o.load(),o}}function E(e){var t=new URL(e),n="".concat(t.origin).concat(t.pathname),r=/([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i.exec(n);if(!r)return-1<e.indexOf(".flv")?"flv":"hls";var i=r[2].replace(r[4],"");return i||(-1<e.indexOf(".flv")?"flv":"hls")}function b(e){return e&&(document.fullscreenElement===e||document.msFullscreenElement===e||document.mozFullScreenElement===e||document.webkitFullscreenElement===e)||!1}function P(e,t){var n=e?"addEventListener":"removeEventListener";["fullscreenchange","mozfullscreenchange","webkitfullscreenchange","msfullscreenchange"].map(function(e){return document[n](e,t)})}function L(e,t,n){var r,i,a=t,o=e.getBoundingClientRect(),l=o.width,s=o.height;if(1===n)return[0,0];r=l*(n-1)/2/n,i=s*(n-1)/2/n;var u=0,c=0;return 0<=a[0]&&a[0]>r&&(u=r),0<=a[0]&&a[0]<r&&(u=a[0]),a[0]<0&&a[0]<-r&&(u=-r),a[0]<0&&a[0]>-r&&(u=a[0]),0<=a[1]&&a[1]>i&&(c=i),0<=a[1]&&a[1]<i&&(c=a[1]),a[1]<0&&a[1]<-i&&(c=-i),a[1]<0&&a[1]>-i&&(c=a[1]),u!==a[0]||c!==a[1]?[u,c]:void 0}var k=v.createContext(null),C=k.Provider,T=k.Consumer;function R(r){var n=function(){function e(){return s(this,e),m(this,h(e).apply(this,arguments))}return p(e,v.Component),u(e,[{key:"render",value:function(){var e=this.props,t=e.forwardRef,n=d(e,["forwardRef"]);return v.createElement(T,null,function(e){return v.createElement(r,c({},n,e,{ref:t}))})}}]),e}();return n.propTypes={forwardRef:t.ref},v.forwardRef(function(e,t){return v.createElement(n,c({},e,{forwardRef:t}))})}function S(e){var t=e.type,n=e.className,r=void 0===n?"":n,i=d(e,["type","className"]);return v.createElement("i",c({className:"lm-player-iconfont ".concat(t," ").concat(r)},i))}S.propTypes={type:t.string,className:t.string};var D=function(){function t(e){var l;return s(this,t),(l=m(this,h(t).call(this,e))).renderSliderTips=function(o){l.props.renderTips&&(clearTimeout(l.timer),l.timer=setTimeout(function(){var e=l.layoutDom.getBoundingClientRect(),t=e.x,n=e.width,r=e.top,i=o.pageX,a=(o.pageX-t)/n;a=a<0?0:1<a?1:a,l.setState({tipsX:i,tipsY:r,showTips:!0,tempValue:a})},200))},l.hideSliderTips=function(){clearTimeout(l.timer),l.setState({showTips:!1})},l.cancelPropagation=function(e){e.stopPropagation()},l.startDrag=function(e){e.stopPropagation(),l.dragFlag=!0,document.body.addEventListener("mousemove",l.moveChange),document.body.addEventListener("mouseup",l.stopDrag)},l.moveChange=function(e){e.stopPropagation();var t=l.computedPositionForEvent(e);l.setState({value:t})},l.stopDrag=function(e){e.stopPropagation(),document.body.removeEventListener("mousemove",l.moveChange),document.body.removeEventListener("mouseup",l.stopDrag),l.dragFlag=!1;var t=l.state.value/100;t=t<0?0:1<t?1:t,l.props.onChange&&l.props.onChange(t)},l.changeCurrentValue=function(e){e.stopPropagation();var t=l.layoutDom.getBoundingClientRect(),n=t.width,r=t.x,i=(e.pageX-r)/n;l.props.onChange&&l.props.onChange(i)},l.sliderDomRef=v.createRef(),l.layoutDom=null,l.lineDom=null,l.dragDom=null,l.dragFlag=!1,l.state={value:l.props.currentPercent||0,tempValue:0,showTips:!1,tipsX:0,tipsY:0},l}return p(t,v.Component),u(t,[{key:"UNSAFE_componentWillReceiveProps",value:function(e){this.dragFlag||this.setState({value:e.currentPercent||0})}},{key:"componentDidMount",value:function(){this.layoutDom=this.sliderDomRef.current,this.dragDom=this.layoutDom.querySelector(".drag-change-icon"),this.lineDom=this.layoutDom.querySelector(".slider-content"),this.layoutDom.addEventListener("mousemove",this.renderSliderTips,!1),this.layoutDom.addEventListener("mouseout",this.hideSliderTips,!1),this.lineDom.addEventListener("click",this.changeCurrentValue,!1),this.dragDom.addEventListener("click",this.cancelPropagation,!1),this.dragDom.addEventListener("mousedown",this.startDrag,!1)}},{key:"componentWillUnmount",value:function(){clearTimeout(this.timer),this.layoutDom.removeEventListener("mousemove",this.renderSliderTips,!1),this.layoutDom.removeEventListener("mouseout",this.hideSliderTips,!1),this.lineDom.removeEventListener("click",this.changeCurrentValue,!1),this.dragDom.removeEventListener("click",this.cancelPropagation,!1),this.dragDom.removeEventListener("mousedown",this.startDrag,!1),document.body.removeEventListener("mousemove",this.moveChange),document.body.removeEventListener("mouseup",this.stopDrag),this.sliderDomRef=null,this.layoutDom=null,this.lineDom=null,this.dragDom=null,this.dragFlag=null}},{key:"computedPositionForEvent",value:function(e){var t=this.layoutDom.getBoundingClientRect(),n=t.x,r=t.width,i=e.pageX-n;return r<i&&(i=r),i<0&&(i=0),i/r*100}},{key:"render",value:function(){var e=this.state,t=e.value,n=e.showTips,r=e.tipsX,i=e.tipsY,a=this.props,o=a.availablePercent,l=void 0===o?0:o,s=a.className,u=void 0===s?"":s;return v.createElement("div",{className:"slider-layout ".concat(u),ref:this.sliderDomRef},v.createElement("div",{className:"slider-content"},v.createElement("div",{className:"slider-max-line"}),v.createElement("div",{className:"slider-visibel-line",style:{width:"".concat(l,"%")}}),v.createElement("div",{className:"slider-current-line",style:{width:"".concat(t,"%")}}),this.props.children),v.createElement("div",{className:"slider-other-content"},v.createElement("div",{className:"drag-change-icon",draggable:!1,style:{left:"".concat(t,"%")}})),v.createElement(O,{visibel:n,className:"lm-player-slide-tips",style:{left:r,top:i}},this.props.renderTips&&this.props.renderTips(this.state.tempValue)))}}]),t}();D.propTypes={currentPercent:t.number,seekTo:t.func,video:t.element,renderTips:func,availablePercent:t.number,onChange:t.func,children:t.any,className:t.string};var O=function(){function n(e){var t;return s(this,n),(t=m(this,h(n).call(this,e))).ele=document.createElement("div"),t}return p(n,v.Component),u(n,[{key:"componentDidMount",value:function(){document.body.appendChild(this.ele)}},{key:"componentWillUnmount",value:function(){document.body.removeChild(this.ele),this.ele=null}},{key:"render",value:function(){var e=this.props,t=e.visibel,n=e.children,r=e.style,i=e.className,a=void 0===i?"":i;return o.createPortal(t?v.createElement("div",{className:a,style:r},n):null,this.ele)}}]),n}();function I(e){var t=e.visibel,n=void 0===t||t,r=e.className,i=void 0===r?"":r,a=e.children,o=d(e,["visibel","className","children"]);return!1===n?null:v.createElement("span",c({className:"contraller-bar-item ".concat(i)},o),a)}O.propTypes={visibel:t.bool,children:t.element,style:t.any,className:t.string},I.propTypes={visibel:t.bool,className:t.string,children:t.any};var w,_,A={RELOAD:"reload",RELOAD_FAIL:"reloadFail",RELOAD_SUCCESS:"reloadSuccess",ERROR:"error",ERROR_RELOAD:"errorRload",HISTORY_PLAY_END:"historyPlayEnd",SEEK:"seek",TRANSFORM:"transform",CHANGE_PLAY_INDEX:"changePlayIndex",HIDE_CONTRALLER:"hideContraller",SHOW_CONTRALLER:"showContraller",CLEAR_ERROR_TIMER:"clearErrorTimer"},x=R(w=function(){function t(e){var i;return s(this,t),(i=m(this,h(t).call(this,e))).seek=function(){i.historyEnd=!1},i.historyPlayEnd=function(){i.historyEnd=!0},i.updateRender=function(){i.mounted&&i.forceUpdate()},i.changePlayStatus=function(){var e=i.props,t=e.api,n=e.video;i.historyEnd?i.props.reloadHistory():n.paused?t.play():t.pause()},i.mutedChange=function(){var e=i.props,t=e.api;e.video.muted?t.unmute():t.mute()},i.volumechange=function(){i.forceUpdate()},i.openSliderVolume=function(){i.setState({openSliderVolume:!0})},i.closeSliderVolume=function(){i.setState({openSliderVolume:!1})},i.onChangeVolume=function(e){var t=i.props,n=t.api,r=t.video;n.setVolume(parseFloat(e.toFixed(1))),0<e&&r.muted&&n.unmute()},i.reload=function(){i.props.isHistory?i.props.reloadHistory():i.props.api.reload(),i.props.event.emit(A.CLEAR_ERROR_TIMER)},i.state={openSliderVolume:!1},i.historyEnd=!1,i.mounted=!1,i}return p(t,v.Component),u(t,[{key:"componentDidMount",value:function(){var e=this.props.event;this.mounted=!0,e.addEventListener("play",this.updateRender),e.addEventListener("pause",this.updateRender),e.addEventListener("volumechange",this.volumechange),e.on(A.HISTORY_PLAY_END,this.historyPlayEnd),e.on(A.SEEK,this.seek)}},{key:"componentWillUnmount",value:function(){event.removeEventListener("play",this.updateRender),event.removeEventListener("pause",this.updateRender),event.removeEventListener("volumechange",this.volumechange),event.off(A.HISTORY_PLAY_END,this.historyPlayEnd),event.off(A.SEEK,this.seek)}},{key:"render",value:function(){var e=this.state.openSliderVolume,t=this.props,n=t.video,r=t.playerProps,i=r.isLive,a=r.leftExtContents,o=void 0===a?null:a,l=r.leftMidExtContents,s=void 0===l?null:l,u=1===n.volume?"lm-player-volume-max":"lm-player-volume-normal-fuben";return v.createElement("div",{className:"contraller-left-bar"},o,v.createElement(I,{visibel:!i},v.createElement(S,{onClick:this.changePlayStatus,type:n.paused?"lm-player-Play_Main":"lm-player-Pause_Main",title:n.paused?"播放":"暂停"})),v.createElement(I,{className:"contraller-bar-volume ".concat(e?"contraller-bar-hover-volume":""),onMouseOver:this.openSliderVolume,onMouseOut:this.closeSliderVolume},v.createElement(S,{onClick:this.mutedChange,type:n.muted?"lm-player-volume-close":u,title:"音量"}),v.createElement("div",{className:"volume-slider-layout"},v.createElement(D,{className:"volume-slider",currentPercent:n.muted?0:100*n.volume,onChange:this.onChangeVolume,renderTips:function(e){return v.createElement("span",null,Math.round(100*e),"%")}}))),v.createElement(I,null,v.createElement(S,{onClick:this.reload,type:"lm-player-Refresh_Main",title:"重载"})),s)}}]),t}())||w;x.propTypes={api:t.object,event:t.object,playerProps:t.object,video:t.node,reloadHistory:t.func,isHistory:t.bool};var N,F=R(_=function(){function a(){var e,i;s(this,a);for(var t=arguments.length,n=new Array(t),r=0;r<t;r++)n[r]=arguments[r];return(i=m(this,(e=h(a)).call.apply(e,[this].concat(n)))).update=function(){i.forceUpdate()},i.fullscreen=function(){var e=i.props,t=e.api;b(e.playContainer)?t.cancelFullScreen():t.requestFullScreen(),i.forceUpdate()},i.setScale=function(){var e=i.props,t=e.api,n=e.playContainer.querySelector(".player-mask-layout");t.setScale.apply(t,arguments);var r=L(n,t.getPosition(),t.getScale());r&&t.setPosition(r,!0)},i.snapshot=function(){var e=i.props,t=e.api,n=e.playerProps;n.snapshot&&n.snapshot(t.snapshot())},i}return p(a,v.Component),u(a,[{key:"componentDidMount",value:function(){P(!0,this.update)}},{key:"componentWillUnmount",value:function(){P(!1,this.update)}},{key:"render",value:function(){var e=this,t=this.props,n=t.playContainer,r=t.playerProps,i=r.isScale,a=r.snapshot,o=r.rightExtContents,l=void 0===o?null:o,s=r.rightMidExtContents,u=void 0===s?null:s,c=b(n);return v.createElement("div",{className:"contraller-right-bar"},u,i&&v.createElement(v.Fragment,null,v.createElement(I,null,v.createElement(S,{title:"缩小",onClick:function(){return e.setScale(-.2)},type:"lm-player-ZoomOut_Main"})),v.createElement(I,null,v.createElement(S,{title:"复位",onClick:function(){return e.setScale(1,!0)},type:"lm-player-ZoomDefault_Main"})),v.createElement(I,null,v.createElement(S,{title:"放大",onClick:function(){return e.setScale(.2)},type:"lm-player-ZoomIn_Main"}))),a&&v.createElement(I,null,v.createElement(S,{title:"截图",onClick:this.snapshot,type:"lm-player-SearchBox"})),v.createElement(I,null,v.createElement(S,{title:c?"窗口":"全屏",onClick:this.fullscreen,type:c?"lm-player-ExitFull_Main":"lm-player-Full_Main"})),l)}}]),a}())||_;function M(e){var t=e.visibel;return v.createElement("div",{className:"contraller-bar-layout ".concat(t?"":"hide-contraller-bar")},v.createElement(x,null),v.createElement(F,null))}F.propTypes={api:t.object,event:t.object,playerProps:t.object,playContainer:t.node,reloadHistory:t.func,isHistory:t.bool},M.propTypes={visibel:t.bool};var j,H=R(N=function(){function n(e){var t;return s(this,n),(t=m(this,h(n).call(this,e))).showContraller=function(){if(!t.visibel){var e=t.props.event;t.visibel=!0,t.forceUpdate(),e.emit(A.SHOW_CONTRALLER)}t.hideContraller()},t.hideContraller=function(){var e=t.props.event;clearTimeout(t.timer),t.timer=setTimeout(function(){t.visibel=!1,e.emit(A.HIDE_CONTRALLER),t.forceUpdate()},3e3)},t.timer=null,t.visibel=!0,t}return p(n,v.Component),u(n,[{key:"componentDidMount",value:function(){var e=this.props,t=e.playContainer,n=e.event;t.addEventListener("mousemove",this.showContraller,!1),t.addEventListener("mouseout",this.hideContraller,!1),this.timer=setTimeout(function(){n.emit(A.HIDE_CONTRALLER)},5e3)}},{key:"componentWillUnmount",value:function(){var e=this.props.playContainer;e.addEventListener("mousemove",this.showContraller,!1),e.addEventListener("mouseout",this.hideContraller,!1),clearTimeout(this.timer)}},{key:"render",value:function(){var t=this,e=this.props.children;return v.Children.map(e,function(e){return v.isValidElement(e)?v.cloneElement(e,{visibel:t.visibel}):e})}}]),n}())||N;H.propTypes={api:t.object,event:t.object,playContainer:t.node,children:t.element};var U=R(j=function(){function n(e){var t;return s(this,n),(t=m(this,h(n).call(this,e))).clearReloadMessage=function(){t.message=null,t.mounted&&t.forceUpdate()},t.reload=function(){t.setState({status:"reload"})},t.errorReload=function(e){t.message=v.createElement("div",null,"视频加载错误，正在进行重连第",e,"重连"),t.mounted&&t.setState({status:"reload",loading:!0})},t.reloadFail=function(){t.message=v.createElement("div",null,"视频错误"),t.mounted&&t.setState({status:"fail"})},t.reloadSuccess=function(){t.message=null,t.mounted&&t.setState({status:null})},t.openLoading=function(){t.mounted&&t.setState({loading:!0})},t.closeLoading=function(){t.mounted&&t.setState({loading:!1})},t.historyPlayEnd=function(){t.message=null,t.mounted&&t.setState({status:null,loading:!1}),t.props.api.pause()},t.state={loading:!1,status:null},t.mounted=!1,t.message=null,t}return p(n,v.Component),u(n,[{key:"componentDidMount",value:function(){var e=this.props.event;this.mounted=!0,e.addEventListener("loadstart",this.openLoading),e.addEventListener("waiting",this.openLoading),e.addEventListener("seeking",this.openLoading),e.addEventListener("loadeddata",this.closeLoading),e.addEventListener("canplay",this.closeLoading),e.on(A.ERROR_RELOAD,this.errorReload),e.on(A.RELOAD_FAIL,this.reloadFail),e.on(A.RELOAD_SUCCESS,this.reloadSuccess),e.on(A.RELOAD,this.reload),e.on(A.HISTORY_PLAY_END,this.historyPlayEnd),e.on(A.CLEAR_ERROR_TIMER,this.clearReloadMessage)}},{key:"componentWillUnmount",value:function(){event.removeEventListener("loadstart",this.openLoading),event.removeEventListener("waiting",this.openLoading),event.removeEventListener("seeking",this.openLoading),event.removeEventListener("loadeddata",this.closeLoading),event.removeEventListener("canplay",this.closeLoading),event.off(A.ERROR_RELOAD,this.errorReload),event.off(A.RELOAD_FAIL,this.reloadFail),event.off(A.RELOAD_SUCCESS,this.reloadSuccess),event.off(A.RELOAD,this.reload),event.off(A.HISTORY_PLAY_END,this.historyPlayEnd),event.off(A.CLEAR_ERROR_TIMER,this.clearReloadMessage)}},{key:"render",value:function(){var e=this.state,t=e.loading,n=e.status;return v.createElement("div",{className:"lm-player-message-mask ".concat(t||"fail"===n?"lm-player-mask-loading-animation":"")},v.createElement(S,{type:"fail"===n?"lm-player-YesorNo_No_Dark":"lm-player-Loading",className:"".concat(t&&"fail"!==n?"lm-player-loading-animation":"fail"===n?"lm-player-loadfail":""," lm-player-loading-icon")}),v.createElement("span",{className:"lm-player-message"},this.message))}}]),n}())||j;U.propTypes={api:PropTypes.object,event:PropTypes.object};function q(){return v.createElement("div",{className:"lm-player-message-mask lm-player-mask-loading-animation"},v.createElement(S,{style:{fontSize:80},type:"lm-player-PlaySource",title:"请选择视频源"}))}var W,V,Y=R(W=function(){function t(e){var r;return s(this,t),(r=m(this,h(t).call(this,e))).getDuration=function(){var e=r.props.api;r.setState({duration:e.getDuration()})},r.getCurrentTime=function(){var e=r.props.api,t={currentTime:e.getCurrentTime(),buffered:e.getSecondsLoaded()};t.buffered===r.state.buffered&&delete t.buffered,r.setState(t)},r.getBuffered=function(){var e=r.props.api;r.setState({buffered:e.getSecondsLoaded()})},r.changePlayTime=function(e){var t=r.props.api,n=e*r.state.duration;t.pause(),r.setState({currentTime:n}),t.seekTo(n)},r.seekendPlay=function(){r.props.api.play()},r.renderTimeLineTips=function(e){var t=function(e){var t=Math.ceil(e);if(60<t){var n=Math.ceil(e%60),r=Math.floor(e/60);if(t="".concat(r<10?"0".concat(r):r,":").concat(n<10?"0".concat(n):n),60<r){r=Math.ceil(e/60%60);var i=Math.floor(e/60/60);t="".concat(i<10?"0".concat(i):i,":").concat(r<10?"0".concat(r):r,":").concat(n<10?"0".concat(n):n)}else t="00:".concat(t)}else t="00:00:".concat(t<10?"0".concat(t):t);return t}(e*r.state.duration);return v.createElement("span",null,t)},r.fastForward=function(){r.props.api.fastForward()},r.backWind=function(){r.props.api.backWind()},r.state={duration:0,currentTime:0,buffered:0},r}return p(t,v.Component),u(t,[{key:"componentDidMount",value:function(){var e=this.props.event;e.addEventListener("loadedmetadata",this.getDuration),e.addEventListener("durationchange",this.getDuration),e.addEventListener("timeupdate",this.getCurrentTime),e.addEventListener("progress",this.getBuffered),e.addEventListener("suspend",this.getBuffered),e.addEventListener("seeked",this.seekendPlay)}},{key:"render",value:function(){var e=this.state,t=e.duration,n=e.currentTime,r=e.buffered,i=Math.round(n/t*100),a=Math.round(r/t*100);return v.createElement("div",{className:"video-time-line-layout ".concat(this.props.visibel?"":"hide-time-line")},v.createElement(S,{type:"lm-player-PrevFast",onClick:this.backWind,className:"time-line-action-item"}),v.createElement(D,{className:"time-line-box",currentPercent:i,availablePercent:a,onChange:this.changePlayTime,renderTips:this.renderTimeLineTips}),v.createElement(S,{type:"lm-player-NextFast_Light",onClick:this.fastForward,className:"time-line-action-item"}))}}]),t}())||W;Y.propTypes={event:t.object,api:t.object,changePlayIndex:t.func,playIndex:t.number,historyList:t.array,seekTo:t.func,video:t.element,visibel:t.bool};var B,z=R(V=function(){function t(e){var d;return s(this,t),(d=m(this,h(t).call(this,e))).clearErrorTimer=function(){d.errorTimer=0,clearTimeout(d.reconnectTimer)},d.clearError=function(){var e=d.props.event;0<d.errorTimer&&(console.warn("视频重连成功！"),e.emit(A.RELOAD_SUCCESS),d.clearErrorTimer())},d.errorHandle=function(){for(var e,t=arguments.length,n=new Array(t),r=0;r<t;r++)n[r]=arguments[r];(e=console).error.apply(e,n),clearTimeout(d.reconnectTimer);var i=d.props,a=i.event,o=i.api,l=i.isHistory,s=i.changePlayIndex,u=i.playIndex,c=i.playerProps,p=d.errorTimer+1;a.emit.apply(a,[A.ERROR].concat(n)),p>c.errorReloadTimer?(l?s(u+1):a.emit(A.RELOAD_FAIL),o.unload()):(d.errorTimer=p,(n[1]&&n[1].loader||n[0].indexOf&&-1<n[0].indexOf("NetworkError"))&&d.reloadAction(p,n),d.reconnectTimer=setTimeout(function(){d.reloadAction(p,n)},2e4))},d.reloadAction=function(e,t){var n=d.props,r=n.event,i=n.api,a=n.hlsPlayer;r.emit.apply(r,[A.ERROR_RELOAD,e].concat(f(t))),console.warn("视频播放出错，正在进行重连".concat(e)),a&&(a.swapAudioCodec(),a.recoverMediaError()),i.reload()},d.errorTimer=0,d}return p(t,v.Component),u(t,[{key:"componentDidMount",value:function(){var e=this.props,t=e.event,n=e.flvPlayer,r=e.hlsPlayer;n&&n.on(l.Events.ERROR,this.errorHandle),r&&r.on(i.Events.ERROR,this.errorHandle),t.addEventListener("error",this.errorHandle,!1),t.addEventListener("canplay",this.clearError,!1),t.on(A.CHANGE_PLAY_INDEX,this.clearErrorTimer),t.on(A.CLEAR_ERROR_TIMER,this.clearErrorTimer)}},{key:"UNSAFE_componentWillReceiveProps",value:function(e){e.flvPlayer&&e.flvPlayer!==this.props.flvPlayer&&e.flvPlayer.on(l.Events.ERROR,this.errorHandle),e.hlsPlayer&&e.hlsPlayer!==this.props.hlsPlayer&&e.hlsPlayer.on(i.Events.ERROR,this.errorHandle)}},{key:"componentWillUnmount",value:function(){clearTimeout(this.reconnectTimer)}},{key:"render",value:function(){return null}}]),t}())||V;z.propTypes={api:t.object,event:t.object,playContainer:t.node,playerProps:t.object,hlsPlayer:t.object,flvPlayer:t.object,isHistory:t.bool,changePlayIndex:t.func,playIndex:t.number};var X=R(B=function(){function n(e){var i;s(this,n),(i=m(this,h(n).call(this,e))).openDrag=function(e){i.position.start=[e.pageX,e.pageY],i.dragDom.addEventListener("mousemove",i.moveChange),i.dragDom.addEventListener("mouseup",i.stopDrag)},i.moveChange=function(e){var t=i.props.api,n=t.getPosition();i.position.end=[e.pageX,e.pageY];var r=[n[0]+(i.position.end[0]-i.position.start[0]),n[1]+(i.position.end[1]-i.position.start[1])];t.setPosition(r),i.position.start=[e.pageX,e.pageY]},i.stopDrag=function(){i.dragDom.removeEventListener("mousemove",i.moveChange),i.dragDom.removeEventListener("mouseup",i.stopDrag),i.transformChange()},i.transformChange=function(){var e=i.props.api,t=L(i.dragDom,e.getPosition(),e.getScale());t&&e.setPosition(t,!0)};var t=e.playContainer;return i.dragDom=t.querySelector(".player-mask-layout"),i.position={start:[0,0],end:[0,0]},i}return p(n,v.Component),u(n,[{key:"componentDidMount",value:function(){this.props.playerProps.isDraggable&&(this.dragDom.addEventListener("mousedown",this.openDrag),this.props.event.addEventListener("transform",this.transformChange,!0))}},{key:"componentWillUnmount",value:function(){this.dragDom.removeEventListener("mousedown",this.openDrag)}},{key:"render",value:function(){return null}}]),n}())||B;X.propTypes={api:t.object,event:t.object,playContainer:t.node,playerProps:t.object};var K=function(){function a(e,t,n,r,i){s(this,a),this.player=e,this.playContainer=t,this.flv=r,this.hls=i,this.event=n,this.scale=1,this.position=[0,0]}return u(a,[{key:"updateChunk",value:function(e){var t=e.flv,n=e.hls;this.flv=t,this.hls=n}},{key:"requestFullScreen",value:function(){var e;b(this.playContainer)||((e=this.playContainer).requestFullScreen?e.requestFullScreen():e.webkitRequestFullScreen?e.webkitRequestFullScreen():e.mozRequestFullScreen?e.mozRequestFullScreen():e.msRequestFullscreen&&e.msRequestFullscreen())}},{key:"cancelFullScreen",value:function(){b(this.playContainer)&&(document.exitFullscreen?document.exitFullscreen():document.mozCancelFullScreen?document.mozCancelFullScreen():document.webkitExitFullscreen?document.webkitExitFullscreen():document.msExitFullscreen&&document.msExitFullscreen())}},{key:"play",value:function(){this.player.paused&&this.player.play()}},{key:"pause",value:function(){this.player.paused||this.player.pause()}},{key:"destroy",value:function(){this.player.removeAttribute("src"),this.unload(),this.flv&&this.flv.destroy(),this.hls&&this.hls.destroy()}},{key:"seekTo",value:function(e,t){var n=this.getBufferedTime();this.flv&&n[0]>e&&(this.flv.unload(),this.flv.load()),this.player.currentTime=e,t||this.event.emit(A.SEEK,e)}},{key:"reload",value:function(){this.unload(),this.load(),this.play(),this.event.emit(A.RELOAD),0!==this.getCurrentTime&&this.seekTo(0)}},{key:"unload",value:function(){this.flv&&this.flv.unload(),this.hls&&this.hls.stopLoad()}},{key:"load",value:function(){if(this.flv&&this.flv.load(),this.hls){try{this.hls.swapAudioCodec(),this.hls.recoverMediaError()}catch(e){console.warn(e)}this.hls.startLoad()}}},{key:"setVolume",value:function(e){this.player.volume=e}},{key:"mute",value:function(){this.player.muted=!0}},{key:"unmute",value:function(){this.player.muted=!1}},{key:"requestPictureInPicture",value:function(){this.player.requestPictureInPicture&&document.pictureInPictureElement!==this.player&&this.player.requestPictureInPicture()}},{key:"exitPictureInPicture",value:function(){document.exitPictureInPicture&&document.pictureInPictureElement===this.player&&document.exitPictureInPicture()}},{key:"setPlaybackRate",value:function(e){this.player.playbackRate=e}},{key:"getDuration",value:function(){if(!this.player)return null;var e=this.player,t=e.duration,n=e.seekable;return t===1/0&&0<n.length?n.end(n.length-1):t}},{key:"getCurrentTime",value:function(){return this.player?this.player.currentTime:null}},{key:"getSecondsLoaded",value:function(){return this.getBufferedTime()[1]}},{key:"getBufferedTime",value:function(){if(!this.player)return null;var e=this.player.buffered;if(0===e.length)return[0,0];var t=e.end(e.length-1),n=e.start(e.length-1),r=this.getDuration();return r<t?r:[n,t]}},{key:"fastForward",value:function(e){var t=0<arguments.length&&void 0!==e?e:5,n=this.getDuration(),r=this.getCurrentTime()+t;this.seekTo(n-1<r?n-1:r)}},{key:"backWind",value:function(e){var t=0<arguments.length&&void 0!==e?e:5,n=this.getCurrentTime()-t;this.seekTo(n<1?1:n)}},{key:"snapshot",value:function(){var e=document.createElement("canvas"),t=e.getContext("2d");return e.width=this.player.videoWidth,e.height=this.player.videoHeight,t.drawImage(this.player,0,0,e.width,e.height),setTimeout(function(){e.remove(),t=e=null},200),e.toDataURL()}},{key:"setScale",value:function(e,t){var n=this,r=1<arguments.length&&void 0!==t&&t,i=this.scale+e;r?i=e:(i<1&&(i=1),3<i&&(i=3)),this.scale=i,this.player.style.transition="transform 0.3s",this.__setTransform(),this.event.emit(A.TRANSFORM),setTimeout(function(){n.player.style.transition="unset"},500)}},{key:"getScale",value:function(){return this.scale}},{key:"setPosition",value:function(e,t){this.position=e,this.player.style.transition=t?"transform 0.3s":"unset",this.__setTransform()}},{key:"getPosition",value:function(){return this.position}},{key:"__setTransform",value:function(){this.player.style.transform="scale(".concat(this.scale,") translate(").concat(this.position[0],"px,").concat(this.position[1],"px)")}},{key:"getApi",value:function(){return{play:this.play.bind(this),reload:this.reload.bind(this),pause:this.pause.bind(this),seekTo:this.seekTo.bind(this),setVolume:this.setVolume.bind(this),mute:this.mute.bind(this),unmute:this.unmute.bind(this),requestPictureInPicture:this.requestPictureInPicture.bind(this),exitPictureInPicture:this.exitPictureInPicture.bind(this),setPlaybackRate:this.setPlaybackRate.bind(this),destroy:this.destroy.bind(this),getDuration:this.getDuration.bind(this),getCurrentTime:this.getCurrentTime.bind(this),getSecondsLoaded:this.getSecondsLoaded.bind(this),getBufferedTime:this.getBufferedTime.bind(this),fastForward:this.fastForward.bind(this),backWind:this.backWind.bind(this),snapshot:this.snapshot.bind(this),requestFullScreen:this.requestFullScreen.bind(this),cancelFullScreen:this.cancelFullScreen.bind(this),__player:this.player,flv:this.flv,hls:this.hls}}}]),a}();function G(){var e=["webkit","moz","ms","o"];if("hidden"in document)return"hidden";for(var t=0;t<e.length;t++)if(e[t]+"Hidden"in document)return e[t]+"Hidden";return null}var Z,$={addEventListener:function(e){var t=G().replace(/[H|h]idden/,"")+"visibilitychange";document.addEventListener(t,e,!1)},removeEventListener:function(e){var t=G().replace(/[H|h]idden/,"")+"visibilitychange";document.removeEventListener(t,e,!1)},visibilityState:function(){return document[function(){var e=["webkit","moz","ms","o"];if("visibilityState"in document)return"visibilityState";for(var t=0;t<e.length;t++)if(e[t]+"VisibilityState"in document)return e[t]+"VisibilityState";return null}()]}},J=R(Z=function(){function t(e){var r;return s(this,t),(r=m(this,h(t).call(this,e))).browserTabChange=function(){"visible"===$.visibilityState()&&r.focusSeekAction()},r.canplay=function(){var e=r.props.api;r.isCanPlay=!0,e.play()},r.focusSeekAction=function(){var e=r.props.api,t=e.getCurrentTime(),n=e.getSecondsLoaded();5<n-t&&(console.warn("当前延时过大current->".concat(t," buffered->").concat(n,", 基于视频当前缓存时间更新当前播放时间 updateTime -> ").concat(n-2)),e.seekTo(0<n-2?n-2:0))},r.timer=null,r.isCanPlay=!1,r}return p(t,v.Component),u(t,[{key:"componentDidMount",value:function(){var e=this.props.event;$.addEventListener(this.browserTabChange),e.addEventListener("canplay",this.canplay)}},{key:"componentWillUnmount",value:function(){$.removeEventListener(this.browserTabChange)}},{key:"render",value:function(){return null}}]),t}())||Z;J.propTypes={api:t.object,event:t.object};var Q,ee=function(){function n(e){var t;return s(this,n),(t=m(this,h(n).call(this,e))).initPlayer=function(){if(!t.props.file)return!1;var e=E(t.props.file);return"flv"===e||"flv"===t.props.type?t.flv=g(t.player,t.props):"m3u8"===e||"hls"===t.props.type?t.hls=y(t.player,t.props.file):t.player.src=t.props.file,!0},t.renderVideoTools=function(){return t.isInit&&t.props.file&&t.api&&t.event?v.createElement(v.Fragment,null,v.createElement(M,null),v.createElement(U,null),v.createElement(X,null),v.createElement(H,null,v.createElement(M,null),!t.props.isLive&&v.createElement(Y,null)),v.createElement(z,{flvPlayer:t.flv,hlsPlayer:t.hls,key:"".concat(t.props.file,"_error")}),t.props.isLive&&v.createElement(J,{key:t.props.file})):v.createElement(q,null)},t.getPlayUrl=function(){return t.props.file},t.getPlayerApiContext=function(){return t.api&&t.event?Object.assign({},t.api.getApi(),t.event.getApi(),{getPlayUrl:t.getPlayUrl,playContainer:t.playContainer}):{}},t.getProvider=function(){return{video:t.player,event:t.event,playerProps:t.props,api:t.api,playContainer:t.playContainer}},t.player=null,t.event=null,t.flv=null,t.hls=null,t.api=null,t.playContainerRef=v.createRef(),t.playContainer=null,t.state={playChange:!1,file:null},t}return p(n,v.Component),u(n,[{key:"componentDidMount",value:function(){this.playContainer=this.playContainerRef.current,this.player=this.playContainer.querySelector("video"),this.createPlayer(),this.isInit=!0}},{key:"componentDidUpdate",value:function(){this.state.playChange&&(this.setState({playChange:!1}),this.createPlayer())}},{key:"componentWillUnmount",value:function(){this.event&&this.event.destroy(),this.api&&this.api.destroy()}},{key:"createPlayer",value:function(){this.initPlayer()&&(this.event=new a(this.player),this.api=new K(this.player,this.playContainer,this.event,this.flv,this.hls),this.props.onInitPlayer&&this.props.onInitPlayer(this.getPlayerApiContext()),this.forceUpdate())}},{key:"render",value:function(){var e=this.props,t=e.autoplay,n=e.poster,r=e.preload,i=void 0===r?"none":r,a=e.muted,o=void 0===a?"muted":a,l=e.className,s=void 0===l?"":l,u=e.loop,c=void 0!==u&&u,p=e.playsinline,d=void 0!==p&&p,h=e.file,m=this.getProvider();return v.createElement("div",{className:"lm-player-container ".concat(s),ref:this.playContainerRef},v.createElement("div",{className:"player-mask-layout"},v.createElement("video",{autoPlay:t&&!!h,preload:i,muted:o,poster:n,controls:!1,playsInline:d,loop:c})),v.createElement(C,{value:m},this.renderVideoTools()),this.props.children)}}],[{key:"getDerivedStateFromProps",value:function(e,t){return e.file!==t.file?{file:e.file,playChange:!0}:null}}]),n}();ee.propTypes={file:t.string.isRequired,isLive:t.bool,errorReloadTimer:t.number,type:t.oneOf(["flv","hls","native"]),onInitPlayer:t.func,isDraggable:t.bool,isScale:t.bool,muted:t.string,autoPlay:t.bool,playsInline:t.bool,preload:t.string,poster:t.string,loop:t.bool,snapshot:t.func,className:t.string,playsinline:t.bool,children:t.any,autoplay:t.bool},ee.defaultProps={isLive:!0,isDraggable:!0,isScale:!0,errorReloadTimer:5,muted:"muted",autoPlay:!0,playsInline:!1,preload:"auto",loop:!1};var te,ne=R(Q=function(){function t(e){var d;return s(this,t),(d=m(this,h(t).call(this,e))).reload=function(){var e=d.props.api;d.setState({isEnd:!1,currentTime:e.getCurrentTime()})},d.historyPlayEnd=function(){d.setState({isEnd:!0})},d.getDuration=function(){var e=d.props.api;d.setState({duration:e.getDuration()})},d.getCurrentTime=function(){var e=d.props.api,t={currentTime:e.getCurrentTime(),buffered:e.getSecondsLoaded()};t.buffered===d.state.buffered&&delete t.buffered,d.setState(t)},d.getBuffered=function(){var e=d.props.api;d.setState({buffered:e.getSecondsLoaded()})},d.changePlayTime=function(e){var t=d.props,n=t.seekTo,r=t.historyList,i=r.duration.toString().length,a=(e+i/Math.pow(10,i-1))*r.duration,o=r.fragments.findIndex(function(e){return e.end>a});r.fragments[o].file&&(n(a),d.setState({currentTime:a,isEnd:!1}))},d.seekendPlay=function(){d.props.api.play()},d.renderTimeLineTips=function(e){var t,n,r,i,a,o,l,s,u=d.props.historyList,c=e*u.duration*1e3,p=(t=u.beginDate+c,n=new Date(t),r=n.getFullYear(),i=n.getDate(),a=n.getMonth()+1,o=n.getHours(),l=n.getMinutes(),s=n.getSeconds(),"".concat(r,".").concat(9<a?a:"0"+a,".").concat(9<i?i:"0"+i," ").concat(9<o?o:"0"+o,".").concat(9<l?l:"0"+l,".").concat(9<s?s:"0"+s));return v.createElement("span",null,p)},d.fastForward=function(){d.props.api.fastForward()},d.backWind=function(){d.props.api.backWind()},d.computedLineList=function(e){var t=e.duration;return e.fragments.map(function(e){return{disabled:!e.file,size:(e.end-e.begin)/t*100}})},d.state={duration:1,currentTime:0,buffered:0,isEnd:!1},d}return p(t,v.Component),u(t,[{key:"componentDidMount",value:function(){var e=this.props.event;e.addEventListener("loadedmetadata",this.getDuration),e.addEventListener("durationchange",this.getDuration),e.addEventListener("timeupdate",this.getCurrentTime),e.addEventListener("progress",this.getBuffered),e.addEventListener("suspend",this.getBuffered),e.addEventListener("seeked",this.seekendPlay),e.on(A.HISTORY_PLAY_END,this.historyPlayEnd),e.on(A.RELOAD,this.reload)}},{key:"componentWillUnmount",value:function(){var e=this.props.event;e.removeEventListener("loadedmetadata",this.getDuration),e.removeEventListener("durationchange",this.getDuration),e.removeEventListener("timeupdate",this.getCurrentTime),e.removeEventListener("progress",this.getBuffered),e.removeEventListener("suspend",this.getBuffered),e.removeEventListener("seeked",this.seekendPlay),e.off(A.HISTORY_PLAY_END,this.historyPlayEnd),e.off(A.RELOAD,this.reload),e.off(A.HIDE_CONTRALLER,this.hideContraller),e.off(A.SHOW_CONTRALLER,this.showContraller)}},{key:"render",value:function(){var e=this.props,t=e.historyList,n=e.playIndex,r=e.visibel,i=this.state,a=i.currentTime,o=i.buffered,l=i.isEnd,s=this.computedLineList(t),u=s.filter(function(e,t){return t<n}).map(function(e){return e.size}),c=0===u.length?0:1<u.length?u.reduce(function(e,t){return e+t}):u[0],p=a/t.duration*100+c,d=o/t.duration*100+c;return v.createElement("div",{className:"video-time-line-layout ".concat(r?"":"hide-time-line")},v.createElement(S,{type:"lm-player-PrevFast",onClick:this.backWind,className:"time-line-action-item"}),v.createElement(D,{className:"time-line-box",currentPercent:l?"100":p,availablePercent:d,onChange:this.changePlayTime,renderTips:this.renderTimeLineTips},v.createElement(v.Fragment,null,s.map(function(e,n){var t=s.filter(function(e,t){return t<n}).map(function(e){return e.size}),r=0===t.length?0:1<t.length?t.reduce(function(e,t){return e+t}):t[0];return v.createElement("div",{className:"history-time-line-item ".concat(e.disabled?"history-time-line-disabled":""),key:n,style:{width:"".concat(e.size,"%"),left:"".concat(r,"%")}})}))),v.createElement(S,{type:"lm-player-NextFast_Light",onClick:this.fastForward,className:"time-line-action-item"}))}}]),t}())||Q;ne.propTypes={event:t.object,api:t.object,changePlayIndex:t.func,playIndex:t.number,historyList:t.array,seekTo:t.func,visibel:t.bool};var re=R(te=function(){function a(){var e,t;s(this,a);for(var n=arguments.length,r=new Array(n),i=0;i<n;i++)r[i]=arguments[i];return(t=m(this,(e=h(a)).call.apply(e,[this].concat(r)))).endedHandle=function(){var e=t.props.playIndex;t.props.changePlayIndex(e+1)},t}return p(a,v.Component),u(a,[{key:"componentDidMount",value:function(){this.props.event.addEventListener("ended",this.endedHandle,!1)}},{key:"componentWillUnmount",value:function(){this.props.event.removeEventListener("ended",this.endedHandle,!1)}},{key:"render",value:function(){return null}}]),a}())||te;re.propTypes={event:t.object,changePlayIndex:t.func,playIndex:t.number};var ie=function(){function t(e){var a;return s(this,t),(a=m(this,h(t).call(this,e))).initPlayer=function(e){var t=a.props.historyList;if(!t||!t.fragments[e]||!t.fragments[e].file)return null;a.flv&&(a.flv.unload(),a.flv.destroy()),a.hls&&(a.hls.stopLoad(),a.hls.destroy()),a.playIndex=e;var n=E(t.fragments[e].file);return"flv"===n||"flv"===a.props.type?(a.flv=g(a.player,{file:t.fragments[e].file}),a.api&&a.api.updateChunk({flv:a.flv})):"m3u8"===n||"hls"===a.props.type?(a.hls=y(a.player,t.fragments[e].file),a.api&&a.api.updateChunk({hls:a.hls})):a.player.src=t.fragments[e].file,a.forceUpdate()},a.changePlayIndex=function(e){var t=a.props.historyList;return t&&t.fragments[e]?(t.fragments[e].file?a.initPlayer(e):a.changePlayIndex(e+1),a.api&&a.api.play(),a.event&&a.event.emit(A.CHANGE_PLAY_INDEX,e),!0):(a.event&&a.event.emit(A.HISTORY_PLAY_END),!1)},a.getPlayerApiContext=function(){return a.api&&a.event?Object.assign({},a.api.getApi(),a.event.getApi(),{seekTo:a.seekTo}):{}},a.computedIndexFormTime=function(t){return a.props.historyList.fragments.findIndex(function(e){return e.end>t})},a.seekTo=function(e){var t=a.props.historyList,n=a.computedIndexFormTime(e),r=t.fragments[n];if(r){var i=e-r.begin-1;a.api&&a.api.pause(),n===a.playIndex&&a.api||a.changePlayIndex(n),a.api.seekTo(i,!0),a.event.emit(A.SEEK,e)}},a.reloadHistory=function(){a.changePlayIndex(0),a.api.seekTo(0),a.event.emit(A.RELOAD),a.api.play()},a.getProvider=function(){return{video:a.player,event:a.event,playerProps:a.props,api:a.api,playContainer:a.playContainer,changePlayIndex:a.changePlayIndex,playIndex:a.playIndex,historyList:a.props.historyList,seekTo:a.seekTo,isHistory:!0,reloadHistory:a.reloadHistory}},a.renderVideoTools=function(){var e=a.getCurrentFile();return a.isInit&&e&&a.api&&a.event?v.createElement(v.Fragment,null,v.createElement(U,null),v.createElement(z,{flvPlayer:a.flv,hlsPlayer:a.hls,key:e}),v.createElement(X,null),v.createElement(H,null,v.createElement(M,null),v.createElement(ne,null)),v.createElement(re,null)):v.createElement(q,null)},a.playIndex=0,a.player=null,a.event=null,a.flv=null,a.hls=null,a.playContainerRef=v.createRef(),a.playContainer=null,a.state={playChange:!1,historyList:[]},a}return p(t,v.Component),u(t,[{key:"componentDidMount",value:function(){this.playContainer=this.playContainerRef.current,this.player=this.playContainer.querySelector("video"),this.isInit=!0,this.createPlayer()}},{key:"componentDidUpdate",value:function(){this.state.playChange&&(this.setState({playChange:!1}),this.playIndex=0,this.createPlayer())}},{key:"componentWillUnmount",value:function(){this.event&&this.event.destroy(),this.api&&this.api.destroy(),this.player=null,this.event=null,this.api=null,this.playContainerRef=null,this.playContainer=null,this.flv=null,this.hls=null}},{key:"createPlayer",value:function(){var e=this.props,t=e.defaultTime,n=e.historyList;this.changePlayIndex(this.playIndex)&&(this.event=new a(this.player),this.api=new K(this.player,this.playContainer,this.event,this.flv,this.hls),this.props.onInitPlayer&&this.props.onInitPlayer(this.getPlayerApiContext()),t&&this.seekTo((t-n.beginDate)/1e3))}},{key:"getErrorKey",value:function(){return this.getCurrentFile()||Math.random().toString(36).substr(2)}},{key:"getCurrentFile",value:function(){var e;try{e=this.props.historyList.fragments[this.playIndex].file}catch(e){console.warn(e)}return e}},{key:"render",value:function(){var e=this.props,t=e.autoplay,n=e.poster,r=e.preload,i=e.muted,a=void 0===i?"muted":i,o=e.loop,l=void 0!==o&&o,s=e.className,u=void 0===s?"":s,c=e.playsinline,p=void 0!==c&&c,d=this.getProvider(),h=this.getCurrentFile();return v.createElement("div",{className:"lm-player-container ".concat(u),ref:this.playContainerRef},v.createElement("div",{className:"player-mask-layout"},v.createElement("video",{autoPlay:t&&!!h,preload:r,muted:a,poster:n,controls:!1,playsInline:p,loop:l})),v.createElement(C,{value:d},this.renderVideoTools()),this.props.children)}}],[{key:"getDerivedStateFromProps",value:function(e,t){return e.historyList!==t.historyList?{historyList:e.historyList,playChange:!0}:null}}]),t}();ie.propTypes={historyList:t.object.isRequired,isLive:t.bool,errorReloadTimer:t.number,type:t.oneOf(["flv","hls","native"]),onInitPlayer:t.func,isDraggable:t.bool,isScale:t.bool,muted:t.string,autoPlay:t.bool,playsInline:t.bool,preload:t.string,poster:t.string,loop:t.bool,defaultTime:t.number,className:t.string,playsinline:t.bool,children:t.any,autoplay:t.bool},ie.defaultProps={isLive:!0,isDraggable:!0,isScale:!0,errorReloadTimer:5,muted:"muted",autoPlay:!0,playsInline:!1,preload:"auto",loop:!1,defaultTime:0},e.Bar=I,e.HistoryPlayer=ie,e.Player=ee,e.createHistoryPlayer=function(e){var t=e.container,n=e.children,r=e.onInitPlayer,i=d(e,["container","children","onInitPlayer"]);o.render(v.createElement(ie,c({},i,{onInitPlayer:function(e){e.destroy=function(){o.unmountComponentAtNode(t)},r&&r(e)}}),n),t)},e.createPlayer=function(e){var t=e.container,n=e.children,r=e.onInitPlayer,i=d(e,["container","children","onInitPlayer"]);o.render(v.createElement(ee,c({},i,{onInitPlayer:function(e){e.destroy=function(){o.unmountComponentAtNode(t)},r&&r(e)}}),n),t)},e.default=ee,Object.defineProperty(e,"__esModule",{value:!0})});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('flv.lm.js'), require('hls.js'), require('prop-types'), require('react-dom')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'react', 'flv.lm.js', 'hls.js', 'prop-types', 'react-dom'], factory) :
+  (global = global || self, factory(global.LMPlayer = {}, global.React, global.flvjs, global.Hls, global.PropTypes$1, global.ReactDOM));
+}(this, (function (exports, React, flvjs, Hls, PropTypes$1, ReactDOM) { 'use strict';
+
+  var React__default = 'default' in React ? React['default'] : React;
+  flvjs = flvjs && flvjs.hasOwnProperty('default') ? flvjs['default'] : flvjs;
+  PropTypes$1 = PropTypes$1 && PropTypes$1.hasOwnProperty('default') ? PropTypes$1['default'] : PropTypes$1;
+  ReactDOM = ReactDOM && ReactDOM.hasOwnProperty('default') ? ReactDOM['default'] : ReactDOM;
+
+  class VideoEventInstance {
+    constructor(video) {
+      this.video = video;
+      this.events = {};
+      this.playerEvents = {};
+    }
+
+    on(eventName, handle) {
+      this.events && this.events[eventName] ? this.events[eventName].listener.push(handle) : this.events[eventName] = {
+        type: eventName,
+        listener: [handle]
+      };
+    }
+
+    addEventListener(eventName, handle) {
+      if (this.video) {
+        this.playerEvents[eventName] ? this.playerEvents[eventName].push(handle) : this.playerEvents[eventName] = [handle];
+        this.video.addEventListener(eventName, handle, false);
+      }
+    }
+
+    removeEventListener(eventName, handle) {
+      if (this.video) {
+        if (!this.playerEvents || !this.playerEvents[eventName]) {
+          return;
+        }
+
+        let index = this.playerEvents[eventName].findIndex(v => v === handle);
+        index > -1 && this.playerEvents[eventName].splice(index, 1);
+        this.video.removeEventListener(eventName, handle, false);
+      }
+    }
+
+    emit(eventName, ...data) {
+      if (!this.events || !this.events[eventName]) {
+        return;
+      }
+
+      this.events[eventName].listener.forEach(v => {
+        v(...data);
+      });
+    }
+
+    off(eventName, handle) {
+      if (!this.events || !this.events.eventName) {
+        return;
+      }
+
+      let index = this.events[eventName].listener.findIndex(v => v === handle);
+      index > -1 && this.events[eventName].listener.splice(index, 1);
+    }
+
+    getApi() {
+      return {
+        on: this.on.bind(this),
+        off: this.off.bind(this),
+        emit: this.emit.bind(this)
+      };
+    }
+
+    destroy() {
+      Object.keys(this.playerEvents).forEach(key => {
+        this.playerEvents[key].forEach(fn => {
+          this.removeEventListener(key, fn);
+        });
+      });
+      this.playerEvents = {};
+      this.events = {};
+    }
+
+  }
+
+  /**
+   * 创建HLS对象
+   * @param {*} video
+   * @param {*} file
+   */
+
+  function createHlsPlayer(video, file) {
+    if (Hls.isSupported()) {
+      const player = new Hls({
+        liveDurationInfinity: true,
+        levelLoadingTimeOut: 15000,
+        fragLoadingTimeOut: 25000,
+        enableWorker: true
+      });
+      player.loadSource(file);
+      player.attachMedia(video);
+      return player;
+    }
+  }
+  /**
+   * 创建FLV对象
+   * @param {*} video
+   * @param {*} options
+   */
+
+  function createFlvPlayer(video, options) {
+    const {
+      flvOptions = {},
+      flvConfig = {}
+    } = options;
+
+    if (flvjs.isSupported()) {
+      const player = flvjs.createPlayer(Object.assign({}, flvOptions, {
+        type: 'flv',
+        url: options.file
+      }), Object.assign({}, flvConfig, {
+        enableWorker: true,
+        // lazyLoad: false,
+        // Indicates how many seconds of data to be kept for lazyLoad.
+        // lazyLoadMaxDuration: 0,
+        // autoCleanupMaxBackwardDuration: 3,
+        // autoCleanupMinBackwardDuration: 2,
+        // autoCleanupSourceBuffer: true,
+        enableStashBuffer: false,
+        stashInitialSize: 128,
+        isLive: options.isLive || true
+      }));
+      player.attachMediaElement(video);
+      player.load();
+      return player;
+    }
+  }
+  /**
+   * 获取播放文件类型
+   * @param {*} url
+   */
+
+  function getVideoType(url) {
+    const urlInfo = new URL(url);
+    const path = `${urlInfo.origin}${urlInfo.pathname}`;
+    const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;
+    const resultArr = reg.exec(path);
+
+    if (!resultArr) {
+      return url.indexOf('.flv') > -1 ? 'flv' : 'hls';
+    }
+
+    const suffix = resultArr[2].replace(resultArr[4], '');
+
+    if (!suffix) {
+      return url.indexOf('.flv') > -1 ? 'flv' : 'hls';
+    }
+
+    return suffix;
+  }
+  /**
+   * 播放时间转字符串
+   * @param {*} second_time
+   */
+
+  function timeStamp(second_time) {
+    let time = Math.ceil(second_time);
+
+    if (time > 60) {
+      let second = Math.ceil(second_time % 60);
+      let min = Math.floor(second_time / 60);
+      time = `${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`;
+
+      if (min > 60) {
+        min = Math.ceil(second_time / 60 % 60);
+        let hour = Math.floor(second_time / 60 / 60);
+        time = `${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`;
+      } else {
+        time = `00:${time}`;
+      }
+    } else {
+      time = `00:00:${time < 10 ? `0${time}` : time}`;
+    }
+
+    return time;
+  }
+  /**
+   * 全屏
+   * @param {*} element
+   */
+
+  function fullscreen(element) {
+    if (element.requestFullScreen) {
+      element.requestFullScreen();
+    } else if (element.webkitRequestFullScreen) {
+      element.webkitRequestFullScreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+  }
+  /**
+   * exitFullscreen 退出全屏
+   * @param  {Objct} element 选择器
+   */
+
+  function exitFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  }
+  /**
+   * [isFullscreen 判断浏览器是否全屏]
+   * @return [全屏则返回当前调用全屏的元素,不全屏返回false]
+   */
+
+  function isFullscreen(ele) {
+    if (!ele) {
+      return false;
+    }
+
+    return document.fullscreenElement === ele || document.msFullscreenElement === ele || document.mozFullScreenElement === ele || document.webkitFullscreenElement === ele || false;
+  } // 添加 / 移除 全屏事件监听
+
+  function fullScreenListener(isAdd, fullscreenchange) {
+    const funcName = isAdd ? 'addEventListener' : 'removeEventListener';
+    const fullScreenEvents = ['fullscreenchange', 'mozfullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange'];
+    fullScreenEvents.map(v => document[funcName](v, fullscreenchange));
+  }
+  /**
+   * 计算视频拖拽边界
+   * @param {*} ele
+   * @param {*} currentPosition
+   * @param {*} scale
+   */
+
+  function computedBound(ele, currentPosition, scale) {
+    const data = currentPosition;
+    const eleRect = ele.getBoundingClientRect();
+    const w = eleRect.width;
+    const h = eleRect.height;
+    let lx = 0,
+        ly = 0;
+
+    if (scale === 1) {
+      return [0, 0];
+    }
+
+    lx = w * (scale - 1) / 2 / scale;
+    ly = h * (scale - 1) / 2 / scale;
+    let x = 0,
+        y = 0;
+
+    if (data[0] >= 0 && data[0] > lx) {
+      x = lx;
+    }
+
+    if (data[0] >= 0 && data[0] < lx) {
+      x = data[0];
+    }
+
+    if (data[0] < 0 && data[0] < -lx) {
+      x = -lx;
+    }
+
+    if (data[0] < 0 && data[0] > -lx) {
+      x = data[0];
+    }
+
+    if (data[1] >= 0 && data[1] > ly) {
+      y = ly;
+    }
+
+    if (data[1] >= 0 && data[1] < ly) {
+      y = data[1];
+    }
+
+    if (data[1] < 0 && data[1] < -ly) {
+      y = -ly;
+    }
+
+    if (data[1] < 0 && data[1] > -ly) {
+      y = data[1];
+    }
+
+    if (x !== data[0] || y !== data[1]) {
+      return [x, y];
+    } else {
+      return;
+    }
+  }
+
+  function _extends() {
+    _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends.apply(this, arguments);
+  }
+
+  function IconFont({
+    type,
+    className = '',
+    ...props
+  }) {
+    return React__default.createElement("i", _extends({
+      className: `lm-player-iconfont ${type} ${className}`
+    }, props));
+  }
+  IconFont.propTypes = {
+    type: PropTypes$1.string,
+    className: PropTypes$1.string
+  };
+
+  class Slider extends React__default.Component {
+    constructor(props) {
+      super(props);
+
+      this.renderSliderTips = e => {
+        const {
+          renderTips
+        } = this.props;
+
+        if (!renderTips) {
+          return;
+        }
+
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          const {
+            x,
+            width,
+            top
+          } = this.layoutDom.getBoundingClientRect();
+          const tipsX = e.pageX;
+          let percent = (e.pageX - x) / width;
+          percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
+          this.setState({
+            tipsX,
+            tipsY: top,
+            showTips: true,
+            tempValue: percent
+          });
+        }, 200);
+      };
+
+      this.hideSliderTips = () => {
+        clearTimeout(this.timer);
+        this.setState({
+          showTips: false
+        });
+      };
+
+      this.cancelPropagation = e => {
+        e.stopPropagation();
+      };
+
+      this.startDrag = e => {
+        e.stopPropagation();
+        this.dragFlag = true;
+        document.body.addEventListener('mousemove', this.moveChange);
+        document.body.addEventListener('mouseup', this.stopDrag);
+      };
+
+      this.moveChange = e => {
+        e.stopPropagation();
+        const percent = this.computedPositionForEvent(e);
+        this.setState({
+          value: percent
+        });
+      };
+
+      this.stopDrag = e => {
+        e.stopPropagation();
+        document.body.removeEventListener('mousemove', this.moveChange);
+        document.body.removeEventListener('mouseup', this.stopDrag);
+        this.dragFlag = false;
+        let percent = this.state.value / 100;
+        percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
+        this.props.onChange && this.props.onChange(percent);
+      };
+
+      this.changeCurrentValue = event => {
+        event.stopPropagation();
+        const {
+          width,
+          x
+        } = this.layoutDom.getBoundingClientRect();
+        let percent = (event.pageX - x) / width;
+        this.props.onChange && this.props.onChange(percent);
+      };
+
+      this.sliderDomRef = React__default.createRef();
+      this.layoutDom = null;
+      this.lineDom = null;
+      this.dragDom = null;
+      this.dragFlag = false;
+      this.state = {
+        value: this.props.currentPercent || 0,
+        tempValue: 0,
+        showTips: false,
+        tipsX: 0,
+        tipsY: 0
+      };
+    }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
+      if (!this.dragFlag) {
+        this.setState({
+          value: nextProps.currentPercent || 0
+        });
+      }
+    }
+
+    componentDidMount() {
+      this.layoutDom = this.sliderDomRef.current;
+      this.dragDom = this.layoutDom.querySelector('.drag-change-icon');
+      this.lineDom = this.layoutDom.querySelector('.slider-content');
+      this.layoutDom.addEventListener('mousemove', this.renderSliderTips, false);
+      this.layoutDom.addEventListener('mouseout', this.hideSliderTips, false);
+      this.lineDom.addEventListener('click', this.changeCurrentValue, false);
+      this.dragDom.addEventListener('click', this.cancelPropagation, false);
+      this.dragDom.addEventListener('mousedown', this.startDrag, false);
+    }
+
+    componentWillUnmount() {
+      clearTimeout(this.timer);
+      this.layoutDom.removeEventListener('mousemove', this.renderSliderTips, false);
+      this.layoutDom.removeEventListener('mouseout', this.hideSliderTips, false);
+      this.lineDom.removeEventListener('click', this.changeCurrentValue, false);
+      this.dragDom.removeEventListener('click', this.cancelPropagation, false);
+      this.dragDom.removeEventListener('mousedown', this.startDrag, false);
+      document.body.removeEventListener('mousemove', this.moveChange);
+      document.body.removeEventListener('mouseup', this.stopDrag);
+      this.sliderDomRef = null;
+      this.layoutDom = null;
+      this.lineDom = null;
+      this.dragDom = null;
+      this.dragFlag = null;
+    }
+
+    computedPositionForEvent(e) {
+      const {
+        x,
+        width
+      } = this.layoutDom.getBoundingClientRect();
+      const {
+        pageX
+      } = e;
+      let dx = pageX - x;
+
+      if (dx > width) {
+        dx = width;
+      }
+
+      if (dx < 0) {
+        dx = 0;
+      }
+
+      return dx / width * 100;
+    }
+
+    render() {
+      const {
+        value,
+        showTips,
+        tipsX,
+        tipsY
+      } = this.state;
+      const {
+        availablePercent = 0,
+        className = ''
+      } = this.props;
+      return React__default.createElement("div", {
+        className: `slider-layout ${className}`,
+        ref: this.sliderDomRef
+      }, React__default.createElement("div", {
+        className: "slider-content"
+      }, React__default.createElement("div", {
+        className: "slider-max-line"
+      }), React__default.createElement("div", {
+        className: "slider-visibel-line",
+        style: {
+          width: `${availablePercent}%`
+        }
+      }), React__default.createElement("div", {
+        className: "slider-current-line",
+        style: {
+          width: `${value}%`
+        }
+      }), this.props.children), React__default.createElement("div", {
+        className: "slider-other-content"
+      }, React__default.createElement("div", {
+        className: "drag-change-icon",
+        draggable: false,
+        style: {
+          left: `${value}%`
+        }
+      })), React__default.createElement(Tips, {
+        visibel: showTips,
+        className: "lm-player-slide-tips",
+        style: {
+          left: tipsX,
+          top: tipsY
+        }
+      }, this.props.renderTips && this.props.renderTips(this.state.tempValue)));
+    }
+
+  }
+
+  Slider.propTypes = {
+    currentPercent: PropTypes$1.number,
+    seekTo: PropTypes$1.func,
+    video: PropTypes$1.element,
+    renderTips: PropTypes$1.func,
+    availablePercent: PropTypes$1.number,
+    onChange: PropTypes$1.func,
+    children: PropTypes$1.any,
+    className: PropTypes$1.string
+  };
+
+  class Tips extends React__default.Component {
+    constructor(props) {
+      super(props);
+      this.ele = document.createElement('div');
+    }
+
+    componentDidMount() {
+      document.body.appendChild(this.ele);
+    }
+
+    componentWillUnmount() {
+      document.body.removeChild(this.ele);
+      this.ele = null;
+    }
+
+    render() {
+      const {
+        visibel,
+        children,
+        style,
+        className = ''
+      } = this.props;
+      return ReactDOM.createPortal(visibel ? React__default.createElement("div", {
+        className: className,
+        style: style
+      }, children) : null, this.ele);
+    }
+
+  }
+
+  Tips.propTypes = {
+    visibel: PropTypes$1.bool,
+    children: PropTypes$1.element,
+    style: PropTypes$1.any,
+    className: PropTypes$1.string
+  };
+
+  function Bar({
+    visibel = true,
+    className = '',
+    children,
+    ...props
+  }) {
+    if (visibel === false) {
+      return null;
+    }
+
+    return React__default.createElement("span", _extends({
+      className: `contraller-bar-item ${className}`
+    }, props), children);
+  }
+  Bar.propTypes = {
+    visibel: PropTypes$1.bool,
+    className: PropTypes$1.string,
+    children: PropTypes$1.any
+  };
+
+  var EventName = {
+    RELOAD: "reload",
+    //手动视频重载
+    RELOAD_FAIL: "reloadFail",
+    // 视频出错，重连失败
+    RELOAD_SUCCESS: "reloadSuccess",
+    //视频出错，重连成功
+    ERROR: "error",
+    //视频出错
+    ERROR_RELOAD: "errorRload",
+    //视频出错，自动重连
+    HISTORY_PLAY_END: "historyPlayEnd",
+    //历史视频列表播放结束
+    SEEK: "seek",
+    //跳跃播放时间
+    TRANSFORM: "transform",
+    //视频容器缩放
+    CHANGE_PLAY_INDEX: "changePlayIndex",
+    //历史视频列表播放索引改变
+    HIDE_CONTRALLER: "hideContraller",
+    SHOW_CONTRALLER: "showContraller",
+    CLEAR_ERROR_TIMER: "clearErrorTimer"
+  };
+
+  function LeftBar({
+    api,
+    event,
+    video,
+    isHistory,
+    reloadHistory,
+    isLive,
+    leftExtContents,
+    leftMidExtContents
+  }) {
+    const [openSliderVolume, setOpenSliderVolume] = React.useState(false);
+    const [dep, setDep] = React.useState(Date.now());
+    React.useEffect(() => {
+      const updateRender = () => {
+        setDep(Date.now());
+      };
+
+      event.addEventListener('play', updateRender);
+      event.addEventListener('pause', updateRender);
+      event.addEventListener('volumechange', updateRender);
+      return () => {
+        event.removeEventListener('play', updateRender);
+        event.removeEventListener('pause', updateRender);
+        event.removeEventListener('volumechange', updateRender);
+      };
+    }, [event]); //缓存值
+
+    const paused = React.useMemo(() => video.paused, [dep, video]);
+    const statusIconClassName = React.useMemo(() => paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main', [paused]);
+    const statusText = React.useMemo(() => paused ? '播放' : '暂停', [paused]);
+    const volumeVal = React.useMemo(() => video.muted ? 0 : video.volume, [dep, video]);
+    const volumeIcon = React.useMemo(() => volumeVal === 0 ? 'lm-player-volume-close' : video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben', [volumeVal]);
+    const volumePercent = React.useMemo(() => volumeVal === 0 ? 0 : volumeVal * 100, [volumeVal]);
+    const sliderClassName = React.useMemo(() => openSliderVolume ? 'contraller-bar-hover-volume' : '', [openSliderVolume]); //TODO 方法
+
+    const changePlayStatus = React.useCallback(() => video.paused ? api.play() : api.pause(), [video, api]);
+    const mutedChantgeStatus = React.useCallback(() => video.muted ? api.unmute() : api.mute(), [api, video]);
+    const onChangeVolume = React.useCallback(volume => {
+      api.setVolume(parseFloat(volume.toFixed(1)));
+      volume > 0 && video.muted && api.unmute();
+    }, [api, video]);
+    const reload = React.useCallback(() => {
+      isHistory ? reloadHistory() : api.reload();
+      event.emit(EventName.CLEAR_ERROR_TIMER);
+    }, [event, isHistory, api]);
+    return React__default.createElement("div", {
+      className: "contraller-left-bar"
+    }, leftExtContents, React__default.createElement(Bar, {
+      visibel: !isLive
+    }, React__default.createElement(IconFont, {
+      onClick: changePlayStatus,
+      type: statusIconClassName,
+      title: statusText
+    })), React__default.createElement(Bar, {
+      className: `contraller-bar-volume ${sliderClassName}`,
+      onMouseOver: () => setOpenSliderVolume(true),
+      onMouseOut: () => setOpenSliderVolume(false)
+    }, React__default.createElement(IconFont, {
+      onClick: mutedChantgeStatus,
+      type: volumeIcon,
+      title: "\u97F3\u91CF"
+    }), React__default.createElement("div", {
+      className: "volume-slider-layout"
+    }, React__default.createElement(Slider, {
+      className: "volume-slider",
+      currentPercent: volumePercent,
+      onChange: onChangeVolume,
+      renderTips: precent => React__default.createElement("span", null, Math.round(precent * 100), "%")
+    }))), React__default.createElement(Bar, null, React__default.createElement(IconFont, {
+      onClick: reload,
+      type: "lm-player-Refresh_Main",
+      title: "\u91CD\u8F7D"
+    })), leftMidExtContents);
+  }
+
+  LeftBar.propTypes = {
+    api: PropTypes$1.object,
+    event: PropTypes$1.object,
+    playerProps: PropTypes$1.object,
+    video: PropTypes$1.node,
+    reloadHistory: PropTypes$1.func,
+    isHistory: PropTypes$1.bool
+  };
+
+  function RightBar({
+    playContainer,
+    api,
+    scale,
+    snapshot,
+    rightExtContents,
+    rightMidExtContents
+  }) {
+    const [dep, setDep] = React.useState(Date.now());
+    React.useEffect(() => {
+      const update = () => setDep(Date.now());
+
+      fullScreenListener(true, update);
+      return () => fullScreenListener(false, update);
+    }, []);
+    const isfull = React.useMemo(() => isFullscreen(playContainer), [dep, playContainer]);
+    const fullscreen = React.useCallback(() => {
+      !isFullscreen(playContainer) ? api.requestFullScreen() : api.cancelFullScreen();
+      setDep(Date.now());
+    }, [api, playContainer]);
+    const setScale = React.useCallback((...args) => {
+      const dragDom = playContainer.querySelector('.player-mask-layout');
+      api.setScale(...args);
+      let position = computedBound(dragDom, api.getPosition(), api.getScale());
+      position && api.setPosition(position, true);
+    }, [api, playContainer]);
+    return React__default.createElement("div", {
+      className: "contraller-right-bar"
+    }, rightMidExtContents, scale && React__default.createElement(React__default.Fragment, null, React__default.createElement(Bar, null, React__default.createElement(IconFont, {
+      title: "\u7F29\u5C0F",
+      onClick: () => setScale(-0.2),
+      type: 'lm-player-ZoomOut_Main'
+    })), React__default.createElement(Bar, null, React__default.createElement(IconFont, {
+      title: "\u590D\u4F4D",
+      onClick: () => setScale(1, true),
+      type: 'lm-player-ZoomDefault_Main'
+    })), React__default.createElement(Bar, null, React__default.createElement(IconFont, {
+      title: "\u653E\u5927",
+      onClick: () => setScale(0.2),
+      type: 'lm-player-ZoomIn_Main'
+    }))), snapshot && React__default.createElement(Bar, null, React__default.createElement(IconFont, {
+      title: "\u622A\u56FE",
+      onClick: () => snapshot(api.snapshot()),
+      type: "lm-player-SearchBox"
+    })), React__default.createElement(Bar, null, React__default.createElement(IconFont, {
+      title: isfull ? '窗口' : '全屏',
+      onClick: fullscreen,
+      type: isfull ? 'lm-player-ExitFull_Main' : 'lm-player-Full_Main'
+    })), rightExtContents);
+  }
+
+  RightBar.propTypes = {
+    api: PropTypes$1.object,
+    event: PropTypes$1.object,
+    playerProps: PropTypes$1.object,
+    playContainer: PropTypes$1.node,
+    reloadHistory: PropTypes$1.func,
+    isHistory: PropTypes$1.bool
+  };
+
+  function ContrallerBar({
+    playContainer,
+    snapshot,
+    rightExtContents,
+    rightMidExtContents,
+    scale,
+    visibel,
+    api,
+    event,
+    video,
+    isHistory,
+    reloadHistory,
+    isLive,
+    leftExtContents,
+    leftMidExtContents
+  }) {
+    return React__default.createElement("div", {
+      className: `contraller-bar-layout ${!visibel ? 'hide-contraller-bar' : ''}`
+    }, React__default.createElement(LeftBar, {
+      api: api,
+      event: event,
+      video: video,
+      isHistory: isHistory,
+      reloadHistory: reloadHistory,
+      isLive: isLive,
+      leftMidExtContents: leftMidExtContents,
+      leftExtContents: leftExtContents
+    }), React__default.createElement(RightBar, {
+      api: api,
+      event: event,
+      playContainer: playContainer,
+      scale: scale,
+      snapshot: snapshot,
+      rightExtContents: rightExtContents,
+      rightMidExtContents: rightMidExtContents
+    }));
+  }
+
+  ContrallerBar.propTypes = {
+    visibel: PropTypes$1.bool
+  };
+
+  const videoContext = React__default.createContext(null);
+  const Provider = videoContext.Provider;
+  const Consumer = videoContext.Consumer;
+  function videoDec(Component) {
+    class ComponentWithVideoDec extends React__default.Component {
+      render() {
+        const {
+          forwardRef,
+          ...props
+        } = this.props;
+        return React__default.createElement(Consumer, null, context => React__default.createElement(Component, _extends({}, props, context, {
+          ref: forwardRef
+        })));
+      }
+
+    }
+
+    ComponentWithVideoDec.propTypes = {
+      forwardRef: PropTypes$1.ref
+    };
+    return React__default.forwardRef((props, ref) => React__default.createElement(ComponentWithVideoDec, _extends({}, props, {
+      forwardRef: ref
+    })));
+  }
+
+  var _class, _temp;
+
+  let ContrallerEvent = videoDec(_class = (_temp = class ContrallerEvent extends React__default.Component {
+    constructor(props) {
+      super(props);
+
+      this.showContraller = () => {
+        if (!this.visibel) {
+          const {
+            event
+          } = this.props;
+          this.visibel = true;
+          this.forceUpdate();
+          event.emit(EventName.SHOW_CONTRALLER);
+        }
+
+        this.hideContraller();
+      };
+
+      this.hideContraller = () => {
+        const {
+          event
+        } = this.props;
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          this.visibel = false;
+          event.emit(EventName.HIDE_CONTRALLER);
+          this.forceUpdate();
+        }, 3 * 1000);
+      };
+
+      this.timer = null;
+      this.visibel = true;
+    }
+
+    componentDidMount() {
+      const {
+        playContainer,
+        event
+      } = this.props;
+      playContainer.addEventListener('mousemove', this.showContraller, false);
+      playContainer.addEventListener('mouseout', this.hideContraller, false);
+      this.timer = setTimeout(() => {
+        event.emit(EventName.HIDE_CONTRALLER);
+      }, 5 * 1000);
+    }
+
+    componentWillUnmount() {
+      const {
+        playContainer
+      } = this.props;
+      playContainer.addEventListener('mousemove', this.showContraller, false);
+      playContainer.addEventListener('mouseout', this.hideContraller, false);
+      clearTimeout(this.timer);
+    }
+
+    render() {
+      const {
+        children
+      } = this.props;
+      return React__default.Children.map(children, child => React__default.isValidElement(child) ? React__default.cloneElement(child, {
+        visibel: this.visibel
+      }) : child);
+    }
+
+  }, _temp)) || _class;
+
+  ContrallerEvent.propTypes = {
+    api: PropTypes$1.object,
+    event: PropTypes$1.object,
+    playContainer: PropTypes$1.node,
+    children: PropTypes$1.element
+  };
+
+  var _class$1, _temp$1;
+
+  let VideoMessage = videoDec(_class$1 = (_temp$1 = class VideoMessage extends React__default.Component {
+    constructor(props) {
+      super(props);
+
+      this.clearReloadMessage = () => {
+        this.message = null;
+        this.mounted && this.forceUpdate();
+      };
+
+      this.reload = () => {
+        this.setState({
+          status: 'reload'
+        });
+      };
+
+      this.errorReload = timer => {
+        this.message = React__default.createElement("div", null, "\u89C6\u9891\u52A0\u8F7D\u9519\u8BEF\uFF0C\u6B63\u5728\u8FDB\u884C\u91CD\u8FDE\u7B2C", timer, "\u91CD\u8FDE");
+        this.mounted && this.setState({
+          status: 'reload',
+          loading: true
+        });
+      };
+
+      this.reloadFail = () => {
+        this.message = React__default.createElement("div", null, "\u89C6\u9891\u9519\u8BEF");
+        this.mounted && this.setState({
+          status: 'fail'
+        });
+      };
+
+      this.reloadSuccess = () => {
+        this.message = null;
+        this.mounted && this.setState({
+          status: null
+        });
+      };
+
+      this.openLoading = () => {
+        this.mounted && this.setState({
+          loading: true
+        });
+      };
+
+      this.closeLoading = () => {
+        this.mounted && this.setState({
+          loading: false
+        });
+      };
+
+      this.historyPlayEnd = () => {
+        this.message = null;
+        this.mounted && this.setState({
+          status: null,
+          loading: false
+        });
+        this.props.api.pause();
+      };
+
+      this.state = {
+        loading: false,
+        status: null
+      };
+      this.mounted = false;
+      this.message = null;
+    }
+
+    componentDidMount() {
+      const {
+        event
+      } = this.props;
+      this.mounted = true;
+      event.addEventListener('loadstart', this.openLoading);
+      event.addEventListener('waiting', this.openLoading);
+      event.addEventListener('seeking', this.openLoading);
+      event.addEventListener('loadeddata', this.closeLoading);
+      event.addEventListener('canplay', this.closeLoading);
+      event.on(EventName.ERROR_RELOAD, this.errorReload);
+      event.on(EventName.RELOAD_FAIL, this.reloadFail);
+      event.on(EventName.RELOAD_SUCCESS, this.reloadSuccess);
+      event.on(EventName.RELOAD, this.reload);
+      event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
+      event.on(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
+    }
+
+    componentWillUnmount() {
+      event.removeEventListener('loadstart', this.openLoading);
+      event.removeEventListener('waiting', this.openLoading);
+      event.removeEventListener('seeking', this.openLoading);
+      event.removeEventListener('loadeddata', this.closeLoading);
+      event.removeEventListener('canplay', this.closeLoading);
+      event.off(EventName.ERROR_RELOAD, this.errorReload);
+      event.off(EventName.RELOAD_FAIL, this.reloadFail);
+      event.off(EventName.RELOAD_SUCCESS, this.reloadSuccess);
+      event.off(EventName.RELOAD, this.reload);
+      event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
+      event.off(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
+    }
+
+    render() {
+      const {
+        loading,
+        status
+      } = this.state;
+      return React__default.createElement("div", {
+        className: `lm-player-message-mask ${loading || status === 'fail' ? 'lm-player-mask-loading-animation' : ''}`
+      }, React__default.createElement(IconFont, {
+        type: status === 'fail' ? 'lm-player-YesorNo_No_Dark' : 'lm-player-Loading',
+        className: `${loading && status !== 'fail' ? 'lm-player-loading-animation' : status === 'fail' ? 'lm-player-loadfail' : ''} lm-player-loading-icon`
+      }), React__default.createElement("span", {
+        className: "lm-player-message"
+      }, this.message));
+    }
+
+  }, _temp$1)) || _class$1;
+
+  VideoMessage.propTypes = {
+    api: PropTypes.object,
+    event: PropTypes.object
+  };
+  const NoSource = () => {
+    return React__default.createElement("div", {
+      className: "lm-player-message-mask lm-player-mask-loading-animation"
+    }, React__default.createElement(IconFont, {
+      style: {
+        fontSize: 80
+      },
+      type: "lm-player-PlaySource",
+      title: "\u8BF7\u9009\u62E9\u89C6\u9891\u6E90"
+    }));
+  };
+
+  var _class$2, _temp$2;
+
+  let TineLine = videoDec(_class$2 = (_temp$2 = class TineLine extends React__default.Component {
+    constructor(props) {
+      super(props);
+
+      this.getDuration = () => {
+        const {
+          api
+        } = this.props;
+        this.setState({
+          duration: api.getDuration()
+        });
+      };
+
+      this.getCurrentTime = () => {
+        const {
+          api
+        } = this.props;
+        const state = {
+          currentTime: api.getCurrentTime(),
+          buffered: api.getSecondsLoaded()
+        };
+
+        if (state.buffered === this.state.buffered) {
+          delete state.buffered;
+        }
+
+        this.setState(state);
+      };
+
+      this.getBuffered = () => {
+        const {
+          api
+        } = this.props;
+        this.setState({
+          buffered: api.getSecondsLoaded()
+        });
+      };
+
+      this.changePlayTime = percent => {
+        const {
+          api
+        } = this.props;
+        const currentTime = percent * this.state.duration;
+        api.pause();
+        this.setState({
+          currentTime
+        });
+        api.seekTo(currentTime);
+      };
+
+      this.seekendPlay = () => {
+        const {
+          api
+        } = this.props;
+        api.play();
+      };
+
+      this.renderTimeLineTips = percent => {
+        const currentTime = percent * this.state.duration;
+        const time = timeStamp(currentTime);
+        return React__default.createElement("span", null, time);
+      };
+
+      this.fastForward = () => {
+        const {
+          api
+        } = this.props;
+        api.fastForward();
+      };
+
+      this.backWind = () => {
+        const {
+          api
+        } = this.props;
+        api.backWind();
+      };
+
+      this.state = {
+        duration: 0,
+        currentTime: 0,
+        buffered: 0
+      };
+    }
+
+    componentDidMount() {
+      const {
+        event
+      } = this.props;
+      event.addEventListener('loadedmetadata', this.getDuration);
+      event.addEventListener('durationchange', this.getDuration);
+      event.addEventListener('timeupdate', this.getCurrentTime);
+      event.addEventListener('progress', this.getBuffered);
+      event.addEventListener('suspend', this.getBuffered);
+      event.addEventListener('seeked', this.seekendPlay);
+    }
+
+    render() {
+      const {
+        duration,
+        currentTime,
+        buffered
+      } = this.state;
+      const playPercent = Math.round(currentTime / duration * 100);
+      const bufferedPercent = Math.round(buffered / duration * 100);
+      return React__default.createElement("div", {
+        className: `video-time-line-layout ${!this.props.visibel ? 'hide-time-line' : ''}`
+      }, React__default.createElement(IconFont, {
+        type: "lm-player-PrevFast",
+        onClick: this.backWind,
+        className: "time-line-action-item"
+      }), React__default.createElement(Slider, {
+        className: "time-line-box",
+        currentPercent: playPercent,
+        availablePercent: bufferedPercent,
+        onChange: this.changePlayTime,
+        renderTips: this.renderTimeLineTips
+      }), React__default.createElement(IconFont, {
+        type: "lm-player-NextFast_Light",
+        onClick: this.fastForward,
+        className: "time-line-action-item"
+      }));
+    }
+
+  }, _temp$2)) || _class$2;
+
+  TineLine.propTypes = {
+    event: PropTypes$1.object,
+    api: PropTypes$1.object,
+    changePlayIndex: PropTypes$1.func,
+    playIndex: PropTypes$1.number,
+    historyList: PropTypes$1.array,
+    seekTo: PropTypes$1.func,
+    video: PropTypes$1.element,
+    visibel: PropTypes$1.bool
+  };
+
+  var _class$3, _temp$3;
+
+  let ErrorEvent = videoDec(_class$3 = (_temp$3 = class ErrorEvent extends React__default.Component {
+    constructor(props) {
+      super(props);
+
+      this.clearErrorTimer = () => {
+        this.errorTimer = 0;
+        clearTimeout(this.reconnectTimer);
+      };
+
+      this.clearError = () => {
+        const {
+          event
+        } = this.props;
+
+        if (this.errorTimer > 0) {
+          console.warn('视频重连成功！');
+          event.emit(EventName.RELOAD_SUCCESS);
+          this.clearErrorTimer();
+        }
+      };
+
+      this.errorHandle = (...args) => {
+        console.error(...args);
+        clearTimeout(this.reconnectTimer);
+        const {
+          event,
+          api,
+          isHistory,
+          changePlayIndex,
+          playIndex,
+          playerProps
+        } = this.props;
+        const timer = this.errorTimer + 1;
+        event.emit(EventName.ERROR, ...args);
+
+        if (timer > playerProps.errorReloadTimer) {
+          isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload();
+        } else {
+          this.errorTimer = timer;
+
+          if (args[1] && args[1].loader || args[0].indexOf && args[0].indexOf('NetworkError') > -1) {
+            this.reloadAction(timer, args);
+          }
+
+          this.reconnectTimer = setTimeout(() => {
+            this.reloadAction(timer, args);
+          }, 1000 * 20);
+        }
+      };
+
+      this.reloadAction = (timer, args) => {
+        const {
+          event,
+          api,
+          hlsPlayer
+        } = this.props;
+        event.emit(EventName.ERROR_RELOAD, timer, ...args);
+        console.warn(`视频播放出错，正在进行重连${timer}`);
+
+        if (hlsPlayer) {
+          hlsPlayer.swapAudioCodec();
+          hlsPlayer.recoverMediaError();
+        }
+
+        api.reload();
+      };
+
+      this.errorTimer = 0;
+    }
+
+    componentDidMount() {
+      const {
+        event,
+        flvPlayer,
+        hlsPlayer
+      } = this.props;
+
+      if (flvPlayer) {
+        //捕获flv错误
+        flvPlayer.on(flvjs.Events.ERROR, this.errorHandle);
+      }
+
+      if (hlsPlayer) {
+        //捕获hls错误
+        hlsPlayer.on(Hls.Events.ERROR, this.errorHandle);
+      } //捕获video错误
+
+
+      event.addEventListener('error', this.errorHandle, false); //获取video状态清除错误状态
+
+      event.addEventListener('canplay', this.clearError, false); //历史视频切换播放索引时清除错误次数
+
+      event.on(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer); //历史视频主动清除错误次数
+
+      event.on(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
+    }
+
+    UNSAFE_componentWillReceiveProps(nextProps) {
+      if (nextProps.flvPlayer && nextProps.flvPlayer !== this.props.flvPlayer) {
+        nextProps.flvPlayer.on(flvjs.Events.ERROR, this.errorHandle);
+      }
+
+      if (nextProps.hlsPlayer && nextProps.hlsPlayer !== this.props.hlsPlayer) {
+        nextProps.hlsPlayer.on(Hls.Events.ERROR, this.errorHandle);
+      }
+    }
+
+    componentWillUnmount() {
+      clearTimeout(this.reconnectTimer);
+    }
+
+    render() {
+      return null;
+    }
+
+  }, _temp$3)) || _class$3;
+
+  ErrorEvent.propTypes = {
+    api: PropTypes$1.object,
+    event: PropTypes$1.object,
+    playContainer: PropTypes$1.node,
+    playerProps: PropTypes$1.object,
+    hlsPlayer: PropTypes$1.object,
+    flvPlayer: PropTypes$1.object,
+    isHistory: PropTypes$1.bool,
+    changePlayIndex: PropTypes$1.func,
+    playIndex: PropTypes$1.number
+  };
+
+  var _class$4, _temp$4;
+
+  let DragEvent = videoDec(_class$4 = (_temp$4 = class DragEvent extends React__default.Component {
+    constructor(props) {
+      super(props);
+
+      this.openDrag = e => {
+        this.position.start = [e.pageX, e.pageY];
+        this.dragDom.addEventListener("mousemove", this.moveChange);
+        this.dragDom.addEventListener("mouseup", this.stopDrag);
+      };
+
+      this.moveChange = e => {
+        const {
+          api
+        } = this.props;
+        const currentPosition = api.getPosition();
+        this.position.end = [e.pageX, e.pageY];
+        const x = currentPosition[0] + (this.position.end[0] - this.position.start[0]);
+        const y = currentPosition[1] + (this.position.end[1] - this.position.start[1]);
+        const position = [x, y];
+        api.setPosition(position);
+        this.position.start = [e.pageX, e.pageY];
+      };
+
+      this.stopDrag = () => {
+        this.dragDom.removeEventListener("mousemove", this.moveChange);
+        this.dragDom.removeEventListener("mouseup", this.stopDrag);
+        this.transformChange();
+      };
+
+      this.transformChange = () => {
+        const {
+          api
+        } = this.props;
+        let position = computedBound(this.dragDom, api.getPosition(), api.getScale());
+        position && api.setPosition(position, true);
+      };
+
+      const {
+        playContainer
+      } = props;
+      this.dragDom = playContainer.querySelector(".player-mask-layout");
+      this.position = {
+        start: [0, 0],
+        end: [0, 0]
+      };
+    }
+
+    componentDidMount() {
+      const {
+        isDraggable
+      } = this.props.playerProps;
+
+      if (isDraggable) {
+        this.dragDom.addEventListener("mousedown", this.openDrag);
+        this.props.event.addEventListener("transform", this.transformChange, true);
+      }
+    }
+
+    componentWillUnmount() {
+      this.dragDom.removeEventListener("mousedown", this.openDrag);
+    }
+
+    render() {
+      return null;
+    }
+
+  }, _temp$4)) || _class$4;
+
+  DragEvent.propTypes = {
+    api: PropTypes$1.object,
+    event: PropTypes$1.object,
+    playContainer: PropTypes$1.node,
+    playerProps: PropTypes$1.object
+  };
+
+  class Api {
+    constructor({
+      video,
+      playContainer,
+      event,
+      flv,
+      hls
+    }) {
+      this.player = video;
+      this.playContainer = playContainer;
+      this.flv = flv;
+      this.hls = hls;
+      this.event = event;
+      this.scale = 1;
+      this.position = [0, 0];
+    }
+    /**
+     * 播放器销毁后 动态跟新api下的flv，hls对象
+     * @param {*} param0
+     */
+
+
+    updateChunk({
+      flv,
+      hls
+    }) {
+      this.flv = flv;
+      this.hls = hls;
+    }
+    /**
+     * 全屏
+     */
+
+
+    requestFullScreen() {
+      if (!isFullscreen(this.playContainer)) {
+        fullscreen(this.playContainer);
+      }
+    }
+    /**
+     * 退出全屏
+     */
+
+
+    cancelFullScreen() {
+      if (isFullscreen(this.playContainer)) {
+        exitFullscreen();
+      }
+    }
+
+    play() {
+      if (this.player.paused) {
+        this.player.play();
+      }
+    }
+
+    pause() {
+      if (!this.player.paused) {
+        this.player.pause();
+      }
+    }
+
+    destroy() {
+      this.player.removeAttribute('src');
+      this.unload();
+
+      if (this.flv) {
+        this.flv.destroy();
+      }
+
+      if (this.hls) {
+        this.hls.destroy();
+      }
+    }
+    /**
+     * 设置currentTime实现seek
+     * @param {*} seconds
+     * @param {*} noEmit
+     */
+
+
+    seekTo(seconds, noEmit) {
+      const buffered = this.getBufferedTime();
+
+      if (this.flv && buffered[0] > seconds) {
+        this.flv.unload();
+        this.flv.load();
+      }
+
+      this.player.currentTime = seconds;
+
+      if (!noEmit) {
+        this.event.emit(EventName.SEEK, seconds);
+      }
+    }
+    /**
+     * 视频重载
+     */
+
+
+    reload() {
+      this.unload();
+      this.load();
+      this.play();
+      this.event.emit(EventName.RELOAD);
+
+      if (this.getCurrentTime !== 0) {
+        this.seekTo(0);
+      }
+    }
+
+    unload() {
+      this.flv && this.flv.unload();
+      this.hls && this.hls.stopLoad();
+    }
+
+    load() {
+      this.flv && this.flv.load();
+
+      if (this.hls) {
+        try {
+          this.hls.swapAudioCodec();
+          this.hls.recoverMediaError();
+        } catch (e) {
+          console.warn(e);
+        }
+
+        this.hls.startLoad();
+      }
+    }
+
+    setVolume(fraction) {
+      this.player.volume = fraction;
+    }
+
+    mute() {
+      this.player.muted = true;
+    }
+
+    unmute() {
+      this.player.muted = false;
+    }
+    /**
+     * 开启画中画功能
+     */
+
+
+    requestPictureInPicture() {
+      if (this.player.requestPictureInPicture && document.pictureInPictureElement !== this.player) {
+        this.player.requestPictureInPicture();
+      }
+    }
+    /**
+     * 关闭画中画功能
+     */
+
+
+    exitPictureInPicture() {
+      if (document.exitPictureInPicture && document.pictureInPictureElement === this.player) {
+        document.exitPictureInPicture();
+      }
+    }
+    /**
+     * 设置播放速率
+     * @param {*} rate
+     */
+
+
+    setPlaybackRate(rate) {
+      this.player.playbackRate = rate;
+    }
+    /**
+     * 获取视频总时长
+     */
+
+
+    getDuration() {
+      if (!this.player) return null;
+      const {
+        duration,
+        seekable
+      } = this.player;
+
+      if (duration === Infinity && seekable.length > 0) {
+        return seekable.end(seekable.length - 1);
+      }
+
+      return duration;
+    }
+    /**
+     * 获取当前播放时间
+     */
+
+
+    getCurrentTime() {
+      if (!this.player) return null;
+      return this.player.currentTime;
+    }
+    /**
+     * 获取缓存时间
+     */
+
+
+    getSecondsLoaded() {
+      return this.getBufferedTime()[1];
+    }
+    /**
+     * 获取当前视频缓存的起止时间
+     */
+
+
+    getBufferedTime() {
+      if (!this.player) return null;
+      const {
+        buffered
+      } = this.player;
+
+      if (buffered.length === 0) {
+        return [0, 0];
+      }
+
+      const end = buffered.end(buffered.length - 1);
+      const start = buffered.start(buffered.length - 1);
+      const duration = this.getDuration();
+
+      if (end > duration) {
+        return duration;
+      }
+
+      return [start, end];
+    }
+    /**
+     * 快进通过seekTo方法实现
+     * @param {*} second
+     */
+
+
+    fastForward(second = 5) {
+      const duration = this.getDuration();
+      const currentTime = this.getCurrentTime();
+      const time = currentTime + second;
+      this.seekTo(time > duration - 1 ? duration - 1 : time);
+    }
+    /**
+     * 快退通过seekTo方法实现
+     * @param {*} second
+     */
+
+
+    backWind(second = 5) {
+      const currentTime = this.getCurrentTime();
+      const time = currentTime - second;
+      this.seekTo(time < 1 ? 1 : time);
+    }
+    /**
+     * 视频截屏方法
+     */
+
+
+    snapshot() {
+      let canvas = document.createElement('canvas');
+      let ctx = canvas.getContext('2d');
+      canvas.width = this.player.videoWidth;
+      canvas.height = this.player.videoHeight;
+      ctx.drawImage(this.player, 0, 0, canvas.width, canvas.height);
+      setTimeout(() => {
+        canvas.remove();
+        canvas = null;
+        ctx = null;
+      }, 200);
+      return canvas.toDataURL();
+    }
+
+    setScale(num, isRest = false) {
+      let scale = this.scale + num;
+
+      if (isRest) {
+        scale = num;
+      } else {
+        if (scale < 1) {
+          scale = 1;
+        }
+
+        if (scale > 3) {
+          scale = 3;
+        }
+      }
+
+      this.scale = scale;
+      this.player.style.transition = 'transform 0.3s';
+
+      this.__setTransform();
+
+      this.event.emit(EventName.TRANSFORM);
+      setTimeout(() => {
+        this.player.style.transition = 'unset';
+      }, 500);
+    }
+
+    getScale() {
+      return this.scale;
+    }
+
+    setPosition(position, isAnimate) {
+      this.position = position;
+      this.player.style.transition = isAnimate ? 'transform 0.3s' : 'unset';
+
+      this.__setTransform();
+    }
+
+    getPosition() {
+      return this.position;
+    }
+
+    __setTransform() {
+      this.player.style.transform = `scale(${this.scale}) translate(${this.position[0]}px,${this.position[1]}px)`;
+    }
+
+    getApi() {
+      return {
+        play: this.play.bind(this),
+        reload: this.reload.bind(this),
+        pause: this.pause.bind(this),
+        seekTo: this.seekTo.bind(this),
+        setVolume: this.setVolume.bind(this),
+        mute: this.mute.bind(this),
+        unmute: this.unmute.bind(this),
+        requestPictureInPicture: this.requestPictureInPicture.bind(this),
+        exitPictureInPicture: this.exitPictureInPicture.bind(this),
+        setPlaybackRate: this.setPlaybackRate.bind(this),
+        destroy: this.destroy.bind(this),
+        getDuration: this.getDuration.bind(this),
+        getCurrentTime: this.getCurrentTime.bind(this),
+        getSecondsLoaded: this.getSecondsLoaded.bind(this),
+        getBufferedTime: this.getBufferedTime.bind(this),
+        fastForward: this.fastForward.bind(this),
+        backWind: this.backWind.bind(this),
+        snapshot: this.snapshot.bind(this),
+        requestFullScreen: this.requestFullScreen.bind(this),
+        cancelFullScreen: this.cancelFullScreen.bind(this),
+        __player: this.player,
+        flv: this.flv,
+        hls: this.hls
+      };
+    }
+
+  }
+
+  function getHiddenProp() {
+    const prefixes = ["webkit", "moz", "ms", "o"]; // 如果hidden 属性是原生支持的，我们就直接返回
+
+    if ("hidden" in document) {
+      return "hidden";
+    } // 其他的情况就循环现有的浏览器前缀，拼接我们所需要的属性
+
+
+    for (let i = 0; i < prefixes.length; i++) {
+      // 如果当前的拼接的前缀在 document对象中存在 返回即可
+      if (prefixes[i] + "Hidden" in document) {
+        return prefixes[i] + "Hidden";
+      }
+    } // 其他的情况 直接返回null
+
+
+    return null;
+  }
+
+  function getVisibilityState() {
+    const prefixes = ["webkit", "moz", "ms", "o"];
+
+    if ("visibilityState" in document) {
+      return "visibilityState";
+    }
+
+    for (let i = 0; i < prefixes.length; i++) {
+      if (prefixes[i] + "VisibilityState" in document) {
+        return prefixes[i] + "VisibilityState";
+      }
+    } // 找不到返回 null
+
+
+    return null;
+  }
+
+  function visibilityState() {
+    return document[getVisibilityState()];
+  }
+
+  function addEventListener(listener) {
+    const visProp = getHiddenProp();
+    const evtname = visProp.replace(/[H|h]idden/, "") + "visibilitychange";
+    document.addEventListener(evtname, listener, false);
+  }
+
+  function removeEventListener(listener) {
+    const visProp = getHiddenProp();
+    const evtname = visProp.replace(/[H|h]idden/, "") + "visibilitychange";
+    document.removeEventListener(evtname, listener, false);
+  }
+
+  var BrowserTab = {
+    addEventListener,
+    removeEventListener,
+    visibilityState
+  };
+
+  var _class$5, _temp$5;
+
+  let LiveHeart = videoDec(_class$5 = (_temp$5 = class LiveHeart extends React__default.Component {
+    constructor(props) {
+      super(props);
+
+      this.browserTabChange = () => {
+        if (BrowserTab.visibilityState() === "visible") {
+          this.focusSeekAction();
+        }
+      };
+
+      this.canplay = () => {
+        const {
+          api
+        } = this.props;
+        this.isCanPlay = true;
+        api.play();
+      };
+
+      this.focusSeekAction = () => {
+        const {
+          api
+        } = this.props;
+        const current = api.getCurrentTime();
+        const buffered = api.getSecondsLoaded();
+
+        if (buffered - current > 5) {
+          console.warn(`当前延时过大current->${current} buffered->${buffered}, 基于视频当前缓存时间更新当前播放时间 updateTime -> ${buffered - 2}`);
+          api.seekTo(buffered - 2 > 0 ? buffered - 2 : 0);
+        }
+      };
+
+      this.timer = null;
+      this.isCanPlay = false;
+    }
+
+    componentDidMount() {
+      const {
+        event
+      } = this.props;
+      BrowserTab.addEventListener(this.browserTabChange);
+      event.addEventListener("canplay", this.canplay);
+    }
+
+    componentWillUnmount() {
+      BrowserTab.removeEventListener(this.browserTabChange);
+    }
+
+    render() {
+      return null;
+    }
+
+  }, _temp$5)) || _class$5;
+
+  LiveHeart.propTypes = {
+    api: PropTypes$1.object,
+    event: PropTypes$1.object
+  };
+
+  function SinglePlayer({
+    type,
+    file,
+    className,
+    autoPlay,
+    muted,
+    poster,
+    playsinline,
+    loop,
+    preload,
+    onInitPlayer,
+    ...props
+  }) {
+    const playContainerRef = React.useRef(null);
+    const [playerObj, setPlayerObj] = React.useRef({});
+    React.useEffect(() => {
+      if (!file) {
+        return;
+      }
+
+      const playerObject = {
+        playContainer: playContainerRef.current,
+        video: playContainerRef.current.querySelector('video')
+      };
+      const formartType = getVideoType(file);
+
+      if (formartType === 'flv' || type === 'flv') {
+        playerObject.flv = createFlvPlayer(playerObject.video, props);
+        return;
+      }
+
+      if (formartType === 'm3u8' || type === 'hls') {
+        playerObject.hls = createHlsPlayer(playerObject.video, file);
+        return;
+      }
+
+      playerObject.video.src = file;
+      playerObj.event = new VideoEventInstance(playerObject.video);
+      playerObj.api = new Api(playerObject);
+      setPlayerObj(playerObj);
+      onInitPlayer && onInitPlayer(playerObj);
+    }, [file]);
+    return React__default.createElement("div", {
+      className: `lm-player-container ${className}`,
+      ref: playContainerRef
+    }, React__default.createElement("div", {
+      className: "player-mask-layout"
+    }, React__default.createElement("video", {
+      autoPlay: autoPlay,
+      preload: preload,
+      muted: muted,
+      poster: poster,
+      controls: false,
+      playsInline: playsinline,
+      loop: loop
+    })), React__default.createElement(VideoTools, {
+      playerObj: playerObj,
+      isLive: props.isLive,
+      hideContrallerBar: props.hideContrallerBar
+    }), this.props.children);
+  }
+
+  function VideoTools({
+    playerObj,
+    isLive,
+    hideContrallerBar
+  }) {
+    if (!playerObj) {
+      return React__default.createElement(NoSource, null);
+    }
+
+    return React__default.createElement(React__default.Fragment, null, React__default.createElement(ContrallerBar, {
+      visibel: !hideContrallerBar,
+      api: playerObj.api,
+      event: playerObj.event
+    }), React__default.createElement(VideoMessage, null), React__default.createElement(DragEvent, null), React__default.createElement(ContrallerEvent, null, React__default.createElement(ContrallerBar, null), !isLive && React__default.createElement(TineLine, null)), React__default.createElement(ErrorEvent, {
+      flvPlayer: this.flv,
+      hlsPlayer: this.hls
+    }), isLive && React__default.createElement(LiveHeart, {
+      key: this.props.file
+    }));
+  }
+
+  SinglePlayer.propTypes = {
+    file: PropTypes$1.string.isRequired,
+    //播放地址 必填
+    isLive: PropTypes$1.bool,
+    //是否实时视频
+    errorReloadTimer: PropTypes$1.number,
+    //视频错误重连次数
+    type: PropTypes$1.oneOf(['flv', 'hls', 'native']),
+    //强制视频流类型
+    onInitPlayer: PropTypes$1.func,
+    draggable: PropTypes$1.bool,
+    hideContrallerBar: PropTypes$1.bool,
+    scale: PropTypes$1.bool,
+    muted: PropTypes$1.string,
+    autoPlay: PropTypes$1.bool,
+    playsInline: PropTypes$1.bool,
+    preload: PropTypes$1.string,
+    poster: PropTypes$1.string,
+    loop: PropTypes$1.bool,
+    snapshot: PropTypes$1.func,
+    className: PropTypes$1.string,
+    playsinline: PropTypes$1.bool,
+    children: PropTypes$1.any
+  };
+  SinglePlayer.defaultProps = {
+    isLive: true,
+    draggable: true,
+    scale: true,
+    errorReloadTimer: 5,
+    muted: 'muted',
+    autoPlay: true,
+    playsInline: false,
+    preload: 'auto',
+    loop: false,
+    hideContrallerBar: false
+  };
+
+  exports.Bar = Bar;
+  exports.Player = SinglePlayer;
+  exports.default = SinglePlayer;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+})));

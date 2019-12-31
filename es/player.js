@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import flvjs from 'flv.lm.js';
 import * as Hls from 'hls.js';
 import { isSupported, Events } from 'hls.js';
@@ -128,6 +128,10 @@ function _possibleConstructorReturn(self, call) {
   return _assertThisInitialized(self);
 }
 
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+}
+
 function _toConsumableArray(arr) {
   return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
 }
@@ -140,12 +144,50 @@ function _arrayWithoutHoles(arr) {
   }
 }
 
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
 function _iterableToArray(iter) {
   if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
 }
 
+function _iterableToArrayLimit(arr, i) {
+  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
+    return;
+  }
+
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
 function _nonIterableSpread() {
   throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance");
 }
 
 var VideoEventInstance =
@@ -346,21 +388,6 @@ function timeStamp(second_time) {
   return time;
 }
 /**
- * 日期格式化
- * @param {*} timetemp
- */
-
-function dateFormat(timetemp) {
-  var date = new Date(timetemp);
-  var YYYY = date.getFullYear();
-  var DD = date.getDate();
-  var MM = date.getMonth() + 1;
-  var hh = date.getHours();
-  var mm = date.getMinutes();
-  var ss = date.getSeconds();
-  return "".concat(YYYY, ".").concat(MM > 9 ? MM : '0' + MM, ".").concat(DD > 9 ? DD : '0' + DD, " ").concat(hh > 9 ? hh : '0' + hh, ".").concat(mm > 9 ? mm : '0' + mm, ".").concat(ss > 9 ? ss : '0' + ss);
-}
-/**
  * 全屏
  * @param {*} element
  */
@@ -473,52 +500,6 @@ function computedBound(ele, currentPosition, scale) {
   } else {
     return;
   }
-}
-function getRandom() {
-  return Math.random().toString(36).substr(2);
-}
-
-var videoContext = React.createContext(null);
-var Provider = videoContext.Provider;
-var Consumer = videoContext.Consumer;
-function videoDec(Component) {
-  var ComponentWithVideoDec =
-  /*#__PURE__*/
-  function (_React$Component) {
-    _inherits(ComponentWithVideoDec, _React$Component);
-
-    function ComponentWithVideoDec() {
-      _classCallCheck(this, ComponentWithVideoDec);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ComponentWithVideoDec).apply(this, arguments));
-    }
-
-    _createClass(ComponentWithVideoDec, [{
-      key: "render",
-      value: function render() {
-        var _this$props = this.props,
-            forwardRef = _this$props.forwardRef,
-            props = _objectWithoutProperties(_this$props, ["forwardRef"]);
-
-        return React.createElement(Consumer, null, function (context) {
-          return React.createElement(Component, _extends({}, props, context, {
-            ref: forwardRef
-          }));
-        });
-      }
-    }]);
-
-    return ComponentWithVideoDec;
-  }(React.Component);
-
-  ComponentWithVideoDec.propTypes = {
-    forwardRef: PropTypes$1.ref
-  };
-  return React.forwardRef(function (props, ref) {
-    return React.createElement(ComponentWithVideoDec, _extends({}, props, {
-      forwardRef: ref
-    }));
-  });
 }
 
 function IconFont(_ref) {
@@ -754,7 +735,7 @@ Slider.propTypes = {
   currentPercent: PropTypes$1.number,
   seekTo: PropTypes$1.func,
   video: PropTypes$1.element,
-  renderTips: func,
+  renderTips: PropTypes$1.func,
   availablePercent: PropTypes$1.number,
   onChange: PropTypes$1.func,
   children: PropTypes$1.any,
@@ -859,164 +840,112 @@ var EventName = {
   CLEAR_ERROR_TIMER: "clearErrorTimer"
 };
 
-var _class, _temp;
+function LeftBar(_ref) {
+  var api = _ref.api,
+      event = _ref.event,
+      video = _ref.video,
+      isHistory = _ref.isHistory,
+      reloadHistory = _ref.reloadHistory,
+      isLive = _ref.isLive,
+      leftExtContents = _ref.leftExtContents,
+      leftMidExtContents = _ref.leftMidExtContents;
 
-var LeftBar = videoDec(_class = (_temp =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(LeftBar, _React$Component);
+  var _useState = useState(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      openSliderVolume = _useState2[0],
+      setOpenSliderVolume = _useState2[1];
 
-  function LeftBar(props) {
-    var _this;
+  var _useState3 = useState(Date.now()),
+      _useState4 = _slicedToArray(_useState3, 2),
+      dep = _useState4[0],
+      setDep = _useState4[1];
 
-    _classCallCheck(this, LeftBar);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(LeftBar).call(this, props));
-
-    _this.seek = function () {
-      _this.historyEnd = false;
+  useEffect(function () {
+    var updateRender = function updateRender() {
+      setDep(Date.now());
     };
 
-    _this.historyPlayEnd = function () {
-      _this.historyEnd = true;
+    event.addEventListener('play', updateRender);
+    event.addEventListener('pause', updateRender);
+    event.addEventListener('volumechange', updateRender);
+    return function () {
+      event.removeEventListener('play', updateRender);
+      event.removeEventListener('pause', updateRender);
+      event.removeEventListener('volumechange', updateRender);
     };
+  }, [event]); //缓存值
 
-    _this.updateRender = function () {
-      _this.mounted && _this.forceUpdate();
-    };
+  var paused = useMemo(function () {
+    return video.paused;
+  }, [dep, video]);
+  var statusIconClassName = useMemo(function () {
+    return paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main';
+  }, [paused]);
+  var statusText = useMemo(function () {
+    return paused ? '播放' : '暂停';
+  }, [paused]);
+  var volumeVal = useMemo(function () {
+    return video.muted ? 0 : video.volume;
+  }, [dep, video]);
+  var volumeIcon = useMemo(function () {
+    return volumeVal === 0 ? 'lm-player-volume-close' : video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben';
+  }, [volumeVal]);
+  var volumePercent = useMemo(function () {
+    return volumeVal === 0 ? 0 : volumeVal * 100;
+  }, [volumeVal]);
+  var sliderClassName = useMemo(function () {
+    return openSliderVolume ? 'contraller-bar-hover-volume' : '';
+  }, [openSliderVolume]); //TODO 方法
 
-    _this.changePlayStatus = function () {
-      var _this$props = _this.props,
-          api = _this$props.api,
-          video = _this$props.video;
-
-      if (_this.historyEnd) {
-        _this.props.reloadHistory();
-      } else {
-        video.paused ? api.play() : api.pause();
-      }
-    };
-
-    _this.mutedChange = function () {
-      var _this$props2 = _this.props,
-          api = _this$props2.api,
-          video = _this$props2.video;
-      video.muted ? api.unmute() : api.mute();
-    };
-
-    _this.volumechange = function () {
-      _this.forceUpdate();
-    };
-
-    _this.openSliderVolume = function () {
-      _this.setState({
-        openSliderVolume: true
-      });
-    };
-
-    _this.closeSliderVolume = function () {
-      _this.setState({
-        openSliderVolume: false
-      });
-    };
-
-    _this.onChangeVolume = function (volume) {
-      var _this$props3 = _this.props,
-          api = _this$props3.api,
-          video = _this$props3.video;
-      api.setVolume(parseFloat(volume.toFixed(1)));
-
-      if (volume > 0 && video.muted) {
-        api.unmute();
-      }
-    };
-
-    _this.reload = function () {
-      if (_this.props.isHistory) {
-        _this.props.reloadHistory();
-      } else {
-        _this.props.api.reload();
-      }
-
-      _this.props.event.emit(EventName.CLEAR_ERROR_TIMER);
-    };
-
-    _this.state = {
-      openSliderVolume: false
-    };
-    _this.historyEnd = false;
-    _this.mounted = false;
-    return _this;
-  }
-
-  _createClass(LeftBar, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var event = this.props.event;
-      this.mounted = true;
-      event.addEventListener('play', this.updateRender);
-      event.addEventListener('pause', this.updateRender);
-      event.addEventListener('volumechange', this.volumechange);
-      event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
-      event.on(EventName.SEEK, this.seek);
+  var changePlayStatus = useCallback(function () {
+    return video.paused ? api.play() : api.pause();
+  }, [video, api]);
+  var mutedChantgeStatus = useCallback(function () {
+    return video.muted ? api.unmute() : api.mute();
+  }, [api, video]);
+  var onChangeVolume = useCallback(function (volume) {
+    api.setVolume(parseFloat(volume.toFixed(1)));
+    volume > 0 && video.muted && api.unmute();
+  }, [api, video]);
+  var reload = useCallback(function () {
+    isHistory ? reloadHistory() : api.reload();
+    event.emit(EventName.CLEAR_ERROR_TIMER);
+  }, [event, isHistory, api]);
+  return React.createElement("div", {
+    className: "contraller-left-bar"
+  }, leftExtContents, React.createElement(Bar, {
+    visibel: !isLive
+  }, React.createElement(IconFont, {
+    onClick: changePlayStatus,
+    type: statusIconClassName,
+    title: statusText
+  })), React.createElement(Bar, {
+    className: "contraller-bar-volume ".concat(sliderClassName),
+    onMouseOver: function onMouseOver() {
+      return setOpenSliderVolume(true);
+    },
+    onMouseOut: function onMouseOut() {
+      return setOpenSliderVolume(false);
     }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      event.removeEventListener('play', this.updateRender);
-      event.removeEventListener('pause', this.updateRender);
-      event.removeEventListener('volumechange', this.volumechange);
-      event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
-      event.off(EventName.SEEK, this.seek);
+  }, React.createElement(IconFont, {
+    onClick: mutedChantgeStatus,
+    type: volumeIcon,
+    title: "\u97F3\u91CF"
+  }), React.createElement("div", {
+    className: "volume-slider-layout"
+  }, React.createElement(Slider, {
+    className: "volume-slider",
+    currentPercent: volumePercent,
+    onChange: onChangeVolume,
+    renderTips: function renderTips(precent) {
+      return React.createElement("span", null, Math.round(precent * 100), "%");
     }
-  }, {
-    key: "render",
-    value: function render() {
-      var openSliderVolume = this.state.openSliderVolume;
-      var _this$props4 = this.props,
-          video = _this$props4.video,
-          playerProps = _this$props4.playerProps;
-      var isLive = playerProps.isLive,
-          _playerProps$leftExtC = playerProps.leftExtContents,
-          leftExtContents = _playerProps$leftExtC === void 0 ? null : _playerProps$leftExtC,
-          _playerProps$leftMidE = playerProps.leftMidExtContents,
-          leftMidExtContents = _playerProps$leftMidE === void 0 ? null : _playerProps$leftMidE;
-      var volumeType = video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben';
-      return React.createElement("div", {
-        className: "contraller-left-bar"
-      }, leftExtContents, React.createElement(Bar, {
-        visibel: !isLive
-      }, React.createElement(IconFont, {
-        onClick: this.changePlayStatus,
-        type: video.paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main',
-        title: video.paused ? '播放' : '暂停'
-      })), React.createElement(Bar, {
-        className: "contraller-bar-volume ".concat(openSliderVolume ? 'contraller-bar-hover-volume' : ''),
-        onMouseOver: this.openSliderVolume,
-        onMouseOut: this.closeSliderVolume
-      }, React.createElement(IconFont, {
-        onClick: this.mutedChange,
-        type: video.muted ? 'lm-player-volume-close' : volumeType,
-        title: "\u97F3\u91CF"
-      }), React.createElement("div", {
-        className: "volume-slider-layout"
-      }, React.createElement(Slider, {
-        className: "volume-slider",
-        currentPercent: video.muted ? 0 : video.volume * 100,
-        onChange: this.onChangeVolume,
-        renderTips: function renderTips(precent) {
-          return React.createElement("span", null, Math.round(precent * 100), "%");
-        }
-      }))), React.createElement(Bar, null, React.createElement(IconFont, {
-        onClick: this.reload,
-        type: "lm-player-Refresh_Main",
-        title: "\u91CD\u8F7D"
-      })), leftMidExtContents);
-    }
-  }]);
-
-  return LeftBar;
-}(React.Component), _temp)) || _class;
+  }))), React.createElement(Bar, null, React.createElement(IconFont, {
+    onClick: reload,
+    type: "lm-player-Refresh_Main",
+    title: "\u91CD\u8F7D"
+  })), leftMidExtContents);
+}
 
 LeftBar.propTypes = {
   api: PropTypes$1.object,
@@ -1027,126 +956,74 @@ LeftBar.propTypes = {
   isHistory: PropTypes$1.bool
 };
 
-var _class$1, _temp$1;
+function RightBar(_ref) {
+  var playContainer = _ref.playContainer,
+      api = _ref.api,
+      scale = _ref.scale,
+      snapshot = _ref.snapshot,
+      rightExtContents = _ref.rightExtContents,
+      rightMidExtContents = _ref.rightMidExtContents;
 
-var RightBar = videoDec(_class$1 = (_temp$1 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(RightBar, _React$Component);
+  var _useState = useState(Date.now()),
+      _useState2 = _slicedToArray(_useState, 2),
+      dep = _useState2[0],
+      setDep = _useState2[1];
 
-  function RightBar() {
-    var _getPrototypeOf2;
-
-    var _this;
-
-    _classCallCheck(this, RightBar);
-
-    for (var _len = arguments.length, _args = new Array(_len), _key = 0; _key < _len; _key++) {
-      _args[_key] = arguments[_key];
-    }
-
-    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(RightBar)).call.apply(_getPrototypeOf2, [this].concat(_args)));
-
-    _this.update = function () {
-      _this.forceUpdate();
+  useEffect(function () {
+    var update = function update() {
+      return setDep(Date.now());
     };
 
-    _this.fullscreen = function () {
-      var _this$props = _this.props,
-          api = _this$props.api,
-          playContainer = _this$props.playContainer;
-
-      if (!isFullscreen(playContainer)) {
-        api.requestFullScreen();
-      } else {
-        api.cancelFullScreen();
-      }
-
-      _this.forceUpdate();
+    fullScreenListener(true, update);
+    return function () {
+      return fullScreenListener(false, update);
     };
-
-    _this.setScale = function () {
-      var _this$props2 = _this.props,
-          api = _this$props2.api,
-          playContainer = _this$props2.playContainer;
-      var dragDom = playContainer.querySelector(".player-mask-layout");
-      api.setScale.apply(api, arguments);
-      var position = computedBound(dragDom, api.getPosition(), api.getScale());
-      position && api.setPosition(position, true);
-    };
-
-    _this.snapshot = function () {
-      var _this$props3 = _this.props,
-          api = _this$props3.api,
-          playerProps = _this$props3.playerProps;
-
-      if (playerProps.snapshot) {
-        playerProps.snapshot(api.snapshot());
-      }
-    };
-
-    return _this;
-  }
-
-  _createClass(RightBar, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      fullScreenListener(true, this.update);
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      fullScreenListener(false, this.update);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      var _this$props4 = this.props,
-          playContainer = _this$props4.playContainer,
-          playerProps = _this$props4.playerProps;
-      var isScale = playerProps.isScale,
-          snapshot = playerProps.snapshot,
-          _playerProps$rightExt = playerProps.rightExtContents,
-          rightExtContents = _playerProps$rightExt === void 0 ? null : _playerProps$rightExt,
-          _playerProps$rightMid = playerProps.rightMidExtContents,
-          rightMidExtContents = _playerProps$rightMid === void 0 ? null : _playerProps$rightMid;
-      var isfull = isFullscreen(playContainer);
-      return React.createElement("div", {
-        className: "contraller-right-bar"
-      }, rightMidExtContents, isScale && React.createElement(React.Fragment, null, React.createElement(Bar, null, React.createElement(IconFont, {
-        title: "\u7F29\u5C0F",
-        onClick: function onClick() {
-          return _this2.setScale(-0.2);
-        },
-        type: "lm-player-ZoomOut_Main"
-      })), React.createElement(Bar, null, React.createElement(IconFont, {
-        title: "\u590D\u4F4D",
-        onClick: function onClick() {
-          return _this2.setScale(1, true);
-        },
-        type: "lm-player-ZoomDefault_Main"
-      })), React.createElement(Bar, null, React.createElement(IconFont, {
-        title: "\u653E\u5927",
-        onClick: function onClick() {
-          return _this2.setScale(0.2);
-        },
-        type: "lm-player-ZoomIn_Main"
-      }))), snapshot && React.createElement(Bar, null, React.createElement(IconFont, {
-        title: "\u622A\u56FE",
-        onClick: this.snapshot,
-        type: "lm-player-SearchBox"
-      })), React.createElement(Bar, null, React.createElement(IconFont, {
-        title: isfull ? "窗口" : "全屏",
-        onClick: this.fullscreen,
-        type: isfull ? "lm-player-ExitFull_Main" : "lm-player-Full_Main"
-      })), rightExtContents);
-    }
-  }]);
-
-  return RightBar;
-}(React.Component), _temp$1)) || _class$1;
+  }, []);
+  var isfull = useMemo(function () {
+    return isFullscreen(playContainer);
+  }, [dep, playContainer]);
+  var fullscreen = useCallback(function () {
+    !isFullscreen(playContainer) ? api.requestFullScreen() : api.cancelFullScreen();
+    setDep(Date.now());
+  }, [api, playContainer]);
+  var setScale = useCallback(function () {
+    var dragDom = playContainer.querySelector('.player-mask-layout');
+    api.setScale.apply(api, arguments);
+    var position = computedBound(dragDom, api.getPosition(), api.getScale());
+    position && api.setPosition(position, true);
+  }, [api, playContainer]);
+  return React.createElement("div", {
+    className: "contraller-right-bar"
+  }, rightMidExtContents, scale && React.createElement(React.Fragment, null, React.createElement(Bar, null, React.createElement(IconFont, {
+    title: "\u7F29\u5C0F",
+    onClick: function onClick() {
+      return setScale(-0.2);
+    },
+    type: 'lm-player-ZoomOut_Main'
+  })), React.createElement(Bar, null, React.createElement(IconFont, {
+    title: "\u590D\u4F4D",
+    onClick: function onClick() {
+      return setScale(1, true);
+    },
+    type: 'lm-player-ZoomDefault_Main'
+  })), React.createElement(Bar, null, React.createElement(IconFont, {
+    title: "\u653E\u5927",
+    onClick: function onClick() {
+      return setScale(0.2);
+    },
+    type: 'lm-player-ZoomIn_Main'
+  }))), snapshot && React.createElement(Bar, null, React.createElement(IconFont, {
+    title: "\u622A\u56FE",
+    onClick: function onClick() {
+      return snapshot(api.snapshot());
+    },
+    type: "lm-player-SearchBox"
+  })), React.createElement(Bar, null, React.createElement(IconFont, {
+    title: isfull ? '窗口' : '全屏',
+    onClick: fullscreen,
+    type: isfull ? 'lm-player-ExitFull_Main' : 'lm-player-Full_Main'
+  })), rightExtContents);
+}
 
 RightBar.propTypes = {
   api: PropTypes$1.object,
@@ -1158,19 +1035,92 @@ RightBar.propTypes = {
 };
 
 function ContrallerBar(_ref) {
-  var visibel = _ref.visibel;
+  var playContainer = _ref.playContainer,
+      snapshot = _ref.snapshot,
+      rightExtContents = _ref.rightExtContents,
+      rightMidExtContents = _ref.rightMidExtContents,
+      scale = _ref.scale,
+      visibel = _ref.visibel,
+      api = _ref.api,
+      event = _ref.event,
+      video = _ref.video,
+      isHistory = _ref.isHistory,
+      reloadHistory = _ref.reloadHistory,
+      isLive = _ref.isLive,
+      leftExtContents = _ref.leftExtContents,
+      leftMidExtContents = _ref.leftMidExtContents;
   return React.createElement("div", {
     className: "contraller-bar-layout ".concat(!visibel ? 'hide-contraller-bar' : '')
-  }, React.createElement(LeftBar, null), React.createElement(RightBar, null));
+  }, React.createElement(LeftBar, {
+    api: api,
+    event: event,
+    video: video,
+    isHistory: isHistory,
+    reloadHistory: reloadHistory,
+    isLive: isLive,
+    leftMidExtContents: leftMidExtContents,
+    leftExtContents: leftExtContents
+  }), React.createElement(RightBar, {
+    api: api,
+    event: event,
+    playContainer: playContainer,
+    scale: scale,
+    snapshot: snapshot,
+    rightExtContents: rightExtContents,
+    rightMidExtContents: rightMidExtContents
+  }));
 }
 
 ContrallerBar.propTypes = {
   visibel: PropTypes$1.bool
 };
 
-var _class$2, _temp$2;
+var videoContext = React.createContext(null);
+var Provider = videoContext.Provider;
+var Consumer = videoContext.Consumer;
+function videoDec(Component) {
+  var ComponentWithVideoDec =
+  /*#__PURE__*/
+  function (_React$Component) {
+    _inherits(ComponentWithVideoDec, _React$Component);
 
-var ContrallerEvent = videoDec(_class$2 = (_temp$2 =
+    function ComponentWithVideoDec() {
+      _classCallCheck(this, ComponentWithVideoDec);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(ComponentWithVideoDec).apply(this, arguments));
+    }
+
+    _createClass(ComponentWithVideoDec, [{
+      key: "render",
+      value: function render() {
+        var _this$props = this.props,
+            forwardRef = _this$props.forwardRef,
+            props = _objectWithoutProperties(_this$props, ["forwardRef"]);
+
+        return React.createElement(Consumer, null, function (context) {
+          return React.createElement(Component, _extends({}, props, context, {
+            ref: forwardRef
+          }));
+        });
+      }
+    }]);
+
+    return ComponentWithVideoDec;
+  }(React.Component);
+
+  ComponentWithVideoDec.propTypes = {
+    forwardRef: PropTypes$1.ref
+  };
+  return React.forwardRef(function (props, ref) {
+    return React.createElement(ComponentWithVideoDec, _extends({}, props, {
+      forwardRef: ref
+    }));
+  });
+}
+
+var _class, _temp;
+
+var ContrallerEvent = videoDec(_class = (_temp =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(ContrallerEvent, _React$Component);
@@ -1246,7 +1196,7 @@ function (_React$Component) {
   }]);
 
   return ContrallerEvent;
-}(React.Component), _temp$2)) || _class$2;
+}(React.Component), _temp)) || _class;
 
 ContrallerEvent.propTypes = {
   api: PropTypes$1.object,
@@ -1255,9 +1205,9 @@ ContrallerEvent.propTypes = {
   children: PropTypes$1.element
 };
 
-var _class$3, _temp$3;
+var _class$1, _temp$1;
 
-var VideoMessage = videoDec(_class$3 = (_temp$3 =
+var VideoMessage = videoDec(_class$1 = (_temp$1 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(VideoMessage, _React$Component);
@@ -1383,7 +1333,7 @@ function (_React$Component) {
   }]);
 
   return VideoMessage;
-}(React.Component), _temp$3)) || _class$3;
+}(React.Component), _temp$1)) || _class$1;
 
 VideoMessage.propTypes = {
   api: PropTypes.object,
@@ -1401,9 +1351,9 @@ var NoSource = function NoSource() {
   }));
 };
 
-var _class$4, _temp$4;
+var _class$2, _temp$2;
 
-var TineLine = videoDec(_class$4 = (_temp$4 =
+var TineLine = videoDec(_class$2 = (_temp$2 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(TineLine, _React$Component);
@@ -1527,7 +1477,7 @@ function (_React$Component) {
   }]);
 
   return TineLine;
-}(React.Component), _temp$4)) || _class$4;
+}(React.Component), _temp$2)) || _class$2;
 
 TineLine.propTypes = {
   event: PropTypes$1.object,
@@ -1540,9 +1490,9 @@ TineLine.propTypes = {
   visibel: PropTypes$1.bool
 };
 
-var _class$5, _temp$5;
+var _class$3, _temp$3;
 
-var ErrorEvent = videoDec(_class$5 = (_temp$5 =
+var ErrorEvent = videoDec(_class$3 = (_temp$3 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(ErrorEvent, _React$Component);
@@ -1676,7 +1626,7 @@ function (_React$Component) {
   }]);
 
   return ErrorEvent;
-}(React.Component), _temp$5)) || _class$5;
+}(React.Component), _temp$3)) || _class$3;
 
 ErrorEvent.propTypes = {
   api: PropTypes$1.object,
@@ -1690,9 +1640,9 @@ ErrorEvent.propTypes = {
   playIndex: PropTypes$1.number
 };
 
-var _class$6, _temp$6;
+var _class$4, _temp$4;
 
-var DragEvent = videoDec(_class$6 = (_temp$6 =
+var DragEvent = videoDec(_class$4 = (_temp$4 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(DragEvent, _React$Component);
@@ -1769,7 +1719,7 @@ function (_React$Component) {
   }]);
 
   return DragEvent;
-}(React.Component), _temp$6)) || _class$6;
+}(React.Component), _temp$4)) || _class$4;
 
 DragEvent.propTypes = {
   api: PropTypes$1.object,
@@ -1781,7 +1731,13 @@ DragEvent.propTypes = {
 var Api =
 /*#__PURE__*/
 function () {
-  function Api(video, playContainer, event, flv, hls) {
+  function Api(_ref) {
+    var video = _ref.video,
+        playContainer = _ref.playContainer,
+        event = _ref.event,
+        flv = _ref.flv,
+        hls = _ref.hls;
+
     _classCallCheck(this, Api);
 
     this.player = video;
@@ -1800,9 +1756,9 @@ function () {
 
   _createClass(Api, [{
     key: "updateChunk",
-    value: function updateChunk(_ref) {
-      var flv = _ref.flv,
-          hls = _ref.hls;
+    value: function updateChunk(_ref2) {
+      var flv = _ref2.flv,
+          hls = _ref2.hls;
       this.flv = flv;
       this.hls = hls;
     }
@@ -2215,9 +2171,9 @@ var BrowserTab = {
   visibilityState: visibilityState
 };
 
-var _class$7, _temp$7;
+var _class$5, _temp$5;
 
-var LiveHeart = videoDec(_class$7 = (_temp$7 =
+var LiveHeart = videoDec(_class$5 = (_temp$5 =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(LiveHeart, _React$Component);
@@ -2277,188 +2233,102 @@ function (_React$Component) {
   }]);
 
   return LiveHeart;
-}(React.Component), _temp$7)) || _class$7;
+}(React.Component), _temp$5)) || _class$5;
 
 LiveHeart.propTypes = {
   api: PropTypes$1.object,
   event: PropTypes$1.object
 };
 
-var LMPlayer =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(LMPlayer, _React$Component);
+function SinglePlayer(_ref) {
+  var type = _ref.type,
+      file = _ref.file,
+      className = _ref.className,
+      autoPlay = _ref.autoPlay,
+      muted = _ref.muted,
+      poster = _ref.poster,
+      playsinline = _ref.playsinline,
+      loop = _ref.loop,
+      preload = _ref.preload,
+      onInitPlayer = _ref.onInitPlayer,
+      props = _objectWithoutProperties(_ref, ["type", "file", "className", "autoPlay", "muted", "poster", "playsinline", "loop", "preload", "onInitPlayer"]);
 
-  function LMPlayer(props) {
-    var _this;
+  var playContainerRef = useRef(null);
 
-    _classCallCheck(this, LMPlayer);
+  var _useRef = useRef({}),
+      _useRef2 = _slicedToArray(_useRef, 2),
+      playerObj = _useRef2[0],
+      setPlayerObj = _useRef2[1];
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(LMPlayer).call(this, props));
+  useEffect(function () {
+    if (!file) {
+      return;
+    }
 
-    _this.initPlayer = function () {
-      if (!_this.props.file) {
-        return false;
-      }
-
-      var type = getVideoType(_this.props.file);
-
-      if (type === 'flv' || _this.props.type === 'flv') {
-        _this.flv = createFlvPlayer(_this.player, _this.props);
-        return true;
-      }
-
-      if (type === 'm3u8' || _this.props.type === 'hls') {
-        _this.hls = createHlsPlayer(_this.player, _this.props.file);
-        return true;
-      }
-
-      _this.player.src = _this.props.file;
-      return true;
+    var playerObject = {
+      playContainer: playContainerRef.current,
+      video: playContainerRef.current.querySelector('video')
     };
+    var formartType = getVideoType(file);
 
-    _this.renderVideoTools = function () {
-      if (_this.isInit && _this.props.file && _this.api && _this.event) {
-        return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, null), React.createElement(VideoMessage, null), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), !_this.props.isLive && React.createElement(TineLine, null)), React.createElement(ErrorEvent, {
-          flvPlayer: _this.flv,
-          hlsPlayer: _this.hls,
-          key: "".concat(_this.props.file, "_error")
-        }), _this.props.isLive && React.createElement(LiveHeart, {
-          key: _this.props.file
-        }));
-      }
+    if (formartType === 'flv' || type === 'flv') {
+      playerObject.flv = createFlvPlayer(playerObject.video, props);
+      return;
+    }
 
-      return React.createElement(NoSource, null);
-    };
+    if (formartType === 'm3u8' || type === 'hls') {
+      playerObject.hls = createHlsPlayer(playerObject.video, file);
+      return;
+    }
 
-    _this.getPlayUrl = function () {
-      return _this.props.file;
-    };
+    playerObject.video.src = file;
+    playerObj.event = new VideoEventInstance(playerObject.video);
+    playerObj.api = new Api(playerObject);
+    setPlayerObj(playerObj);
+    onInitPlayer && onInitPlayer(playerObj);
+  }, [file]);
+  return React.createElement("div", {
+    className: "lm-player-container ".concat(className),
+    ref: playContainerRef
+  }, React.createElement("div", {
+    className: "player-mask-layout"
+  }, React.createElement("video", {
+    autoPlay: autoPlay,
+    preload: preload,
+    muted: muted,
+    poster: poster,
+    controls: false,
+    playsInline: playsinline,
+    loop: loop
+  })), React.createElement(VideoTools, {
+    playerObj: playerObj,
+    isLive: props.isLive,
+    hideContrallerBar: props.hideContrallerBar
+  }), this.props.children);
+}
 
-    _this.getPlayerApiContext = function () {
-      if (_this.api && _this.event) {
-        return Object.assign({}, _this.api.getApi(), _this.event.getApi(), {
-          getPlayUrl: _this.getPlayUrl,
-          playContainer: _this.playContainer
-        });
-      }
+function VideoTools(_ref2) {
+  var playerObj = _ref2.playerObj,
+      isLive = _ref2.isLive,
+      hideContrallerBar = _ref2.hideContrallerBar;
 
-      return {};
-    };
-
-    _this.getProvider = function () {
-      return {
-        video: _this.player,
-        event: _this.event,
-        playerProps: _this.props,
-        api: _this.api,
-        playContainer: _this.playContainer
-      };
-    };
-
-    _this.player = null;
-    _this.event = null;
-    _this.flv = null;
-    _this.hls = null;
-    _this.api = null;
-    _this.playContainerRef = React.createRef();
-    _this.playContainer = null;
-    _this.state = {
-      playChange: false,
-      file: null
-    };
-    return _this;
+  if (!playerObj) {
+    return React.createElement(NoSource, null);
   }
 
-  _createClass(LMPlayer, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.playContainer = this.playContainerRef.current;
-      this.player = this.playContainer.querySelector('video');
-      this.createPlayer();
-      this.isInit = true;
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate() {
-      if (this.state.playChange) {
-        this.setState({
-          playChange: false
-        });
-        this.createPlayer();
-      }
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      this.event && this.event.destroy();
-      this.api && this.api.destroy();
-    }
-  }, {
-    key: "createPlayer",
-    value: function createPlayer() {
-      var isInit = this.initPlayer();
+  return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, {
+    visibel: !hideContrallerBar,
+    api: playerObj.api,
+    event: playerObj.event
+  }), React.createElement(VideoMessage, null), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), !isLive && React.createElement(TineLine, null)), React.createElement(ErrorEvent, {
+    flvPlayer: this.flv,
+    hlsPlayer: this.hls
+  }), isLive && React.createElement(LiveHeart, {
+    key: this.props.file
+  }));
+}
 
-      if (isInit) {
-        this.event = new VideoEventInstance(this.player);
-        this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
-        this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
-        this.forceUpdate();
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$props = this.props,
-          autoplay = _this$props.autoplay,
-          poster = _this$props.poster,
-          _this$props$preload = _this$props.preload,
-          preload = _this$props$preload === void 0 ? 'none' : _this$props$preload,
-          _this$props$muted = _this$props.muted,
-          muted = _this$props$muted === void 0 ? 'muted' : _this$props$muted,
-          _this$props$className = _this$props.className,
-          className = _this$props$className === void 0 ? '' : _this$props$className,
-          _this$props$loop = _this$props.loop,
-          loop = _this$props$loop === void 0 ? false : _this$props$loop,
-          _this$props$playsinli = _this$props.playsinline,
-          playsinline = _this$props$playsinli === void 0 ? false : _this$props$playsinli,
-          file = _this$props.file;
-      var providerValue = this.getProvider();
-      return React.createElement("div", {
-        className: "lm-player-container ".concat(className),
-        ref: this.playContainerRef
-      }, React.createElement("div", {
-        className: "player-mask-layout"
-      }, React.createElement("video", {
-        autoPlay: autoplay && !!file,
-        preload: preload,
-        muted: muted,
-        poster: poster,
-        controls: false,
-        playsInline: playsinline,
-        loop: loop
-      })), React.createElement(Provider, {
-        value: providerValue
-      }, this.renderVideoTools()), this.props.children);
-    }
-  }], [{
-    key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(props, state) {
-      if (props.file !== state.file) {
-        return {
-          file: props.file,
-          playChange: true
-        };
-      }
-
-      return null;
-    }
-  }]);
-
-  return LMPlayer;
-}(React.Component);
-
-LMPlayer.propTypes = {
+SinglePlayer.propTypes = {
   file: PropTypes$1.string.isRequired,
   //播放地址 必填
   isLive: PropTypes$1.bool,
@@ -2468,8 +2338,9 @@ LMPlayer.propTypes = {
   type: PropTypes$1.oneOf(['flv', 'hls', 'native']),
   //强制视频流类型
   onInitPlayer: PropTypes$1.func,
-  isDraggable: PropTypes$1.bool,
-  isScale: PropTypes$1.bool,
+  draggable: PropTypes$1.bool,
+  hideContrallerBar: PropTypes$1.bool,
+  scale: PropTypes$1.bool,
   muted: PropTypes$1.string,
   autoPlay: PropTypes$1.bool,
   playsInline: PropTypes$1.bool,
@@ -2479,663 +2350,20 @@ LMPlayer.propTypes = {
   snapshot: PropTypes$1.func,
   className: PropTypes$1.string,
   playsinline: PropTypes$1.bool,
-  children: PropTypes$1.any,
-  autoplay: PropTypes$1.bool
+  children: PropTypes$1.any
 };
-LMPlayer.defaultProps = {
+SinglePlayer.defaultProps = {
   isLive: true,
-  isDraggable: true,
-  isScale: true,
-  errorReloadTimer: 5,
-  muted: 'muted',
-  autoPlay: true,
-  playsInline: false,
-  preload: 'auto',
-  loop: false
-};
-
-var _class$8, _temp$8;
-
-var TineLine$1 = videoDec(_class$8 = (_temp$8 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(TineLine, _React$Component);
-
-  function TineLine(props) {
-    var _this;
-
-    _classCallCheck(this, TineLine);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(TineLine).call(this, props));
-
-    _this.reload = function () {
-      var api = _this.props.api;
-
-      _this.setState({
-        isEnd: false,
-        currentTime: api.getCurrentTime()
-      });
-    };
-
-    _this.historyPlayEnd = function () {
-      _this.setState({
-        isEnd: true
-      });
-    };
-
-    _this.getDuration = function () {
-      var api = _this.props.api;
-
-      _this.setState({
-        duration: api.getDuration()
-      });
-    };
-
-    _this.getCurrentTime = function () {
-      var api = _this.props.api;
-      var state = {
-        currentTime: api.getCurrentTime(),
-        buffered: api.getSecondsLoaded()
-      };
-
-      if (state.buffered === _this.state.buffered) {
-        delete state.buffered;
-      }
-
-      _this.setState(state);
-    };
-
-    _this.getBuffered = function () {
-      var api = _this.props.api;
-
-      _this.setState({
-        buffered: api.getSecondsLoaded()
-      });
-    };
-
-    _this.changePlayTime = function (percent) {
-      var _this$props = _this.props,
-          seekTo = _this$props.seekTo,
-          historyList = _this$props.historyList;
-      var numSize = historyList.duration.toString().length;
-      var currentTime = (percent + numSize / Math.pow(10, numSize - 1)) * historyList.duration; //修正一下误差
-
-      var playIndex = historyList.fragments.findIndex(function (v) {
-        return v.end > currentTime;
-      });
-      var fragment = historyList.fragments[playIndex];
-
-      if (fragment.file) {
-        seekTo(currentTime);
-
-        _this.setState({
-          currentTime: currentTime,
-          isEnd: false
-        });
-      }
-    };
-
-    _this.seekendPlay = function () {
-      var api = _this.props.api;
-      api.play();
-    };
-
-    _this.renderTimeLineTips = function (percent) {
-      var historyList = _this.props.historyList;
-      var currentTime = percent * historyList.duration * 1000;
-      var date = dateFormat(historyList.beginDate + currentTime);
-      return React.createElement("span", null, date);
-    };
-
-    _this.fastForward = function () {
-      var api = _this.props.api;
-      api.fastForward();
-    };
-
-    _this.backWind = function () {
-      var api = _this.props.api;
-      api.backWind();
-    };
-
-    _this.computedLineList = function (historyList) {
-      var duration = historyList.duration;
-      return historyList.fragments.map(function (v) {
-        return {
-          disabled: !v.file,
-          size: (v.end - v.begin) / duration * 100
-        };
-      });
-    };
-
-    _this.state = {
-      duration: 1,
-      currentTime: 0,
-      buffered: 0,
-      isEnd: false
-    };
-    return _this;
-  }
-
-  _createClass(TineLine, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var event = this.props.event;
-      event.addEventListener('loadedmetadata', this.getDuration);
-      event.addEventListener('durationchange', this.getDuration);
-      event.addEventListener('timeupdate', this.getCurrentTime);
-      event.addEventListener('progress', this.getBuffered);
-      event.addEventListener('suspend', this.getBuffered);
-      event.addEventListener('seeked', this.seekendPlay);
-      event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
-      event.on(EventName.RELOAD, this.reload);
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      var event = this.props.event;
-      event.removeEventListener('loadedmetadata', this.getDuration);
-      event.removeEventListener('durationchange', this.getDuration);
-      event.removeEventListener('timeupdate', this.getCurrentTime);
-      event.removeEventListener('progress', this.getBuffered);
-      event.removeEventListener('suspend', this.getBuffered);
-      event.removeEventListener('seeked', this.seekendPlay);
-      event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
-      event.off(EventName.RELOAD, this.reload);
-      event.off(EventName.HIDE_CONTRALLER, this.hideContraller);
-      event.off(EventName.SHOW_CONTRALLER, this.showContraller);
-    }
-    /**
-     * reload事件触发时 清除结束状态
-     */
-
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$props2 = this.props,
-          historyList = _this$props2.historyList,
-          playIndex = _this$props2.playIndex,
-          visibel = _this$props2.visibel;
-      var _this$state = this.state,
-          currentTime = _this$state.currentTime,
-          buffered = _this$state.buffered,
-          isEnd = _this$state.isEnd;
-      var lineList = this.computedLineList(historyList);
-      var currentLine = lineList.filter(function (v, i) {
-        return i < playIndex;
-      }).map(function (v) {
-        return v.size;
-      });
-      var currentIndexTime = currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce(function (p, c) {
-        return p + c;
-      }) : currentLine[0];
-      var playPercent = currentTime / historyList.duration * 100 + currentIndexTime;
-      var bufferedPercent = buffered / historyList.duration * 100 + currentIndexTime;
-      return React.createElement("div", {
-        className: "video-time-line-layout ".concat(!visibel ? 'hide-time-line' : '')
-      }, React.createElement(IconFont, {
-        type: "lm-player-PrevFast",
-        onClick: this.backWind,
-        className: "time-line-action-item"
-      }), React.createElement(Slider, {
-        className: "time-line-box",
-        currentPercent: isEnd ? '100' : playPercent,
-        availablePercent: bufferedPercent,
-        onChange: this.changePlayTime,
-        renderTips: this.renderTimeLineTips
-      }, React.createElement(React.Fragment, null, lineList.map(function (v, i) {
-        var currentSizeLine = lineList.filter(function (v, i2) {
-          return i2 < i;
-        }).map(function (v) {
-          return v.size;
-        });
-        var currentIndexSize = currentSizeLine.length === 0 ? 0 : currentSizeLine.length > 1 ? currentSizeLine.reduce(function (p, c) {
-          return p + c;
-        }) : currentSizeLine[0];
-        return React.createElement("div", {
-          className: "history-time-line-item ".concat(v.disabled ? 'history-time-line-disabled' : ''),
-          key: i,
-          style: {
-            width: "".concat(v.size, "%"),
-            left: "".concat(currentIndexSize, "%")
-          }
-        });
-      }))), React.createElement(IconFont, {
-        type: "lm-player-NextFast_Light",
-        onClick: this.fastForward,
-        className: "time-line-action-item"
-      }));
-    }
-  }]);
-
-  return TineLine;
-}(React.Component), _temp$8)) || _class$8;
-
-TineLine$1.propTypes = {
-  event: PropTypes$1.object,
-  api: PropTypes$1.object,
-  changePlayIndex: PropTypes$1.func,
-  playIndex: PropTypes$1.number,
-  historyList: PropTypes$1.array,
-  seekTo: PropTypes$1.func,
-  visibel: PropTypes$1.bool
-};
-
-var _class$9, _temp$9;
-
-var PlayEnd = videoDec(_class$9 = (_temp$9 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(PlayEnd, _React$Component);
-
-  function PlayEnd() {
-    var _getPrototypeOf2;
-
-    var _this;
-
-    _classCallCheck(this, PlayEnd);
-
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(PlayEnd)).call.apply(_getPrototypeOf2, [this].concat(args)));
-
-    _this.endedHandle = function () {
-      var index = _this.props.playIndex;
-
-      _this.props.changePlayIndex(index + 1);
-    };
-
-    return _this;
-  }
-
-  _createClass(PlayEnd, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var event = this.props.event;
-      event.addEventListener('ended', this.endedHandle, false);
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      var event = this.props.event;
-      event.removeEventListener('ended', this.endedHandle, false);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return null;
-    }
-  }]);
-
-  return PlayEnd;
-}(React.Component), _temp$9)) || _class$9;
-
-PlayEnd.propTypes = {
-  event: PropTypes$1.object,
-  changePlayIndex: PropTypes$1.func,
-  playIndex: PropTypes$1.number
-};
-
-var HistoryPlayer =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(HistoryPlayer, _React$Component);
-
-  function HistoryPlayer(props) {
-    var _this;
-
-    _classCallCheck(this, HistoryPlayer);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(HistoryPlayer).call(this, props));
-
-    _this.initPlayer = function (index) {
-      var historyList = _this.props.historyList;
-
-      if (!historyList || !historyList.fragments[index] || !historyList.fragments[index].file) {
-        return null;
-      }
-
-      if (_this.flv) {
-        _this.flv.unload();
-
-        _this.flv.destroy();
-      }
-
-      if (_this.hls) {
-        _this.hls.stopLoad();
-
-        _this.hls.destroy();
-      }
-
-      _this.playIndex = index;
-      var type = getVideoType(historyList.fragments[index].file);
-
-      if (type === 'flv' || _this.props.type === 'flv') {
-        _this.flv = createFlvPlayer(_this.player, {
-          file: historyList.fragments[index].file
-        });
-        _this.api && _this.api.updateChunk({
-          flv: _this.flv
-        });
-        return _this.forceUpdate();
-      }
-
-      if (type === 'm3u8' || _this.props.type === 'hls') {
-        _this.hls = createHlsPlayer(_this.player, historyList.fragments[index].file);
-        _this.api && _this.api.updateChunk({
-          hls: _this.hls
-        });
-        return _this.forceUpdate();
-      }
-
-      _this.player.src = historyList.fragments[index].file;
-      return _this.forceUpdate();
-    };
-
-    _this.changePlayIndex = function (index) {
-      var historyList = _this.props.historyList;
-
-      if (!historyList || !historyList.fragments[index]) {
-        _this.event && _this.event.emit(EventName.HISTORY_PLAY_END);
-        return false;
-      }
-
-      if (!historyList.fragments[index].file) {
-        _this.changePlayIndex(index + 1);
-      } else {
-        _this.initPlayer(index);
-      }
-
-      _this.api && _this.api.play();
-      _this.event && _this.event.emit(EventName.CHANGE_PLAY_INDEX, index);
-      return true;
-    };
-
-    _this.getPlayerApiContext = function () {
-      if (_this.api && _this.event) {
-        return Object.assign({}, _this.api.getApi(), _this.event.getApi(), {
-          seekTo: _this.seekTo
-        });
-      }
-
-      return {};
-    };
-
-    _this.computedIndexFormTime = function (time) {
-      var historyList = _this.props.historyList;
-      return historyList.fragments.findIndex(function (v) {
-        return v.end > time;
-      });
-    };
-
-    _this.seekTo = function (currentTime) {
-      var historyList = _this.props.historyList;
-
-      var playIndex = _this.computedIndexFormTime(currentTime);
-
-      var fragment = historyList.fragments[playIndex];
-
-      if (!fragment) {
-        return;
-      }
-
-      var seekTime = currentTime - fragment.begin - 1;
-      _this.api && _this.api.pause();
-
-      if (playIndex !== _this.playIndex || !_this.api) {
-        _this.changePlayIndex(playIndex);
-      }
-
-      _this.api.seekTo(seekTime, true);
-
-      _this.event.emit(EventName.SEEK, currentTime);
-    };
-
-    _this.reloadHistory = function () {
-      _this.changePlayIndex(0);
-
-      _this.api.seekTo(0);
-
-      _this.event.emit(EventName.RELOAD);
-
-      _this.api.play();
-    };
-
-    _this.getProvider = function () {
-      return {
-        video: _this.player,
-        event: _this.event,
-        playerProps: _this.props,
-        api: _this.api,
-        playContainer: _this.playContainer,
-        changePlayIndex: _this.changePlayIndex,
-        playIndex: _this.playIndex,
-        historyList: _this.props.historyList,
-        seekTo: _this.seekTo,
-        isHistory: true,
-        reloadHistory: _this.reloadHistory
-      };
-    };
-
-    _this.renderVideoTools = function () {
-      var file = _this.getCurrentFile();
-
-      if (_this.isInit && file && _this.api && _this.event) {
-        return React.createElement(React.Fragment, null, React.createElement(VideoMessage, null), React.createElement(ErrorEvent, {
-          flvPlayer: _this.flv,
-          hlsPlayer: _this.hls,
-          key: file
-        }), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), React.createElement(TineLine$1, null)), React.createElement(PlayEnd, null));
-      }
-
-      return React.createElement(NoSource, null);
-    };
-
-    _this.playIndex = 0;
-    _this.player = null;
-    _this.event = null;
-    _this.flv = null;
-    _this.hls = null;
-    _this.playContainerRef = React.createRef();
-    _this.playContainer = null;
-    _this.state = {
-      playChange: false,
-      historyList: []
-    };
-    return _this;
-  }
-
-  _createClass(HistoryPlayer, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.playContainer = this.playContainerRef.current;
-      this.player = this.playContainer.querySelector('video');
-      this.isInit = true;
-      this.createPlayer();
-    }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate() {
-      if (this.state.playChange) {
-        this.setState({
-          playChange: false
-        });
-        this.playIndex = 0;
-        this.createPlayer();
-      }
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      this.event && this.event.destroy();
-      this.api && this.api.destroy();
-      this.player = null;
-      this.event = null;
-      this.api = null;
-      this.playContainerRef = null;
-      this.playContainer = null;
-      this.flv = null;
-      this.hls = null;
-    }
-  }, {
-    key: "createPlayer",
-    value: function createPlayer() {
-      var _this$props = this.props,
-          defaultTime = _this$props.defaultTime,
-          historyList = _this$props.historyList;
-      var isInit = this.changePlayIndex(this.playIndex);
-
-      if (!isInit) {
-        return;
-      }
-
-      this.event = new VideoEventInstance(this.player);
-      this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls);
-      this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext());
-
-      if (defaultTime) {
-        this.seekTo((defaultTime - historyList.beginDate) / 1000);
-      }
-    }
-  }, {
-    key: "getErrorKey",
-    value: function getErrorKey() {
-      return this.getCurrentFile() || getRandom();
-    }
-  }, {
-    key: "getCurrentFile",
-    value: function getCurrentFile() {
-      var file;
-
-      try {
-        file = this.props.historyList.fragments[this.playIndex].file;
-      } catch (error) {
-        console.warn(error);
-      }
-
-      return file;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$props2 = this.props,
-          autoplay = _this$props2.autoplay,
-          poster = _this$props2.poster,
-          preload = _this$props2.preload,
-          _this$props2$muted = _this$props2.muted,
-          muted = _this$props2$muted === void 0 ? 'muted' : _this$props2$muted,
-          _this$props2$loop = _this$props2.loop,
-          loop = _this$props2$loop === void 0 ? false : _this$props2$loop,
-          _this$props2$classNam = _this$props2.className,
-          className = _this$props2$classNam === void 0 ? '' : _this$props2$classNam,
-          _this$props2$playsinl = _this$props2.playsinline,
-          playsinline = _this$props2$playsinl === void 0 ? false : _this$props2$playsinl;
-      var providerValue = this.getProvider();
-      var file = this.getCurrentFile();
-      return React.createElement("div", {
-        className: "lm-player-container ".concat(className),
-        ref: this.playContainerRef
-      }, React.createElement("div", {
-        className: "player-mask-layout"
-      }, React.createElement("video", {
-        autoPlay: autoplay && !!file,
-        preload: preload,
-        muted: muted,
-        poster: poster,
-        controls: false,
-        playsInline: playsinline,
-        loop: loop
-      })), React.createElement(Provider, {
-        value: providerValue
-      }, this.renderVideoTools()), this.props.children);
-    }
-  }], [{
-    key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(props, state) {
-      if (props.historyList !== state.historyList) {
-        return {
-          historyList: props.historyList,
-          playChange: true
-        };
-      }
-
-      return null;
-    }
-  }]);
-
-  return HistoryPlayer;
-}(React.Component);
-
-HistoryPlayer.propTypes = {
-  historyList: PropTypes$1.object.isRequired,
-  //播放地址 必填
-  isLive: PropTypes$1.bool,
-  //是否实时视频
-  errorReloadTimer: PropTypes$1.number,
-  //视频错误重连次数
-  type: PropTypes$1.oneOf(['flv', 'hls', 'native']),
-  //强制视频流类型
-  onInitPlayer: PropTypes$1.func,
-  isDraggable: PropTypes$1.bool,
-  isScale: PropTypes$1.bool,
-  muted: PropTypes$1.string,
-  autoPlay: PropTypes$1.bool,
-  playsInline: PropTypes$1.bool,
-  preload: PropTypes$1.string,
-  poster: PropTypes$1.string,
-  loop: PropTypes$1.bool,
-  defaultTime: PropTypes$1.number,
-  className: PropTypes$1.string,
-  playsinline: PropTypes$1.bool,
-  children: PropTypes$1.any,
-  autoplay: PropTypes$1.bool
-};
-HistoryPlayer.defaultProps = {
-  isLive: true,
-  isDraggable: true,
-  isScale: true,
+  draggable: true,
+  scale: true,
   errorReloadTimer: 5,
   muted: 'muted',
   autoPlay: true,
   playsInline: false,
   preload: 'auto',
   loop: false,
-  defaultTime: 0
+  hideContrallerBar: false
 };
 
-function createPlayer(_ref) {
-  var container = _ref.container,
-      children = _ref.children,
-      _onInitPlayer = _ref.onInitPlayer,
-      props = _objectWithoutProperties(_ref, ["container", "children", "onInitPlayer"]);
-
-  ReactDOM.render(React.createElement(LMPlayer, _extends({}, props, {
-    onInitPlayer: function onInitPlayer(player) {
-      player.destroy = function () {
-        ReactDOM.unmountComponentAtNode(container);
-      };
-
-      _onInitPlayer && _onInitPlayer(player);
-    }
-  }), children), container);
-}
-function createHistoryPlayer(_ref2) {
-  var container = _ref2.container,
-      children = _ref2.children,
-      _onInitPlayer2 = _ref2.onInitPlayer,
-      props = _objectWithoutProperties(_ref2, ["container", "children", "onInitPlayer"]);
-
-  ReactDOM.render(React.createElement(HistoryPlayer, _extends({}, props, {
-    onInitPlayer: function onInitPlayer(player) {
-      player.destroy = function () {
-        ReactDOM.unmountComponentAtNode(container);
-      };
-
-      _onInitPlayer2 && _onInitPlayer2(player);
-    }
-  }), children), container);
-}
-
-export default LMPlayer;
-export { Bar, HistoryPlayer, LMPlayer as Player, createHistoryPlayer, createPlayer };
+export default SinglePlayer;
+export { Bar, SinglePlayer as Player };

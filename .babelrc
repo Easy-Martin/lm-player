@@ -1,5 +1,5 @@
 {
-  "presets": [["@babel/env", { "modules": false }], "@babel/react"],
+  "presets": [["@babel/env", { "modules": false, "targets": { "chrome": "60" } }], "@babel/react"],
   "plugins": [
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
     ["@babel/plugin-proposal-class-properties", { "loose": true }]

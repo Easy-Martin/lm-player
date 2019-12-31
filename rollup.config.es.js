@@ -28,7 +28,6 @@ const rollupConfig = {
     entryFileNames: 'player.js',
     exports: 'named'
   },
-  experimentalCodeSplitting: true,
   plugins: [
     image(),
     postcss({
