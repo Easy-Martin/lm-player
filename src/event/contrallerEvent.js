@@ -1,58 +1,27 @@
-import React from 'react'
-import { videoDec } from '../context'
+import React, { useEffect, useState, useRef } from 'react'
 import EventName from './eventName'
-import PropTypes from 'prop-types'
 
-@videoDec
-class ContrallerEvent extends React.Component {
-  constructor(props) {
-    super(props)
-    this.timer = null
-    this.visibel = true
-  }
-  componentDidMount() {
-    const { playContainer, event } = this.props
-    playContainer.addEventListener('mousemove', this.showContraller, false)
-    playContainer.addEventListener('mouseout', this.hideContraller, false)
-    this.timer = setTimeout(() => {
-      event.emit(EventName.HIDE_CONTRALLER)
-    }, 5 * 1000)
-  }
-  componentWillUnmount() {
-    const { playContainer } = this.props
-    playContainer.addEventListener('mousemove', this.showContraller, false)
-    playContainer.addEventListener('mouseout', this.hideContraller, false)
-    clearTimeout(this.timer)
-  }
-  showContraller = () => {
-    if (!this.visibel) {
-      const { event } = this.props
-      this.visibel = true
-      this.forceUpdate()
+function ContrallerEvent({ event, playContainer, children }) {
+  const timer = useRef(null)
+  const [visibel, setVisibel] = useState(true)
+  useEffect(() => {
+    const showContraller = () => {
+      setVisibel(true)
+      this.hideContraller()
       event.emit(EventName.SHOW_CONTRALLER)
     }
-    this.hideContraller()
-  }
-  hideContraller = () => {
-    const { event } = this.props
-    clearTimeout(this.timer)
-    this.timer = setTimeout(() => {
-      this.visibel = false
-      event.emit(EventName.HIDE_CONTRALLER)
-      this.forceUpdate()
-    }, 3 * 1000)
-  }
-  render() {
-    const { children } = this.props
-    return React.Children.map(children, child => (React.isValidElement(child) ? React.cloneElement(child, { visibel: this.visibel }) : child))
-  }
-}
+    const hideContraller = () => {
+      clearTimeout(timer.current)
+      timer.current = setTimeout(() => {
+        setVisibel(false)
+        event.emit(EventName.HIDE_CONTRALLER)
+      }, 3 * 1000)
+    }
+    playContainer.addEventListener('mousemove', showContraller, false)
+    playContainer.addEventListener('mouseout', hideContraller, false)
+  })
 
-ContrallerEvent.propTypes = {
-  api: PropTypes.object,
-  event: PropTypes.object,
-  playContainer: PropTypes.node,
-  children: PropTypes.element
+  return React.Children.map(children, child => React.cloneElement(child, { visibel }))
 }
 
 export default ContrallerEvent

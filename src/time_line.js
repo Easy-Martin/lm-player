@@ -80,13 +80,7 @@ class TineLine extends React.Component {
     return (
       <div className={`video-time-line-layout ${!this.props.visibel ? 'hide-time-line' : ''}`}>
         <IconFont type="lm-player-PrevFast" onClick={this.backWind} className="time-line-action-item" />
-        <Slider
-          className="time-line-box"
-          currentPercent={playPercent}
-          availablePercent={bufferedPercent}
-          onChange={this.changePlayTime}
-          renderTips={this.renderTimeLineTips}
-        />
+        <Slider className="time-line-box" currentPercent={playPercent} availablePercent={bufferedPercent} onChange={this.changePlayTime} renderTips={this.renderTimeLineTips} />
         <IconFont type="lm-player-NextFast_Light" onClick={this.fastForward} className="time-line-action-item" />
       </div>
     )

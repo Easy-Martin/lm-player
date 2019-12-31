@@ -33,12 +33,9 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
       return
     }
     playerObject.video.src = file
-
     playerObj.event = new VideoEvent(playerObject.video)
     playerObj.api = new Api(playerObject)
-
     setPlayerObj(playerObj)
-
     onInitPlayer && onInitPlayer(playerObj)
   }, [file])
 
@@ -47,25 +44,50 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
       <div className="player-mask-layout">
         <video autoPlay={autoPlay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
       </div>
-      <VideoTools playerObj={playerObj} isLive={props.isLive} hideContrallerBar={props.hideContrallerBar} />
+      <VideoTools
+        playerObj={playerObj}
+        isLive={props.isLive}
+        hideContrallerBar={props.hideContrallerBar}
+        scale={props.scale}
+        snapshot={props.snapshot}
+        leftExtContents={props.leftExtContents}
+        leftMidExtContents={props.leftMidExtContents}
+        rightExtContents={props.rightExtContents}
+        rightMidExtContents={props.rightMidExtContents}
+        draggable={props.draggable}
+      />
       {this.props.children}
     </div>
   )
 }
 
-function VideoTools({ playerObj, isLive, hideContrallerBar }) {
+function VideoTools({ playerObj, draggable, isLive, hideContrallerBar, scale, snapshot, leftExtContents, leftMidExtContents, rightExtContents, rightMidExtContents }) {
   if (!playerObj) {
     return <NoSource />
   }
   return (
     <>
-      <ContrallerBar visibel={!hideContrallerBar} api={playerObj.api} event={playerObj.event} />
-      <VideoMessage />
-      <DragEvent />
-      <ContrallerEvent>
-        <ContrallerBar />
-        {!isLive && <TimeLine />}
-      </ContrallerEvent>
+      <VideoMessage api={playerObj.api} event={playerObj.event} />
+      {draggable && <DragEvent playContainer={playerObj.playContainer} api={playerObj.api} />}
+      {!hideContrallerBar && (
+        <ContrallerEvent event={playerObj.event} playContainer={playerObj.playContainer}>
+          <ContrallerBar
+            api={playerObj.api}
+            event={playerObj.event}
+            playContainer={playerObj.playContainer}
+            video={playerObj.video}
+            snapshot={snapshot}
+            rightExtContents={rightExtContents}
+            rightMidExtContents={rightMidExtContents}
+            scale={scale}
+            isHistory={false}
+            isLive={isLive}
+            leftExtContents={leftExtContents}
+            leftMidExtContents={leftMidExtContents}
+          />
+          {!isLive && <TimeLine />}
+        </ContrallerEvent>
+      )}
       <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} />
       {isLive && <LiveHeart key={this.props.file} />}
     </>
