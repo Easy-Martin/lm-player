@@ -1,7 +1,0 @@
-.idea/
-.vscode/
-.cache/
-/node_modules/
-/umd/
-/es/
-rollup.config.js
