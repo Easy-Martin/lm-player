@@ -59,6 +59,7 @@ export function createFlvPlayer(video, options) {
 export function getVideoType(url) {
   const urlInfo = new URL(url)
   const path = `${urlInfo.origin}${urlInfo.pathname}`
+  // eslint-disable-next-line no-useless-escape
   const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i
   const resultArr = reg.exec(path)
   if (!resultArr) {

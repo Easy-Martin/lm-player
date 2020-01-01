@@ -1,113 +1,80 @@
-import React from 'react'
-import { videoDec } from '../context'
+import React, { useState, useEffect, useRef } from 'react'
 import EventName from './eventName'
-import flvjs from 'flv.lm.js'
-import * as Hls from 'hls.js'
-import PropTypes from 'prop-types'
 
-@videoDec
-class ErrorEvent extends React.Component {
-  constructor(props) {
-    super(props)
-    this.errorTimer = 0
-  }
-  componentDidMount() {
-    const { event, flvPlayer, hlsPlayer } = this.props
-    if (flvPlayer) {
-      //捕获flv错误
-      flvPlayer.on(flvjs.Events.ERROR, this.errorHandle)
+function ErrorEvent({ event, api, errorReloadTimer, flv, hls, changePlayIndex, isHistory, playIndex }) {
+  const [errorTimer, setErrorTime] = useState(0)
+  const errorInfo = useRef(null)
+  const reloadTimer = useRef(null)
+
+  useEffect(() => {
+    const errorHandle = (...args) => {
+      console.error(...args)
+      errorInfo.current = args
+      setErrorTime(errorTimer + 1)
     }
-    if (hlsPlayer) {
-      //捕获hls错误
-      hlsPlayer.on(Hls.Events.ERROR, this.errorHandle)
-    }
-    //捕获video错误
-    event.addEventListener('error', this.errorHandle, false)
 
-    //获取video状态清除错误状态
-    event.addEventListener('canplay', this.clearError, false)
-
-    //历史视频切换播放索引时清除错误次数
-    event.on(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer)
-
-    //历史视频主动清除错误次数
-    event.on(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer)
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.flvPlayer && nextProps.flvPlayer !== this.props.flvPlayer) {
-      nextProps.flvPlayer.on(flvjs.Events.ERROR, this.errorHandle)
-    }
-    if (nextProps.hlsPlayer && nextProps.hlsPlayer !== this.props.hlsPlayer) {
-      nextProps.hlsPlayer.on(Hls.Events.ERROR, this.errorHandle)
-    }
-  }
-  componentWillUnmount() {
-    clearTimeout(this.reconnectTimer)
-  }
-
-  clearErrorTimer = () => {
-    this.errorTimer = 0
-    clearTimeout(this.reconnectTimer)
-  }
-  /**
-   * 清除播放错误状态
-   */
-  clearError = () => {
-    const { event } = this.props
-    if (this.errorTimer > 0) {
-      console.warn('视频重连成功！')
-      event.emit(EventName.RELOAD_SUCCESS)
-      this.clearErrorTimer()
-    }
-  }
-
-  /**
-   * 捕获错误
-   */
-  errorHandle = (...args) => {
-    console.error(...args)
-    clearTimeout(this.reconnectTimer)
-    const { event, api, isHistory, changePlayIndex, playIndex, playerProps } = this.props
-    const timer = this.errorTimer + 1
-    event.emit(EventName.ERROR, ...args)
-    if (timer > playerProps.errorReloadTimer) {
-      isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload()
-    } else {
-      this.errorTimer = timer
-      if ((args[1] && args[1].loader) || (args[0].indexOf && args[0].indexOf('NetworkError') > -1)) {
-        this.reloadAction(timer, args)
+    const reloadSuccess = () => {
+      if (errorTimer > 0) {
+        console.warn('视频重连成功！')
+        event.emit(EventName.RELOAD_SUCCESS)
+        clearErrorTimer()
       }
-      this.reconnectTimer = setTimeout(() => {
-        this.reloadAction(timer, args)
-      }, 1000 * 20)
     }
-  }
+    const clearErrorTimer = () => setErrorTime(0)
+    if (flv) {
+      flv.on('error', errorHandle)
+    }
+    if (hls) {
+      hls.on('hlsError', errorHandle)
+    }
 
-  reloadAction = (timer, args) => {
-    const { event, api, hlsPlayer } = this.props
-    event.emit(EventName.ERROR_RELOAD, timer, ...args)
-    console.warn(`视频播放出错，正在进行重连${timer}`)
-    if (hlsPlayer) {
-      hlsPlayer.swapAudioCodec()
-      hlsPlayer.recoverMediaError()
+    if (isHistory) {
+      //历史视频切换播放索引时清除错误次数
+      event.on(EventName.CHANGE_PLAY_INDEX, clearErrorTimer)
+      //历史视频主动清除错误次数
+      event.on(EventName.CLEAR_ERROR_TIMER, clearErrorTimer)
     }
-    api.reload()
-  }
-  render() {
-    return null
-  }
+    event.addEventListener('error', errorHandle, false)
+    //获取video状态清除错误状态
+    event.addEventListener('canplay', reloadSuccess, false)
+
+    return () => {
+      if (flv) {
+        flv.off('error', errorHandle)
+      }
+      if (hls) {
+        hls.off('hlsError', errorHandle)
+      }
+      if (isHistory) {
+        event.off(EventName.CHANGE_PLAY_INDEX, clearErrorTimer)
+        event.off(EventName.CLEAR_ERROR_TIMER, clearErrorTimer)
+      }
+      event.removeEventListener('error', errorHandle, false)
+      event.removeEventListener('canplay', reloadSuccess, false)
+    }
+  }, [event, flv, hls, errorTimer])
+
+  useEffect(() => {
+    if (errorTimer === 0) {
+      return
+    }
+    if (errorTimer > errorReloadTimer) {
+      return isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload()
+    }
+   
+
+    console.warn(`视频播放出错，正在进行重连${errorTimer}`)
+    reloadTimer.current = setTimeout(() => {
+      event.emit(EventName.ERROR_RELOAD, errorTimer, ...errorInfo.current)
+      api.reload(true)
+    }, 2 * 1000)
+
+    return () => {
+      clearTimeout(reloadTimer.current)
+    }
+  }, [errorTimer, api, event, flv, hls])
+
+  return <></>
 }
 
-ErrorEvent.propTypes = {
-  api: PropTypes.object,
-  event: PropTypes.object,
-  playContainer: PropTypes.node,
-  playerProps: PropTypes.object,
-  hlsPlayer: PropTypes.object,
-  flvPlayer: PropTypes.object,
-  isHistory: PropTypes.bool,
-  changePlayIndex: PropTypes.func,
-  playIndex: PropTypes.number
-}
 export default ErrorEvent

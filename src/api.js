@@ -1,7 +1,7 @@
 import { fullscreen, isFullscreen, exitFullscreen } from './util'
 import EventName from './event/eventName'
 export default class Api {
-  constructor({video, playContainer, event, flv, hls}) {
+  constructor({ video, playContainer, event, flv, hls }) {
     this.player = video
     this.playContainer = playContainer
     this.flv = flv
@@ -75,29 +75,29 @@ export default class Api {
   /**
    * 视频重载
    */
-  reload() {
-    this.unload()
-    this.load()
-    this.play()
-    this.event.emit(EventName.RELOAD)
+  reload(notEmit) {
     if (this.getCurrentTime !== 0) {
       this.seekTo(0)
     }
+    if (this.hls) {
+      this.hls.swapAudioCodec()
+      this.hls.recoverMediaError()
+    }
+    this.unload()
+    this.load()
+    !notEmit && this.event.emit(EventName.RELOAD)
   }
   unload() {
     this.flv && this.flv.unload()
     this.hls && this.hls.stopLoad()
   }
   load() {
-    this.flv && this.flv.load()
+    if (this.flv) {
+      this.flv.load()
+    }
     if (this.hls) {
-      try {
-        this.hls.swapAudioCodec()
-        this.hls.recoverMediaError()
-      } catch (e) {
-        console.warn(e)
-      }
       this.hls.startLoad()
+      this.hls.loadSource(this.hls.url)
     }
   }
   setVolume(fraction) {

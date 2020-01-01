@@ -7,7 +7,7 @@ function ContrallerEvent({ event, playContainer, children }) {
   useEffect(() => {
     const showContraller = () => {
       setVisibel(true)
-      this.hideContraller()
+      hideContraller()
       event.emit(EventName.SHOW_CONTRALLER)
     }
     const hideContraller = () => {
@@ -21,7 +21,7 @@ function ContrallerEvent({ event, playContainer, children }) {
     playContainer.addEventListener('mouseout', hideContraller, false)
   })
 
-  return React.Children.map(children, child => React.cloneElement(child, { visibel }))
+  return React.Children.map(children, child => (React.isValidElement(child) ? React.cloneElement(child, { visibel }) : child))
 }
 
 export default ContrallerEvent

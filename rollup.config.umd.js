@@ -27,7 +27,14 @@ export default {
     sourceMap: true,
     entryFileNames: 'player.js',
     exports: 'named',
-    name: 'LMPlayer'
+    name: 'LMPlayer',
+    globals: {
+      ['prop-types']: 'PropTypes',
+      ['react']: 'React',
+      ['react-dom']: 'ReactDOM',
+      ['flv.lm.js']: 'flvjs',
+      ['hls.js']: 'Hls'
+    }
   },
   plugins: [
     image(),
@@ -51,7 +58,7 @@ export default {
     replace({
       exclude: 'node_modules/**',
       ENV: JSON.stringify(process.env.NODE_ENV || 'development')
-    }),
+    })
     // process.env.NODE_ENV === 'production' && uglify({ ecma: 8 }) //压缩仅支持es5
   ],
   external: id => Object.keys(pkg.dependencies).some(e => id.indexOf(e) === 0)
