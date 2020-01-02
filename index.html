@@ -24,17 +24,17 @@
       const HistoryPlayer = LMPlayer.HistoryPlayer
       const playList = formatHistoryList(historyList, historyList[0].beginTime, historyList[historyList.length - 1].endTime)
 
-      // <div style={{ width: 800, height: 600 }}>
-      //       <Player
-      //         type="flv"
-      //         file="https://jxsr-eye.antelopecloud.cn/staticResource/v2/video/live.flv/538470642?Authorization=eyJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb25JZCI6IjEwMDEwMTAwMDQ0NSIsImV4dCI6MTYwOTQ2MzU1NjY4MSwidWlkIjoiMTAxMDAwMDAwNjk5IiwidmFsaWRTdGF0ZSI6MTA0NDA2LCJyb2xlSWQiOlsxMDAwMDAxMTA1MThdLCJ2YWxpZFRpbWUiOjE1NzkyNzY3OTkwMDAsIm9wdENlbnRlcklkIjoiMTAwMTAwMDAwMjMzIiwidXNlclR5cGUiOjEwMDcwNCwiaWF0IjoxNTc3OTI3NTU2NjgxfQ.vVtJcXiTulvD0cSzbuWRTlL3V5wfQkpgiWIlfjEmsh0"
-      //       />
-      //     </div>
       const RootCompoent = () => (
         <div style={{ display: 'flex' }}>
           <div style={{ width: 800, height: 600 }}>
-            <HistoryPlayer
+            <Player
               type="flv"
+              file="https://jxsr-eye.antelopecloud.cn/staticResource/v2/video/live.flv/538470642?Authorization=eyJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb25JZCI6IjEwMDEwMTAwMDQ0NSIsImV4dCI6MTYwOTQ2MzU1NjY4MSwidWlkIjoiMTAxMDAwMDAwNjk5IiwidmFsaWRTdGF0ZSI6MTA0NDA2LCJyb2xlSWQiOlsxMDAwMDAxMTA1MThdLCJ2YWxpZFRpbWUiOjE1NzkyNzY3OTkwMDAsIm9wdENlbnRlcklkIjoiMTAwMTAwMDAwMjMzIiwidXNlclR5cGUiOjEwMDcwNCwiaWF0IjoxNTc3OTI3NTU2NjgxfQ.vVtJcXiTulvD0cSzbuWRTlL3V5wfQkpgiWIlfjEmsh0"
+            />
+          </div>
+          <div style={{ width: 800, height: 600 }}>
+            <HistoryPlayer
+              type="hls"
               file="https://jxsr-eye.antelopecloud.cn/staticResource/v2/video/live.flv/538470642?Authorization=eyJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb25JZCI6IjEwMDEwMTAwMDQ0NSIsImV4dCI6MTYwOTQ2MzU1NjY4MSwidWlkIjoiMTAxMDAwMDAwNjk5IiwidmFsaWRTdGF0ZSI6MTA0NDA2LCJyb2xlSWQiOlsxMDAwMDAxMTA1MThdLCJ2YWxpZFRpbWUiOjE1NzkyNzY3OTkwMDAsIm9wdENlbnRlcklkIjoiMTAwMTAwMDAwMjMzIiwidXNlclR5cGUiOjEwMDcwNCwiaWF0IjoxNTc3OTI3NTU2NjgxfQ.vVtJcXiTulvD0cSzbuWRTlL3V5wfQkpgiWIlfjEmsh0"
               historyList={playList}
             />
