@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import IconFont from '../iconfont'
 import Slider from '../slider'
 import { dateFormat } from '../util'
@@ -47,16 +47,14 @@ function TineLine({ event, api, visibel, historyList, playIndex, seekTo }) {
     }
   }, [event, api])
 
-  const changePlayTime = percent => {
-    const numSize = historyList.duration.toString().length
-    const currentTime = (percent + numSize / Math.pow(10, numSize - 1)) * historyList.duration //修正一下误差
-    const playIndex = historyList.fragments.findIndex(v => v.end > currentTime)
-    const fragment = historyList.fragments[playIndex]
-    if (fragment.file) {
+  const changePlayTime = useCallback(
+    percent => {
+      const currentTime = percent * historyList.duration //修正一下误差
       seekTo(currentTime)
       setState(old => ({ ...old, currentTime, isEnd: false }))
-    }
-  }
+    },
+    [historyList]
+  )
 
   const renderTimeLineTips = percent => {
     const currentTime = percent * historyList.duration * 1000
@@ -70,7 +68,6 @@ function TineLine({ event, api, visibel, historyList, playIndex, seekTo }) {
   const currentIndexTime = useMemo(() => (currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0]), [currentLine])
   const playPercent = useMemo(() => (currentTime / historyList.duration) * 100 + currentIndexTime, [currentIndexTime, historyList, currentTime])
   const bufferedPercent = useMemo(() => (buffered / historyList.duration) * 100 + currentIndexTime, [historyList, currentIndexTime, buffered])
-
   return (
     <div className={`video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`}>
       <IconFont type="lm-player-PrevFast" onClick={api.backWind} className="time-line-action-item" />

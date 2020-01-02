@@ -1729,6 +1729,12 @@
       if (onInitPlayer) {
         onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()));
       }
+
+      return () => {
+        if (playerObject.api) {
+          playerObject.api.unload();
+        }
+      };
     }, [file]);
     return React__default.createElement("div", {
       className: `lm-player-container ${className}`,
@@ -1918,22 +1924,15 @@
         event.off(EventName.RELOAD, reload);
       };
     }, [event, api]);
+    const changePlayTime = React.useCallback(percent => {
+      const currentTime = percent * historyList.duration; //修正一下误差
 
-    const changePlayTime = percent => {
-      const numSize = historyList.duration.toString().length;
-      const currentTime = (percent + numSize / Math.pow(10, numSize - 1)) * historyList.duration; //修正一下误差
-
-      const playIndex = historyList.fragments.findIndex(v => v.end > currentTime);
-      const fragment = historyList.fragments[playIndex];
-
-      if (fragment.file) {
-        seekTo(currentTime);
-        setState(old => ({ ...old,
-          currentTime,
-          isEnd: false
-        }));
-      }
-    };
+      seekTo(currentTime);
+      setState(old => ({ ...old,
+        currentTime,
+        isEnd: false
+      }));
+    }, [historyList]);
 
     const renderTimeLineTips = percent => {
       const currentTime = percent * historyList.duration * 1000;
@@ -2069,8 +2068,11 @@
     const seekTo = React.useCallback(currentTime => {
       const [index, seekTime] = computedTimeAndIndex(historyList, currentTime);
 
-      if (index !== undefined && playerObj.event && playerObj.api) {
-        setPlayStatus([index, seekTime]);
+      if (playerObj.event && playerObj.api) {
+        if (index !== playStatus[0]) {
+          setPlayStatus([index, seekTime]);
+        }
+
         playerObj.api.seekTo(seekTime, true);
         playerObj.event.emit(EventName.SEEK, currentTime);
       }
@@ -2131,6 +2133,12 @@
           reload: reloadHistory
         }));
       }
+
+      return () => {
+        if (playerObject.api) {
+          playerObject.api.unload();
+        }
+      };
     }, [playStatus, historyList, file]);
     /**
      * 根据时间计算当前对应的播放索引

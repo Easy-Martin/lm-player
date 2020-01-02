@@ -1,290 +1,81 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import flvjs from 'flv.lm.js';
 import * as Hls from 'hls.js';
-import { isSupported, Events } from 'hls.js';
-import PropTypes$1 from 'prop-types';
+import { isSupported } from 'hls.js';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) _setPrototypeOf(subClass, superClass);
-}
-
-function _getPrototypeOf(o) {
-  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
-
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-
-  var target = _objectWithoutPropertiesLoose(source, excluded);
-
-  var key, i;
-
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-
-  return target;
-}
-
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (typeof call === "object" || typeof call === "function")) {
-    return call;
-  }
-
-  return _assertThisInitialized(self);
-}
-
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
-}
-
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-}
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  }
-}
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-}
-
-function _iterableToArrayLimit(arr, i) {
-  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-    return;
-  }
-
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-
-  try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
-}
-
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance");
-}
-
-var VideoEventInstance =
-/*#__PURE__*/
-function () {
-  function VideoEventInstance(video) {
-    _classCallCheck(this, VideoEventInstance);
-
+class VideoEventInstance {
+  constructor(video) {
     this.video = video;
     this.events = {};
     this.playerEvents = {};
   }
 
-  _createClass(VideoEventInstance, [{
-    key: "on",
-    value: function on(eventName, handle) {
-      this.events && this.events[eventName] ? this.events[eventName].listener.push(handle) : this.events[eventName] = {
-        type: eventName,
-        listener: [handle]
-      };
-    }
-  }, {
-    key: "addEventListener",
-    value: function addEventListener(eventName, handle) {
-      if (this.video) {
-        this.playerEvents[eventName] ? this.playerEvents[eventName].push(handle) : this.playerEvents[eventName] = [handle];
-        this.video.addEventListener(eventName, handle, false);
-      }
-    }
-  }, {
-    key: "removeEventListener",
-    value: function removeEventListener(eventName, handle) {
-      if (this.video) {
-        if (!this.playerEvents || !this.playerEvents[eventName]) {
-          return;
-        }
+  on(eventName, handle) {
+    this.events && this.events[eventName] ? this.events[eventName].listener.push(handle) : this.events[eventName] = {
+      type: eventName,
+      listener: [handle]
+    };
+  }
 
-        var index = this.playerEvents[eventName].findIndex(function (v) {
-          return v === handle;
-        });
-        index > -1 && this.playerEvents[eventName].splice(index, 1);
-        this.video.removeEventListener(eventName, handle, false);
-      }
+  addEventListener(eventName, handle) {
+    if (this.video) {
+      this.playerEvents[eventName] ? this.playerEvents[eventName].push(handle) : this.playerEvents[eventName] = [handle];
+      this.video.addEventListener(eventName, handle, false);
     }
-  }, {
-    key: "emit",
-    value: function emit(eventName) {
-      for (var _len = arguments.length, data = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        data[_key - 1] = arguments[_key];
-      }
+  }
 
-      if (!this.events || !this.events[eventName]) {
+  removeEventListener(eventName, handle) {
+    if (this.video) {
+      if (!this.playerEvents || !this.playerEvents[eventName]) {
         return;
       }
 
-      this.events[eventName].listener.forEach(function (v) {
-        v.apply(void 0, data);
-      });
+      let index = this.playerEvents[eventName].findIndex(v => v === handle);
+      index > -1 && this.playerEvents[eventName].splice(index, 1);
+      this.video.removeEventListener(eventName, handle, false);
     }
-  }, {
-    key: "off",
-    value: function off(eventName, handle) {
-      if (!this.events || !this.events.eventName) {
-        return;
-      }
+  }
 
-      var index = this.events[eventName].listener.findIndex(function (v) {
-        return v === handle;
-      });
-      index > -1 && this.events[eventName].listener.splice(index, 1);
+  emit(eventName, ...data) {
+    if (!this.events || !this.events[eventName]) {
+      return;
     }
-  }, {
-    key: "getApi",
-    value: function getApi() {
-      return {
-        on: this.on.bind(this),
-        off: this.off.bind(this),
-        emit: this.emit.bind(this)
-      };
-    }
-  }, {
-    key: "destroy",
-    value: function destroy() {
-      var _this = this;
 
-      Object.keys(this.playerEvents).forEach(function (key) {
-        _this.playerEvents[key].forEach(function (fn) {
-          _this.removeEventListener(key, fn);
-        });
-      });
-      this.playerEvents = {};
-      this.events = {};
-    }
-  }]);
+    this.events[eventName].listener.forEach(v => {
+      v(...data);
+    });
+  }
 
-  return VideoEventInstance;
-}();
+  off(eventName, handle) {
+    if (!this.events || !this.events.eventName) {
+      return;
+    }
+
+    let index = this.events[eventName].listener.findIndex(v => v === handle);
+    index > -1 && this.events[eventName].listener.splice(index, 1);
+  }
+
+  getApi() {
+    return {
+      on: this.on.bind(this),
+      off: this.off.bind(this),
+      emit: this.emit.bind(this)
+    };
+  }
+
+  destroy() {
+    Object.keys(this.playerEvents).forEach(key => {
+      this.playerEvents[key].forEach(fn => {
+        this.removeEventListener(key, fn);
+      });
+    });
+    this.playerEvents = {};
+    this.events = {};
+  }
+
+}
 
 /**
  * 创建HLS对象
@@ -294,7 +85,7 @@ function () {
 
 function createHlsPlayer(video, file) {
   if (isSupported()) {
-    var player = new Hls({
+    const player = new Hls({
       liveDurationInfinity: true,
       levelLoadingTimeOut: 15000,
       fragLoadingTimeOut: 25000,
@@ -312,13 +103,13 @@ function createHlsPlayer(video, file) {
  */
 
 function createFlvPlayer(video, options) {
-  var _options$flvOptions = options.flvOptions,
-      flvOptions = _options$flvOptions === void 0 ? {} : _options$flvOptions,
-      _options$flvConfig = options.flvConfig,
-      flvConfig = _options$flvConfig === void 0 ? {} : _options$flvConfig;
+  const {
+    flvOptions = {},
+    flvConfig = {}
+  } = options;
 
   if (flvjs.isSupported()) {
-    var player = flvjs.createPlayer(Object.assign({}, flvOptions, {
+    const player = flvjs.createPlayer(Object.assign({}, flvOptions, {
       type: 'flv',
       url: options.file
     }), Object.assign({}, flvConfig, {
@@ -344,16 +135,17 @@ function createFlvPlayer(video, options) {
  */
 
 function getVideoType(url) {
-  var urlInfo = new URL(url);
-  var path = "".concat(urlInfo.origin).concat(urlInfo.pathname);
-  var reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;
-  var resultArr = reg.exec(path);
+  const urlInfo = new URL(url);
+  const path = `${urlInfo.origin}${urlInfo.pathname}`; // eslint-disable-next-line no-useless-escape
+
+  const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;
+  const resultArr = reg.exec(path);
 
   if (!resultArr) {
     return url.indexOf('.flv') > -1 ? 'flv' : 'hls';
   }
 
-  var suffix = resultArr[2].replace(resultArr[4], '');
+  const suffix = resultArr[2].replace(resultArr[4], '');
 
   if (!suffix) {
     return url.indexOf('.flv') > -1 ? 'flv' : 'hls';
@@ -367,25 +159,40 @@ function getVideoType(url) {
  */
 
 function timeStamp(second_time) {
-  var time = Math.ceil(second_time);
+  let time = Math.ceil(second_time);
 
   if (time > 60) {
-    var second = Math.ceil(second_time % 60);
-    var min = Math.floor(second_time / 60);
-    time = "".concat(min < 10 ? "0".concat(min) : min, ":").concat(second < 10 ? "0".concat(second) : second);
+    let second = Math.ceil(second_time % 60);
+    let min = Math.floor(second_time / 60);
+    time = `${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`;
 
     if (min > 60) {
       min = Math.ceil(second_time / 60 % 60);
-      var hour = Math.floor(second_time / 60 / 60);
-      time = "".concat(hour < 10 ? "0".concat(hour) : hour, ":").concat(min < 10 ? "0".concat(min) : min, ":").concat(second < 10 ? "0".concat(second) : second);
+      let hour = Math.floor(second_time / 60 / 60);
+      time = `${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}:${second < 10 ? `0${second}` : second}`;
     } else {
-      time = "00:".concat(time);
+      time = `00:${time}`;
     }
   } else {
-    time = "00:00:".concat(time < 10 ? "0".concat(time) : time);
+    time = `00:00:${time < 10 ? `0${time}` : time}`;
   }
 
   return time;
+}
+/**
+ * 日期格式化
+ * @param {*} timetemp
+ */
+
+function dateFormat(timetemp) {
+  const date = new Date(timetemp);
+  let YYYY = date.getFullYear();
+  let DD = date.getDate();
+  let MM = date.getMonth() + 1;
+  let hh = date.getHours();
+  let mm = date.getMinutes();
+  let ss = date.getSeconds();
+  return `${YYYY}.${MM > 9 ? MM : '0' + MM}.${DD > 9 ? DD : '0' + DD} ${hh > 9 ? hh : '0' + hh}.${mm > 9 ? mm : '0' + mm}.${ss > 9 ? ss : '0' + ss}`;
 }
 /**
  * 全屏
@@ -433,11 +240,9 @@ function isFullscreen(ele) {
 } // 添加 / 移除 全屏事件监听
 
 function fullScreenListener(isAdd, fullscreenchange) {
-  var funcName = isAdd ? 'addEventListener' : 'removeEventListener';
-  var fullScreenEvents = ['fullscreenchange', 'mozfullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange'];
-  fullScreenEvents.map(function (v) {
-    return document[funcName](v, fullscreenchange);
-  });
+  const funcName = isAdd ? 'addEventListener' : 'removeEventListener';
+  const fullScreenEvents = ['fullscreenchange', 'mozfullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange'];
+  fullScreenEvents.map(v => document[funcName](v, fullscreenchange));
 }
 /**
  * 计算视频拖拽边界
@@ -447,11 +252,11 @@ function fullScreenListener(isAdd, fullscreenchange) {
  */
 
 function computedBound(ele, currentPosition, scale) {
-  var data = currentPosition;
-  var eleRect = ele.getBoundingClientRect();
-  var w = eleRect.width;
-  var h = eleRect.height;
-  var lx = 0,
+  const data = currentPosition;
+  const eleRect = ele.getBoundingClientRect();
+  const w = eleRect.width;
+  const h = eleRect.height;
+  let lx = 0,
       ly = 0;
 
   if (scale === 1) {
@@ -460,7 +265,7 @@ function computedBound(ele, currentPosition, scale) {
 
   lx = w * (scale - 1) / 2 / scale;
   ly = h * (scale - 1) / 2 / scale;
-  var x = 0,
+  let x = 0,
       y = 0;
 
   if (data[0] >= 0 && data[0] > lx) {
@@ -502,53 +307,63 @@ function computedBound(ele, currentPosition, scale) {
   }
 }
 
-function IconFont(_ref) {
-  var type = _ref.type,
-      _ref$className = _ref.className,
-      className = _ref$className === void 0 ? '' : _ref$className,
-      props = _objectWithoutProperties(_ref, ["type", "className"]);
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
 
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function IconFont({
+  type,
+  className = '',
+  ...props
+}) {
   return React.createElement("i", _extends({
-    className: "lm-player-iconfont ".concat(type, " ").concat(className)
+    className: `lm-player-iconfont ${type} ${className}`
   }, props));
 }
 IconFont.propTypes = {
-  type: PropTypes$1.string,
-  className: PropTypes$1.string
+  type: PropTypes.string,
+  className: PropTypes.string
 };
 
-var Slider =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(Slider, _React$Component);
+class Slider extends React.Component {
+  constructor(props) {
+    super(props);
 
-  function Slider(props) {
-    var _this;
-
-    _classCallCheck(this, Slider);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Slider).call(this, props));
-
-    _this.renderSliderTips = function (e) {
-      var renderTips = _this.props.renderTips;
+    this.renderSliderTips = e => {
+      const {
+        renderTips
+      } = this.props;
 
       if (!renderTips) {
         return;
       }
 
-      clearTimeout(_this.timer);
-      _this.timer = setTimeout(function () {
-        var _this$layoutDom$getBo = _this.layoutDom.getBoundingClientRect(),
-            x = _this$layoutDom$getBo.x,
-            width = _this$layoutDom$getBo.width,
-            top = _this$layoutDom$getBo.top;
-
-        var tipsX = e.pageX;
-        var percent = (e.pageX - x) / width;
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        const {
+          x,
+          width,
+          top
+        } = this.layoutDom.getBoundingClientRect();
+        const tipsX = e.pageX;
+        let percent = (e.pageX - x) / width;
         percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
-
-        _this.setState({
-          tipsX: tipsX,
+        this.setState({
+          tipsX,
           tipsY: top,
           showTips: true,
           tempValue: percent
@@ -556,264 +371,236 @@ function (_React$Component) {
       }, 200);
     };
 
-    _this.hideSliderTips = function () {
-      clearTimeout(_this.timer);
-
-      _this.setState({
+    this.hideSliderTips = () => {
+      clearTimeout(this.timer);
+      this.setState({
         showTips: false
       });
     };
 
-    _this.cancelPropagation = function (e) {
+    this.cancelPropagation = e => {
       e.stopPropagation();
     };
 
-    _this.startDrag = function (e) {
+    this.startDrag = e => {
       e.stopPropagation();
-      _this.dragFlag = true;
-      document.body.addEventListener('mousemove', _this.moveChange);
-      document.body.addEventListener('mouseup', _this.stopDrag);
+      this.dragFlag = true;
+      document.body.addEventListener('mousemove', this.moveChange);
+      document.body.addEventListener('mouseup', this.stopDrag);
     };
 
-    _this.moveChange = function (e) {
+    this.moveChange = e => {
       e.stopPropagation();
-
-      var percent = _this.computedPositionForEvent(e);
-
-      _this.setState({
+      const percent = this.computedPositionForEvent(e);
+      this.setState({
         value: percent
       });
     };
 
-    _this.stopDrag = function (e) {
+    this.stopDrag = e => {
       e.stopPropagation();
-      document.body.removeEventListener('mousemove', _this.moveChange);
-      document.body.removeEventListener('mouseup', _this.stopDrag);
-      _this.dragFlag = false;
-      var percent = _this.state.value / 100;
+      document.body.removeEventListener('mousemove', this.moveChange);
+      document.body.removeEventListener('mouseup', this.stopDrag);
+      this.dragFlag = false;
+      let percent = this.state.value / 100;
       percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
-      _this.props.onChange && _this.props.onChange(percent);
+      this.props.onChange && this.props.onChange(percent);
     };
 
-    _this.changeCurrentValue = function (event) {
+    this.changeCurrentValue = event => {
       event.stopPropagation();
-
-      var _this$layoutDom$getBo2 = _this.layoutDom.getBoundingClientRect(),
-          width = _this$layoutDom$getBo2.width,
-          x = _this$layoutDom$getBo2.x;
-
-      var percent = (event.pageX - x) / width;
-      _this.props.onChange && _this.props.onChange(percent);
+      const {
+        width,
+        x
+      } = this.layoutDom.getBoundingClientRect();
+      let percent = (event.pageX - x) / width;
+      this.props.onChange && this.props.onChange(percent);
     };
 
-    _this.sliderDomRef = React.createRef();
-    _this.layoutDom = null;
-    _this.lineDom = null;
-    _this.dragDom = null;
-    _this.dragFlag = false;
-    _this.state = {
-      value: _this.props.currentPercent || 0,
+    this.sliderDomRef = React.createRef();
+    this.layoutDom = null;
+    this.lineDom = null;
+    this.dragDom = null;
+    this.dragFlag = false;
+    this.state = {
+      value: this.props.currentPercent || 0,
       tempValue: 0,
       showTips: false,
       tipsX: 0,
       tipsY: 0
     };
-    return _this;
   }
 
-  _createClass(Slider, [{
-    key: "UNSAFE_componentWillReceiveProps",
-    value: function UNSAFE_componentWillReceiveProps(nextProps) {
-      if (!this.dragFlag) {
-        this.setState({
-          value: nextProps.currentPercent || 0
-        });
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (!this.dragFlag) {
+      this.setState({
+        value: nextProps.currentPercent || 0
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.layoutDom = this.sliderDomRef.current;
+    this.dragDom = this.layoutDom.querySelector('.drag-change-icon');
+    this.lineDom = this.layoutDom.querySelector('.slider-content');
+    this.layoutDom.addEventListener('mousemove', this.renderSliderTips, false);
+    this.layoutDom.addEventListener('mouseout', this.hideSliderTips, false);
+    this.lineDom.addEventListener('click', this.changeCurrentValue, false);
+    this.dragDom.addEventListener('click', this.cancelPropagation, false);
+    this.dragDom.addEventListener('mousedown', this.startDrag, false);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+    this.layoutDom.removeEventListener('mousemove', this.renderSliderTips, false);
+    this.layoutDom.removeEventListener('mouseout', this.hideSliderTips, false);
+    this.lineDom.removeEventListener('click', this.changeCurrentValue, false);
+    this.dragDom.removeEventListener('click', this.cancelPropagation, false);
+    this.dragDom.removeEventListener('mousedown', this.startDrag, false);
+    document.body.removeEventListener('mousemove', this.moveChange);
+    document.body.removeEventListener('mouseup', this.stopDrag);
+    this.sliderDomRef = null;
+    this.layoutDom = null;
+    this.lineDom = null;
+    this.dragDom = null;
+    this.dragFlag = null;
+  }
+
+  computedPositionForEvent(e) {
+    const {
+      x,
+      width
+    } = this.layoutDom.getBoundingClientRect();
+    const {
+      pageX
+    } = e;
+    let dx = pageX - x;
+
+    if (dx > width) {
+      dx = width;
+    }
+
+    if (dx < 0) {
+      dx = 0;
+    }
+
+    return dx / width * 100;
+  }
+
+  render() {
+    const {
+      value,
+      showTips,
+      tipsX,
+      tipsY
+    } = this.state;
+    const {
+      availablePercent = 0,
+      className = ''
+    } = this.props;
+    return React.createElement("div", {
+      className: `slider-layout ${className}`,
+      ref: this.sliderDomRef
+    }, React.createElement("div", {
+      className: "slider-content"
+    }, React.createElement("div", {
+      className: "slider-max-line"
+    }), React.createElement("div", {
+      className: "slider-visibel-line",
+      style: {
+        width: `${availablePercent}%`
       }
-    }
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.layoutDom = this.sliderDomRef.current;
-      this.dragDom = this.layoutDom.querySelector('.drag-change-icon');
-      this.lineDom = this.layoutDom.querySelector('.slider-content');
-      this.layoutDom.addEventListener('mousemove', this.renderSliderTips, false);
-      this.layoutDom.addEventListener('mouseout', this.hideSliderTips, false);
-      this.lineDom.addEventListener('click', this.changeCurrentValue, false);
-      this.dragDom.addEventListener('click', this.cancelPropagation, false);
-      this.dragDom.addEventListener('mousedown', this.startDrag, false);
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      clearTimeout(this.timer);
-      this.layoutDom.removeEventListener('mousemove', this.renderSliderTips, false);
-      this.layoutDom.removeEventListener('mouseout', this.hideSliderTips, false);
-      this.lineDom.removeEventListener('click', this.changeCurrentValue, false);
-      this.dragDom.removeEventListener('click', this.cancelPropagation, false);
-      this.dragDom.removeEventListener('mousedown', this.startDrag, false);
-      document.body.removeEventListener('mousemove', this.moveChange);
-      document.body.removeEventListener('mouseup', this.stopDrag);
-      this.sliderDomRef = null;
-      this.layoutDom = null;
-      this.lineDom = null;
-      this.dragDom = null;
-      this.dragFlag = null;
-    }
-  }, {
-    key: "computedPositionForEvent",
-    value: function computedPositionForEvent(e) {
-      var _this$layoutDom$getBo3 = this.layoutDom.getBoundingClientRect(),
-          x = _this$layoutDom$getBo3.x,
-          width = _this$layoutDom$getBo3.width;
-
-      var pageX = e.pageX;
-      var dx = pageX - x;
-
-      if (dx > width) {
-        dx = width;
+    }), React.createElement("div", {
+      className: "slider-current-line",
+      style: {
+        width: `${value}%`
       }
-
-      if (dx < 0) {
-        dx = 0;
+    }), this.props.children), React.createElement("div", {
+      className: "slider-other-content"
+    }, React.createElement("div", {
+      className: "drag-change-icon",
+      draggable: false,
+      style: {
+        left: `${value}%`
       }
+    })), React.createElement(Tips, {
+      visibel: showTips,
+      className: "lm-player-slide-tips",
+      style: {
+        left: tipsX,
+        top: tipsY
+      }
+    }, this.props.renderTips && this.props.renderTips(this.state.tempValue)));
+  }
 
-      return dx / width * 100;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$state = this.state,
-          value = _this$state.value,
-          showTips = _this$state.showTips,
-          tipsX = _this$state.tipsX,
-          tipsY = _this$state.tipsY;
-      var _this$props = this.props,
-          _this$props$available = _this$props.availablePercent,
-          availablePercent = _this$props$available === void 0 ? 0 : _this$props$available,
-          _this$props$className = _this$props.className,
-          className = _this$props$className === void 0 ? '' : _this$props$className;
-      return React.createElement("div", {
-        className: "slider-layout ".concat(className),
-        ref: this.sliderDomRef
-      }, React.createElement("div", {
-        className: "slider-content"
-      }, React.createElement("div", {
-        className: "slider-max-line"
-      }), React.createElement("div", {
-        className: "slider-visibel-line",
-        style: {
-          width: "".concat(availablePercent, "%")
-        }
-      }), React.createElement("div", {
-        className: "slider-current-line",
-        style: {
-          width: "".concat(value, "%")
-        }
-      }), this.props.children), React.createElement("div", {
-        className: "slider-other-content"
-      }, React.createElement("div", {
-        className: "drag-change-icon",
-        draggable: false,
-        style: {
-          left: "".concat(value, "%")
-        }
-      })), React.createElement(Tips, {
-        visibel: showTips,
-        className: "lm-player-slide-tips",
-        style: {
-          left: tipsX,
-          top: tipsY
-        }
-      }, this.props.renderTips && this.props.renderTips(this.state.tempValue)));
-    }
-  }]);
-
-  return Slider;
-}(React.Component);
+}
 
 Slider.propTypes = {
-  currentPercent: PropTypes$1.number,
-  seekTo: PropTypes$1.func,
-  video: PropTypes$1.element,
-  renderTips: PropTypes$1.func,
-  availablePercent: PropTypes$1.number,
-  onChange: PropTypes$1.func,
-  children: PropTypes$1.any,
-  className: PropTypes$1.string
+  currentPercent: PropTypes.number,
+  seekTo: PropTypes.func,
+  video: PropTypes.element,
+  renderTips: PropTypes.func,
+  availablePercent: PropTypes.number,
+  onChange: PropTypes.func,
+  children: PropTypes.any,
+  className: PropTypes.string
 };
 
-var Tips =
-/*#__PURE__*/
-function (_React$Component2) {
-  _inherits(Tips, _React$Component2);
-
-  function Tips(props) {
-    var _this2;
-
-    _classCallCheck(this, Tips);
-
-    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Tips).call(this, props));
-    _this2.ele = document.createElement('div');
-    return _this2;
+class Tips extends React.Component {
+  constructor(props) {
+    super(props);
+    this.ele = document.createElement('div');
   }
 
-  _createClass(Tips, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      document.body.appendChild(this.ele);
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      document.body.removeChild(this.ele);
-      this.ele = null;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$props2 = this.props,
-          visibel = _this$props2.visibel,
-          children = _this$props2.children,
-          style = _this$props2.style,
-          _this$props2$classNam = _this$props2.className,
-          className = _this$props2$classNam === void 0 ? '' : _this$props2$classNam;
-      return ReactDOM.createPortal(visibel ? React.createElement("div", {
-        className: className,
-        style: style
-      }, children) : null, this.ele);
-    }
-  }]);
+  componentDidMount() {
+    document.body.appendChild(this.ele);
+  }
 
-  return Tips;
-}(React.Component);
+  componentWillUnmount() {
+    document.body.removeChild(this.ele);
+    this.ele = null;
+  }
+
+  render() {
+    const {
+      visibel,
+      children,
+      style,
+      className = ''
+    } = this.props;
+    return ReactDOM.createPortal(visibel ? React.createElement("div", {
+      className: className,
+      style: style
+    }, children) : null, this.ele);
+  }
+
+}
 
 Tips.propTypes = {
-  visibel: PropTypes$1.bool,
-  children: PropTypes$1.element,
-  style: PropTypes$1.any,
-  className: PropTypes$1.string
+  visibel: PropTypes.bool,
+  children: PropTypes.element,
+  style: PropTypes.any,
+  className: PropTypes.string
 };
 
-function Bar(_ref) {
-  var _ref$visibel = _ref.visibel,
-      visibel = _ref$visibel === void 0 ? true : _ref$visibel,
-      _ref$className = _ref.className,
-      className = _ref$className === void 0 ? '' : _ref$className,
-      children = _ref.children,
-      props = _objectWithoutProperties(_ref, ["visibel", "className", "children"]);
-
+function Bar({
+  visibel = true,
+  className = '',
+  children,
+  ...props
+}) {
   if (visibel === false) {
     return null;
   }
 
   return React.createElement("span", _extends({
-    className: "contraller-bar-item ".concat(className)
+    className: `contraller-bar-item ${className}`
   }, props), children);
 }
 Bar.propTypes = {
-  visibel: PropTypes$1.bool,
-  className: PropTypes$1.string,
-  children: PropTypes$1.any
+  visibel: PropTypes.bool,
+  className: PropTypes.string,
+  children: PropTypes.any
 };
 
 var EventName = {
@@ -840,74 +627,48 @@ var EventName = {
   CLEAR_ERROR_TIMER: "clearErrorTimer"
 };
 
-function LeftBar(_ref) {
-  var api = _ref.api,
-      event = _ref.event,
-      video = _ref.video,
-      isHistory = _ref.isHistory,
-      reloadHistory = _ref.reloadHistory,
-      isLive = _ref.isLive,
-      leftExtContents = _ref.leftExtContents,
-      leftMidExtContents = _ref.leftMidExtContents;
-
-  var _useState = useState(false),
-      _useState2 = _slicedToArray(_useState, 2),
-      openSliderVolume = _useState2[0],
-      setOpenSliderVolume = _useState2[1];
-
-  var _useState3 = useState(Date.now()),
-      _useState4 = _slicedToArray(_useState3, 2),
-      dep = _useState4[0],
-      setDep = _useState4[1];
-
-  useEffect(function () {
-    var updateRender = function updateRender() {
+function LeftBar({
+  api,
+  event,
+  video,
+  isHistory,
+  reloadHistory,
+  isLive,
+  leftExtContents,
+  leftMidExtContents
+}) {
+  const [openSliderVolume, setOpenSliderVolume] = useState(false);
+  const [dep, setDep] = useState(Date.now());
+  useEffect(() => {
+    const updateRender = () => {
       setDep(Date.now());
     };
 
     event.addEventListener('play', updateRender);
     event.addEventListener('pause', updateRender);
     event.addEventListener('volumechange', updateRender);
-    return function () {
+    return () => {
       event.removeEventListener('play', updateRender);
       event.removeEventListener('pause', updateRender);
       event.removeEventListener('volumechange', updateRender);
     };
   }, [event]); //缓存值
 
-  var paused = useMemo(function () {
-    return video.paused;
-  }, [dep, video]);
-  var statusIconClassName = useMemo(function () {
-    return paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main';
-  }, [paused]);
-  var statusText = useMemo(function () {
-    return paused ? '播放' : '暂停';
-  }, [paused]);
-  var volumeVal = useMemo(function () {
-    return video.muted ? 0 : video.volume;
-  }, [dep, video]);
-  var volumeIcon = useMemo(function () {
-    return volumeVal === 0 ? 'lm-player-volume-close' : video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben';
-  }, [volumeVal]);
-  var volumePercent = useMemo(function () {
-    return volumeVal === 0 ? 0 : volumeVal * 100;
-  }, [volumeVal]);
-  var sliderClassName = useMemo(function () {
-    return openSliderVolume ? 'contraller-bar-hover-volume' : '';
-  }, [openSliderVolume]); //TODO 方法
+  const paused = useMemo(() => video.paused, [dep, video]);
+  const statusIconClassName = useMemo(() => paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main', [paused]);
+  const statusText = useMemo(() => paused ? '播放' : '暂停', [paused]);
+  const volumeVal = useMemo(() => video.muted ? 0 : video.volume, [dep, video]);
+  const volumeIcon = useMemo(() => volumeVal === 0 ? 'lm-player-volume-close' : video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben', [volumeVal]);
+  const volumePercent = useMemo(() => volumeVal === 0 ? 0 : volumeVal * 100, [volumeVal]);
+  const sliderClassName = useMemo(() => openSliderVolume ? 'contraller-bar-hover-volume' : '', [openSliderVolume]); //TODO 方法
 
-  var changePlayStatus = useCallback(function () {
-    return video.paused ? api.play() : api.pause();
-  }, [video, api]);
-  var mutedChantgeStatus = useCallback(function () {
-    return video.muted ? api.unmute() : api.mute();
-  }, [api, video]);
-  var onChangeVolume = useCallback(function (volume) {
+  const changePlayStatus = useCallback(() => video.paused ? api.play() : api.pause(), [video, api]);
+  const mutedChantgeStatus = useCallback(() => video.muted ? api.unmute() : api.mute(), [api, video]);
+  const onChangeVolume = useCallback(volume => {
     api.setVolume(parseFloat(volume.toFixed(1)));
     volume > 0 && video.muted && api.unmute();
   }, [api, video]);
-  var reload = useCallback(function () {
+  const reload = useCallback(() => {
     isHistory ? reloadHistory() : api.reload();
     event.emit(EventName.CLEAR_ERROR_TIMER);
   }, [event, isHistory, api]);
@@ -920,13 +681,9 @@ function LeftBar(_ref) {
     type: statusIconClassName,
     title: statusText
   })), React.createElement(Bar, {
-    className: "contraller-bar-volume ".concat(sliderClassName),
-    onMouseOver: function onMouseOver() {
-      return setOpenSliderVolume(true);
-    },
-    onMouseOut: function onMouseOut() {
-      return setOpenSliderVolume(false);
-    }
+    className: `contraller-bar-volume ${sliderClassName}`,
+    onMouseOver: () => setOpenSliderVolume(true),
+    onMouseOut: () => setOpenSliderVolume(false)
   }, React.createElement(IconFont, {
     onClick: mutedChantgeStatus,
     type: volumeIcon,
@@ -937,9 +694,7 @@ function LeftBar(_ref) {
     className: "volume-slider",
     currentPercent: volumePercent,
     onChange: onChangeVolume,
-    renderTips: function renderTips(precent) {
-      return React.createElement("span", null, Math.round(precent * 100), "%");
-    }
+    renderTips: precent => React.createElement("span", null, Math.round(precent * 100), "%")
   }))), React.createElement(Bar, null, React.createElement(IconFont, {
     onClick: reload,
     type: "lm-player-Refresh_Main",
@@ -948,75 +703,57 @@ function LeftBar(_ref) {
 }
 
 LeftBar.propTypes = {
-  api: PropTypes$1.object,
-  event: PropTypes$1.object,
-  playerProps: PropTypes$1.object,
-  video: PropTypes$1.node,
-  reloadHistory: PropTypes$1.func,
-  isHistory: PropTypes$1.bool
+  api: PropTypes.object,
+  event: PropTypes.object,
+  playerProps: PropTypes.object,
+  video: PropTypes.node,
+  reloadHistory: PropTypes.func,
+  isHistory: PropTypes.bool
 };
 
-function RightBar(_ref) {
-  var playContainer = _ref.playContainer,
-      api = _ref.api,
-      scale = _ref.scale,
-      snapshot = _ref.snapshot,
-      rightExtContents = _ref.rightExtContents,
-      rightMidExtContents = _ref.rightMidExtContents;
-
-  var _useState = useState(Date.now()),
-      _useState2 = _slicedToArray(_useState, 2),
-      dep = _useState2[0],
-      setDep = _useState2[1];
-
-  useEffect(function () {
-    var update = function update() {
-      return setDep(Date.now());
-    };
+function RightBar({
+  playContainer,
+  api,
+  scale,
+  snapshot,
+  rightExtContents,
+  rightMidExtContents
+}) {
+  const [dep, setDep] = useState(Date.now());
+  useEffect(() => {
+    const update = () => setDep(Date.now());
 
     fullScreenListener(true, update);
-    return function () {
-      return fullScreenListener(false, update);
-    };
+    return () => fullScreenListener(false, update);
   }, []);
-  var isfull = useMemo(function () {
-    return isFullscreen(playContainer);
-  }, [dep, playContainer]);
-  var fullscreen = useCallback(function () {
+  const isfull = useMemo(() => isFullscreen(playContainer), [dep, playContainer]);
+  const fullscreen = useCallback(() => {
     !isFullscreen(playContainer) ? api.requestFullScreen() : api.cancelFullScreen();
     setDep(Date.now());
   }, [api, playContainer]);
-  var setScale = useCallback(function () {
-    var dragDom = playContainer.querySelector('.player-mask-layout');
-    api.setScale.apply(api, arguments);
-    var position = computedBound(dragDom, api.getPosition(), api.getScale());
+  const setScale = useCallback((...args) => {
+    const dragDom = playContainer.querySelector('.player-mask-layout');
+    api.setScale(...args);
+    let position = computedBound(dragDom, api.getPosition(), api.getScale());
     position && api.setPosition(position, true);
   }, [api, playContainer]);
   return React.createElement("div", {
     className: "contraller-right-bar"
   }, rightMidExtContents, scale && React.createElement(React.Fragment, null, React.createElement(Bar, null, React.createElement(IconFont, {
     title: "\u7F29\u5C0F",
-    onClick: function onClick() {
-      return setScale(-0.2);
-    },
+    onClick: () => setScale(-0.2),
     type: 'lm-player-ZoomOut_Main'
   })), React.createElement(Bar, null, React.createElement(IconFont, {
     title: "\u590D\u4F4D",
-    onClick: function onClick() {
-      return setScale(1, true);
-    },
+    onClick: () => setScale(1, true),
     type: 'lm-player-ZoomDefault_Main'
   })), React.createElement(Bar, null, React.createElement(IconFont, {
     title: "\u653E\u5927",
-    onClick: function onClick() {
-      return setScale(0.2);
-    },
+    onClick: () => setScale(0.2),
     type: 'lm-player-ZoomIn_Main'
   }))), snapshot && React.createElement(Bar, null, React.createElement(IconFont, {
     title: "\u622A\u56FE",
-    onClick: function onClick() {
-      return snapshot(api.snapshot());
-    },
+    onClick: () => snapshot(api.snapshot()),
     type: "lm-player-SearchBox"
   })), React.createElement(Bar, null, React.createElement(IconFont, {
     title: isfull ? '窗口' : '全屏',
@@ -1026,31 +763,32 @@ function RightBar(_ref) {
 }
 
 RightBar.propTypes = {
-  api: PropTypes$1.object,
-  event: PropTypes$1.object,
-  playerProps: PropTypes$1.object,
-  playContainer: PropTypes$1.node,
-  reloadHistory: PropTypes$1.func,
-  isHistory: PropTypes$1.bool
+  api: PropTypes.object,
+  event: PropTypes.object,
+  playerProps: PropTypes.object,
+  playContainer: PropTypes.node,
+  reloadHistory: PropTypes.func,
+  isHistory: PropTypes.bool
 };
 
-function ContrallerBar(_ref) {
-  var playContainer = _ref.playContainer,
-      snapshot = _ref.snapshot,
-      rightExtContents = _ref.rightExtContents,
-      rightMidExtContents = _ref.rightMidExtContents,
-      scale = _ref.scale,
-      visibel = _ref.visibel,
-      api = _ref.api,
-      event = _ref.event,
-      video = _ref.video,
-      isHistory = _ref.isHistory,
-      reloadHistory = _ref.reloadHistory,
-      isLive = _ref.isLive,
-      leftExtContents = _ref.leftExtContents,
-      leftMidExtContents = _ref.leftMidExtContents;
+function ContrallerBar({
+  playContainer,
+  snapshot,
+  rightExtContents,
+  rightMidExtContents,
+  scale,
+  visibel,
+  api,
+  event,
+  video,
+  isHistory,
+  reloadHistory,
+  isLive,
+  leftExtContents,
+  leftMidExtContents
+}) {
   return React.createElement("div", {
-    className: "contraller-bar-layout ".concat(!visibel ? 'hide-contraller-bar' : '')
+    className: `contraller-bar-layout ${!visibel ? 'hide-contraller-bar' : ''}`
   }, React.createElement(LeftBar, {
     api: api,
     event: event,
@@ -1072,274 +810,133 @@ function ContrallerBar(_ref) {
 }
 
 ContrallerBar.propTypes = {
-  visibel: PropTypes$1.bool
+  visibel: PropTypes.bool
 };
 
-var videoContext = React.createContext(null);
-var Provider = videoContext.Provider;
-var Consumer = videoContext.Consumer;
-function videoDec(Component) {
-  var ComponentWithVideoDec =
-  /*#__PURE__*/
-  function (_React$Component) {
-    _inherits(ComponentWithVideoDec, _React$Component);
-
-    function ComponentWithVideoDec() {
-      _classCallCheck(this, ComponentWithVideoDec);
-
-      return _possibleConstructorReturn(this, _getPrototypeOf(ComponentWithVideoDec).apply(this, arguments));
-    }
-
-    _createClass(ComponentWithVideoDec, [{
-      key: "render",
-      value: function render() {
-        var _this$props = this.props,
-            forwardRef = _this$props.forwardRef,
-            props = _objectWithoutProperties(_this$props, ["forwardRef"]);
-
-        return React.createElement(Consumer, null, function (context) {
-          return React.createElement(Component, _extends({}, props, context, {
-            ref: forwardRef
-          }));
-        });
-      }
-    }]);
-
-    return ComponentWithVideoDec;
-  }(React.Component);
-
-  ComponentWithVideoDec.propTypes = {
-    forwardRef: PropTypes$1.ref
-  };
-  return React.forwardRef(function (props, ref) {
-    return React.createElement(ComponentWithVideoDec, _extends({}, props, {
-      forwardRef: ref
-    }));
-  });
-}
-
-var _class, _temp;
-
-var ContrallerEvent = videoDec(_class = (_temp =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ContrallerEvent, _React$Component);
-
-  function ContrallerEvent(props) {
-    var _this;
-
-    _classCallCheck(this, ContrallerEvent);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ContrallerEvent).call(this, props));
-
-    _this.showContraller = function () {
-      if (!_this.visibel) {
-        var event = _this.props.event;
-        _this.visibel = true;
-
-        _this.forceUpdate();
-
-        event.emit(EventName.SHOW_CONTRALLER);
-      }
-
-      _this.hideContraller();
+function ContrallerEvent({
+  event,
+  playContainer,
+  children
+}) {
+  const timer = useRef(null);
+  const [visibel, setVisibel] = useState(true);
+  useEffect(() => {
+    const showContraller = () => {
+      setVisibel(true);
+      hideContraller();
+      event.emit(EventName.SHOW_CONTRALLER);
     };
 
-    _this.hideContraller = function () {
-      var event = _this.props.event;
-      clearTimeout(_this.timer);
-      _this.timer = setTimeout(function () {
-        _this.visibel = false;
+    const hideContraller = () => {
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => {
+        setVisibel(false);
         event.emit(EventName.HIDE_CONTRALLER);
-
-        _this.forceUpdate();
       }, 3 * 1000);
     };
 
-    _this.timer = null;
-    _this.visibel = true;
-    return _this;
-  }
+    playContainer.addEventListener('mousemove', showContraller, false);
+    playContainer.addEventListener('mouseout', hideContraller, false);
+  });
+  return React.Children.map(children, child => React.isValidElement(child) ? React.cloneElement(child, {
+    visibel
+  }) : child);
+}
 
-  _createClass(ContrallerEvent, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this$props = this.props,
-          playContainer = _this$props.playContainer,
-          event = _this$props.event;
-      playContainer.addEventListener('mousemove', this.showContraller, false);
-      playContainer.addEventListener('mouseout', this.hideContraller, false);
-      this.timer = setTimeout(function () {
-        event.emit(EventName.HIDE_CONTRALLER);
-      }, 5 * 1000);
+function VideoMessage({
+  event,
+  api
+}) {
+  const [state, setState] = useState({
+    status: null,
+    errorTimer: null,
+    loading: false
+  });
+  const message = useMemo(() => {
+    if (!state.status) {
+      return '';
     }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      var playContainer = this.props.playContainer;
-      playContainer.addEventListener('mousemove', this.showContraller, false);
-      playContainer.addEventListener('mouseout', this.hideContraller, false);
-      clearTimeout(this.timer);
+
+    if (state.status === 'fail') {
+      return '视频错误';
     }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
 
-      var children = this.props.children;
-      return React.Children.map(children, function (child) {
-        return React.isValidElement(child) ? React.cloneElement(child, {
-          visibel: _this2.visibel
-        }) : child;
-      });
+    if (state.status === 'reload') {
+      return `视频加载错误，正在进行重连第${state.errorTimer}重连`;
     }
-  }]);
+  }, [state.errorTimer, state.status]);
+  useEffect(() => {
+    const openLoading = () => setState(old => ({ ...old,
+      loading: true
+    }));
 
-  return ContrallerEvent;
-}(React.Component), _temp)) || _class;
+    const closeLoading = () => setState(old => ({ ...old,
+      loading: false
+    }));
 
-ContrallerEvent.propTypes = {
-  api: PropTypes$1.object,
-  event: PropTypes$1.object,
-  playContainer: PropTypes$1.node,
-  children: PropTypes$1.element
-};
+    const errorReload = timer => setState(() => ({
+      status: 'reload',
+      errorTimer: timer,
+      loading: true
+    }));
 
-var _class$1, _temp$1;
+    const reloadFail = () => setState(old => ({ ...old,
+      status: 'fail'
+    }));
 
-var VideoMessage = videoDec(_class$1 = (_temp$1 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(VideoMessage, _React$Component);
-
-  function VideoMessage(props) {
-    var _this;
-
-    _classCallCheck(this, VideoMessage);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(VideoMessage).call(this, props));
-
-    _this.clearReloadMessage = function () {
-      _this.message = null;
-      _this.mounted && _this.forceUpdate();
-    };
-
-    _this.reload = function () {
-      _this.setState({
-        status: 'reload'
-      });
-    };
-
-    _this.errorReload = function (timer) {
-      _this.message = React.createElement("div", null, "\u89C6\u9891\u52A0\u8F7D\u9519\u8BEF\uFF0C\u6B63\u5728\u8FDB\u884C\u91CD\u8FDE\u7B2C", timer, "\u91CD\u8FDE");
-      _this.mounted && _this.setState({
-        status: 'reload',
-        loading: true
-      });
-    };
-
-    _this.reloadFail = function () {
-      _this.message = React.createElement("div", null, "\u89C6\u9891\u9519\u8BEF");
-      _this.mounted && _this.setState({
-        status: 'fail'
-      });
-    };
-
-    _this.reloadSuccess = function () {
-      _this.message = null;
-      _this.mounted && _this.setState({
-        status: null
-      });
-    };
-
-    _this.openLoading = function () {
-      _this.mounted && _this.setState({
-        loading: true
-      });
-    };
-
-    _this.closeLoading = function () {
-      _this.mounted && _this.setState({
-        loading: false
-      });
-    };
-
-    _this.historyPlayEnd = function () {
-      _this.message = null;
-      _this.mounted && _this.setState({
-        status: null,
-        loading: false
-      });
-
-      _this.props.api.pause();
-    };
-
-    _this.state = {
-      loading: false,
+    const reloadSuccess = () => setState(old => ({ ...old,
       status: null
+    }));
+
+    const reload = () => setState(old => ({ ...old,
+      status: 'reload'
+    }));
+
+    const playEnd = () => (setState(old => ({ ...old,
+      status: null,
+      loading: false
+    })), api.pause());
+
+    event.addEventListener('loadstart', openLoading);
+    event.addEventListener('waiting', openLoading);
+    event.addEventListener('seeking', openLoading);
+    event.addEventListener('loadeddata', closeLoading);
+    event.addEventListener('canplay', closeLoading);
+    event.on(EventName.ERROR_RELOAD, errorReload);
+    event.on(EventName.RELOAD_FAIL, reloadFail);
+    event.on(EventName.RELOAD_SUCCESS, reloadSuccess);
+    event.on(EventName.RELOAD, reload);
+    event.on(EventName.HISTORY_PLAY_END, playEnd);
+    event.on(EventName.CLEAR_ERROR_TIMER, reloadSuccess);
+    return () => {
+      event.removeEventListener('loadstart', openLoading);
+      event.removeEventListener('waiting', openLoading);
+      event.removeEventListener('seeking', openLoading);
+      event.removeEventListener('loadeddata', closeLoading);
+      event.removeEventListener('canplay', closeLoading);
+      event.off(EventName.ERROR_RELOAD, errorReload);
+      event.off(EventName.RELOAD_FAIL, reloadFail);
+      event.off(EventName.RELOAD_SUCCESS, reloadSuccess);
+      event.off(EventName.RELOAD, reload);
+      event.off(EventName.HISTORY_PLAY_END, playEnd);
+      event.off(EventName.CLEAR_ERROR_TIMER, reloadSuccess);
     };
-    _this.mounted = false;
-    _this.message = null;
-    return _this;
-  }
+  }, [event]);
+  const {
+    loading,
+    status
+  } = state;
+  return React.createElement("div", {
+    className: `lm-player-message-mask ${loading || status === 'fail' ? 'lm-player-mask-loading-animation' : ''}`
+  }, React.createElement(IconFont, {
+    type: status === 'fail' ? 'lm-player-YesorNo_No_Dark' : 'lm-player-Loading',
+    className: `${loading && status !== 'fail' ? 'lm-player-loading-animation' : status === 'fail' ? 'lm-player-loadfail' : ''} lm-player-loading-icon`
+  }), React.createElement("span", {
+    className: "lm-player-message"
+  }, message));
+}
 
-  _createClass(VideoMessage, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var event = this.props.event;
-      this.mounted = true;
-      event.addEventListener('loadstart', this.openLoading);
-      event.addEventListener('waiting', this.openLoading);
-      event.addEventListener('seeking', this.openLoading);
-      event.addEventListener('loadeddata', this.closeLoading);
-      event.addEventListener('canplay', this.closeLoading);
-      event.on(EventName.ERROR_RELOAD, this.errorReload);
-      event.on(EventName.RELOAD_FAIL, this.reloadFail);
-      event.on(EventName.RELOAD_SUCCESS, this.reloadSuccess);
-      event.on(EventName.RELOAD, this.reload);
-      event.on(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
-      event.on(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      event.removeEventListener('loadstart', this.openLoading);
-      event.removeEventListener('waiting', this.openLoading);
-      event.removeEventListener('seeking', this.openLoading);
-      event.removeEventListener('loadeddata', this.closeLoading);
-      event.removeEventListener('canplay', this.closeLoading);
-      event.off(EventName.ERROR_RELOAD, this.errorReload);
-      event.off(EventName.RELOAD_FAIL, this.reloadFail);
-      event.off(EventName.RELOAD_SUCCESS, this.reloadSuccess);
-      event.off(EventName.RELOAD, this.reload);
-      event.off(EventName.HISTORY_PLAY_END, this.historyPlayEnd);
-      event.off(EventName.CLEAR_ERROR_TIMER, this.clearReloadMessage);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$state = this.state,
-          loading = _this$state.loading,
-          status = _this$state.status;
-      return React.createElement("div", {
-        className: "lm-player-message-mask ".concat(loading || status === 'fail' ? 'lm-player-mask-loading-animation' : '')
-      }, React.createElement(IconFont, {
-        type: status === 'fail' ? 'lm-player-YesorNo_No_Dark' : 'lm-player-Loading',
-        className: "".concat(loading && status !== 'fail' ? 'lm-player-loading-animation' : status === 'fail' ? 'lm-player-loadfail' : '', " lm-player-loading-icon")
-      }), React.createElement("span", {
-        className: "lm-player-message"
-      }, this.message));
-    }
-  }]);
-
-  return VideoMessage;
-}(React.Component), _temp$1)) || _class$1;
-
-VideoMessage.propTypes = {
-  api: PropTypes.object,
-  event: PropTypes.object
-};
-var NoSource = function NoSource() {
+const NoSource = () => {
   return React.createElement("div", {
     className: "lm-player-message-mask lm-player-mask-loading-animation"
   }, React.createElement(IconFont, {
@@ -1351,395 +948,252 @@ var NoSource = function NoSource() {
   }));
 };
 
-var _class$2, _temp$2;
+function TineLine({
+  event,
+  api,
+  visibel
+}) {
+  const [state, setState] = useState({
+    duration: 0,
+    currentTime: 0,
+    buffered: 0
+  });
+  useEffect(() => {
+    const getDuration = () => setState(old => ({ ...old,
+      duration: api.getDuration()
+    }));
 
-var TineLine = videoDec(_class$2 = (_temp$2 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(TineLine, _React$Component);
+    const getCurrentTime = () => setState(old => ({ ...old,
+      currentTime: api.getCurrentTime(),
+      buffered: api.getSecondsLoaded()
+    }));
 
-  function TineLine(props) {
-    var _this;
+    const getBuffered = () => setState(old => ({ ...old,
+      buffered: api.getSecondsLoaded()
+    }));
 
-    _classCallCheck(this, TineLine);
+    const seekendPlay = () => api.play();
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(TineLine).call(this, props));
+    event.addEventListener('loadedmetadata', getDuration);
+    event.addEventListener('durationchange', getDuration);
+    event.addEventListener('timeupdate', getCurrentTime);
+    event.addEventListener('progress', getBuffered);
+    event.addEventListener('suspend', getBuffered);
+    event.addEventListener('seeked', seekendPlay);
+    return () => {
+      event.removeEventListener('loadedmetadata', getDuration);
+      event.removeEventListener('durationchange', getDuration);
+      event.removeEventListener('timeupdate', getCurrentTime);
+      event.removeEventListener('progress', getBuffered);
+      event.removeEventListener('suspend', getBuffered);
+      event.removeEventListener('seeked', seekendPlay);
+    };
+  }, [event, api]);
+  const {
+    duration,
+    currentTime,
+    buffered
+  } = state;
+  const playPercent = useMemo(() => Math.round(currentTime / duration * 100), [currentTime, duration]);
+  const bufferedPercent = useMemo(() => Math.round(buffered / duration * 100), [buffered, duration]);
+  const changePlayTime = useCallback(percent => {
+    const currentTime = percent * duration;
+    api.pause();
+    api.seekTo(currentTime);
+    setState(old => ({ ...old,
+      currentTime
+    }));
+  }, [duration, api]);
 
-    _this.getDuration = function () {
-      var api = _this.props.api;
+  const renderTimeLineTips = percent => {
+    const currentTime = percent * duration;
+    const time = timeStamp(currentTime);
+    return React.createElement("span", null, time);
+  };
 
-      _this.setState({
-        duration: api.getDuration()
-      });
+  return React.createElement("div", {
+    className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
+  }, React.createElement(IconFont, {
+    type: "lm-player-PrevFast",
+    onClick: api.backWind,
+    className: "time-line-action-item"
+  }), React.createElement(Slider, {
+    className: "time-line-box",
+    currentPercent: playPercent,
+    availablePercent: bufferedPercent,
+    onChange: changePlayTime,
+    renderTips: renderTimeLineTips
+  }), React.createElement(IconFont, {
+    type: "lm-player-NextFast_Light",
+    onClick: api.fastForward,
+    className: "time-line-action-item"
+  }));
+}
+
+function ErrorEvent({
+  event,
+  api,
+  errorReloadTimer,
+  flv,
+  hls,
+  changePlayIndex,
+  isHistory,
+  playIndex
+}) {
+  const [errorTimer, setErrorTime] = useState(0);
+  const errorInfo = useRef(null);
+  const reloadTimer = useRef(null);
+  useEffect(() => {
+    const errorHandle = (...args) => {
+      console.error(...args);
+      errorInfo.current = args;
+      setErrorTime(errorTimer + 1);
     };
 
-    _this.getCurrentTime = function () {
-      var api = _this.props.api;
-      var state = {
-        currentTime: api.getCurrentTime(),
-        buffered: api.getSecondsLoaded()
-      };
-
-      if (state.buffered === _this.state.buffered) {
-        delete state.buffered;
-      }
-
-      _this.setState(state);
-    };
-
-    _this.getBuffered = function () {
-      var api = _this.props.api;
-
-      _this.setState({
-        buffered: api.getSecondsLoaded()
-      });
-    };
-
-    _this.changePlayTime = function (percent) {
-      var api = _this.props.api;
-      var currentTime = percent * _this.state.duration;
-      api.pause();
-
-      _this.setState({
-        currentTime: currentTime
-      });
-
-      api.seekTo(currentTime);
-    };
-
-    _this.seekendPlay = function () {
-      var api = _this.props.api;
-      api.play();
-    };
-
-    _this.renderTimeLineTips = function (percent) {
-      var currentTime = percent * _this.state.duration;
-      var time = timeStamp(currentTime);
-      return React.createElement("span", null, time);
-    };
-
-    _this.fastForward = function () {
-      var api = _this.props.api;
-      api.fastForward();
-    };
-
-    _this.backWind = function () {
-      var api = _this.props.api;
-      api.backWind();
-    };
-
-    _this.state = {
-      duration: 0,
-      currentTime: 0,
-      buffered: 0
-    };
-    return _this;
-  }
-
-  _createClass(TineLine, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var event = this.props.event;
-      event.addEventListener('loadedmetadata', this.getDuration);
-      event.addEventListener('durationchange', this.getDuration);
-      event.addEventListener('timeupdate', this.getCurrentTime);
-      event.addEventListener('progress', this.getBuffered);
-      event.addEventListener('suspend', this.getBuffered);
-      event.addEventListener('seeked', this.seekendPlay);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$state = this.state,
-          duration = _this$state.duration,
-          currentTime = _this$state.currentTime,
-          buffered = _this$state.buffered;
-      var playPercent = Math.round(currentTime / duration * 100);
-      var bufferedPercent = Math.round(buffered / duration * 100);
-      return React.createElement("div", {
-        className: "video-time-line-layout ".concat(!this.props.visibel ? 'hide-time-line' : '')
-      }, React.createElement(IconFont, {
-        type: "lm-player-PrevFast",
-        onClick: this.backWind,
-        className: "time-line-action-item"
-      }), React.createElement(Slider, {
-        className: "time-line-box",
-        currentPercent: playPercent,
-        availablePercent: bufferedPercent,
-        onChange: this.changePlayTime,
-        renderTips: this.renderTimeLineTips
-      }), React.createElement(IconFont, {
-        type: "lm-player-NextFast_Light",
-        onClick: this.fastForward,
-        className: "time-line-action-item"
-      }));
-    }
-  }]);
-
-  return TineLine;
-}(React.Component), _temp$2)) || _class$2;
-
-TineLine.propTypes = {
-  event: PropTypes$1.object,
-  api: PropTypes$1.object,
-  changePlayIndex: PropTypes$1.func,
-  playIndex: PropTypes$1.number,
-  historyList: PropTypes$1.array,
-  seekTo: PropTypes$1.func,
-  video: PropTypes$1.element,
-  visibel: PropTypes$1.bool
-};
-
-var _class$3, _temp$3;
-
-var ErrorEvent = videoDec(_class$3 = (_temp$3 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ErrorEvent, _React$Component);
-
-  function ErrorEvent(props) {
-    var _this;
-
-    _classCallCheck(this, ErrorEvent);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ErrorEvent).call(this, props));
-
-    _this.clearErrorTimer = function () {
-      _this.errorTimer = 0;
-      clearTimeout(_this.reconnectTimer);
-    };
-
-    _this.clearError = function () {
-      var event = _this.props.event;
-
-      if (_this.errorTimer > 0) {
+    const reloadSuccess = () => {
+      if (errorTimer > 0) {
         console.warn('视频重连成功！');
         event.emit(EventName.RELOAD_SUCCESS);
-
-        _this.clearErrorTimer();
+        clearErrorTimer();
       }
     };
 
-    _this.errorHandle = function () {
-      var _console;
+    const clearErrorTimer = () => setErrorTime(0);
 
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
+    if (flv) {
+      flv.on('error', errorHandle);
+    }
+
+    if (hls) {
+      hls.on('hlsError', errorHandle);
+    }
+
+    if (isHistory) {
+      //历史视频切换播放索引时清除错误次数
+      event.on(EventName.CHANGE_PLAY_INDEX, clearErrorTimer); //历史视频主动清除错误次数
+
+      event.on(EventName.CLEAR_ERROR_TIMER, clearErrorTimer);
+    }
+
+    event.addEventListener('error', errorHandle, false); //获取video状态清除错误状态
+
+    event.addEventListener('canplay', reloadSuccess, false);
+    return () => {
+      if (flv) {
+        flv.off('error', errorHandle);
       }
 
-      (_console = console).error.apply(_console, args);
-
-      clearTimeout(_this.reconnectTimer);
-      var _this$props = _this.props,
-          event = _this$props.event,
-          api = _this$props.api,
-          isHistory = _this$props.isHistory,
-          changePlayIndex = _this$props.changePlayIndex,
-          playIndex = _this$props.playIndex,
-          playerProps = _this$props.playerProps;
-      var timer = _this.errorTimer + 1;
-      event.emit.apply(event, [EventName.ERROR].concat(args));
-
-      if (timer > playerProps.errorReloadTimer) {
-        isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload();
-      } else {
-        _this.errorTimer = timer;
-
-        if (args[1] && args[1].loader || args[0].indexOf && args[0].indexOf('NetworkError') > -1) {
-          _this.reloadAction(timer, args);
-        }
-
-        _this.reconnectTimer = setTimeout(function () {
-          _this.reloadAction(timer, args);
-        }, 1000 * 20);
+      if (hls) {
+        hls.off('hlsError', errorHandle);
       }
+
+      if (isHistory) {
+        event.off(EventName.CHANGE_PLAY_INDEX, clearErrorTimer);
+        event.off(EventName.CLEAR_ERROR_TIMER, clearErrorTimer);
+      }
+
+      event.removeEventListener('error', errorHandle, false);
+      event.removeEventListener('canplay', reloadSuccess, false);
+    };
+  }, [event, flv, hls, errorTimer]);
+  useEffect(() => {
+    if (errorTimer === 0) {
+      return;
+    }
+
+    if (errorTimer > errorReloadTimer) {
+      return isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL), api.unload();
+    }
+
+    console.warn(`视频播放出错，正在进行重连${errorTimer}`);
+    reloadTimer.current = setTimeout(() => {
+      event.emit(EventName.ERROR_RELOAD, errorTimer, ...errorInfo.current);
+      api.reload(true);
+    }, 2 * 1000);
+    return () => {
+      clearTimeout(reloadTimer.current);
+    };
+  }, [errorTimer, api, event, flv, hls]);
+  return React.createElement(React.Fragment, null);
+}
+
+class DragEvent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.openDrag = e => {
+      this.position.start = [e.pageX, e.pageY];
+      this.dragDom.addEventListener('mousemove', this.moveChange);
+      this.dragDom.addEventListener('mouseup', this.stopDrag);
     };
 
-    _this.reloadAction = function (timer, args) {
-      var _this$props2 = _this.props,
-          event = _this$props2.event,
-          api = _this$props2.api,
-          hlsPlayer = _this$props2.hlsPlayer;
-      event.emit.apply(event, [EventName.ERROR_RELOAD, timer].concat(_toConsumableArray(args)));
-      console.warn("\u89C6\u9891\u64AD\u653E\u51FA\u9519\uFF0C\u6B63\u5728\u8FDB\u884C\u91CD\u8FDE".concat(timer));
-
-      if (hlsPlayer) {
-        hlsPlayer.swapAudioCodec();
-        hlsPlayer.recoverMediaError();
-      }
-
-      api.reload();
-    };
-
-    _this.errorTimer = 0;
-    return _this;
-  }
-
-  _createClass(ErrorEvent, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this$props3 = this.props,
-          event = _this$props3.event,
-          flvPlayer = _this$props3.flvPlayer,
-          hlsPlayer = _this$props3.hlsPlayer;
-
-      if (flvPlayer) {
-        //捕获flv错误
-        flvPlayer.on(flvjs.Events.ERROR, this.errorHandle);
-      }
-
-      if (hlsPlayer) {
-        //捕获hls错误
-        hlsPlayer.on(Events.ERROR, this.errorHandle);
-      } //捕获video错误
-
-
-      event.addEventListener('error', this.errorHandle, false); //获取video状态清除错误状态
-
-      event.addEventListener('canplay', this.clearError, false); //历史视频切换播放索引时清除错误次数
-
-      event.on(EventName.CHANGE_PLAY_INDEX, this.clearErrorTimer); //历史视频主动清除错误次数
-
-      event.on(EventName.CLEAR_ERROR_TIMER, this.clearErrorTimer);
-    }
-  }, {
-    key: "UNSAFE_componentWillReceiveProps",
-    value: function UNSAFE_componentWillReceiveProps(nextProps) {
-      if (nextProps.flvPlayer && nextProps.flvPlayer !== this.props.flvPlayer) {
-        nextProps.flvPlayer.on(flvjs.Events.ERROR, this.errorHandle);
-      }
-
-      if (nextProps.hlsPlayer && nextProps.hlsPlayer !== this.props.hlsPlayer) {
-        nextProps.hlsPlayer.on(Events.ERROR, this.errorHandle);
-      }
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      clearTimeout(this.reconnectTimer);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return null;
-    }
-  }]);
-
-  return ErrorEvent;
-}(React.Component), _temp$3)) || _class$3;
-
-ErrorEvent.propTypes = {
-  api: PropTypes$1.object,
-  event: PropTypes$1.object,
-  playContainer: PropTypes$1.node,
-  playerProps: PropTypes$1.object,
-  hlsPlayer: PropTypes$1.object,
-  flvPlayer: PropTypes$1.object,
-  isHistory: PropTypes$1.bool,
-  changePlayIndex: PropTypes$1.func,
-  playIndex: PropTypes$1.number
-};
-
-var _class$4, _temp$4;
-
-var DragEvent = videoDec(_class$4 = (_temp$4 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(DragEvent, _React$Component);
-
-  function DragEvent(props) {
-    var _this;
-
-    _classCallCheck(this, DragEvent);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(DragEvent).call(this, props));
-
-    _this.openDrag = function (e) {
-      _this.position.start = [e.pageX, e.pageY];
-
-      _this.dragDom.addEventListener("mousemove", _this.moveChange);
-
-      _this.dragDom.addEventListener("mouseup", _this.stopDrag);
-    };
-
-    _this.moveChange = function (e) {
-      var api = _this.props.api;
-      var currentPosition = api.getPosition();
-      _this.position.end = [e.pageX, e.pageY];
-      var x = currentPosition[0] + (_this.position.end[0] - _this.position.start[0]);
-      var y = currentPosition[1] + (_this.position.end[1] - _this.position.start[1]);
-      var position = [x, y];
+    this.moveChange = e => {
+      const {
+        api
+      } = this.props;
+      const currentPosition = api.getPosition();
+      this.position.end = [e.pageX, e.pageY];
+      const x = currentPosition[0] + (this.position.end[0] - this.position.start[0]);
+      const y = currentPosition[1] + (this.position.end[1] - this.position.start[1]);
+      const position = [x, y];
       api.setPosition(position);
-      _this.position.start = [e.pageX, e.pageY];
+      this.position.start = [e.pageX, e.pageY];
     };
 
-    _this.stopDrag = function () {
-      _this.dragDom.removeEventListener("mousemove", _this.moveChange);
-
-      _this.dragDom.removeEventListener("mouseup", _this.stopDrag);
-
-      _this.transformChange();
+    this.stopDrag = () => {
+      this.dragDom.removeEventListener('mousemove', this.moveChange);
+      this.dragDom.removeEventListener('mouseup', this.stopDrag);
+      this.transformChange();
     };
 
-    _this.transformChange = function () {
-      var api = _this.props.api;
-      var position = computedBound(_this.dragDom, api.getPosition(), api.getScale());
+    this.transformChange = () => {
+      const {
+        api
+      } = this.props;
+      let position = computedBound(this.dragDom, api.getPosition(), api.getScale());
       position && api.setPosition(position, true);
     };
 
-    var playContainer = props.playContainer;
-    _this.dragDom = playContainer.querySelector(".player-mask-layout");
-    _this.position = {
+    const {
+      playContainer
+    } = props;
+    this.dragDom = playContainer.querySelector('.player-mask-layout');
+    this.position = {
       start: [0, 0],
       end: [0, 0]
     };
-    return _this;
   }
 
-  _createClass(DragEvent, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var isDraggable = this.props.playerProps.isDraggable;
+  componentDidMount() {
+    this.dragDom.addEventListener('mousedown', this.openDrag);
+    this.props.event.addEventListener('transform', this.transformChange, true);
+  }
 
-      if (isDraggable) {
-        this.dragDom.addEventListener("mousedown", this.openDrag);
-        this.props.event.addEventListener("transform", this.transformChange, true);
-      }
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      this.dragDom.removeEventListener("mousedown", this.openDrag);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return null;
-    }
-  }]);
+  componentWillUnmount() {
+    this.dragDom.removeEventListener('mousedown', this.openDrag);
+  }
 
-  return DragEvent;
-}(React.Component), _temp$4)) || _class$4;
+  render() {
+    return null;
+  }
+
+}
 
 DragEvent.propTypes = {
-  api: PropTypes$1.object,
-  event: PropTypes$1.object,
-  playContainer: PropTypes$1.node,
-  playerProps: PropTypes$1.object
+  api: PropTypes.object,
+  event: PropTypes.object,
+  playContainer: PropTypes.node,
+  playerProps: PropTypes.object
 };
 
-var Api =
-/*#__PURE__*/
-function () {
-  function Api(_ref) {
-    var video = _ref.video,
-        playContainer = _ref.playContainer,
-        event = _ref.event,
-        flv = _ref.flv,
-        hls = _ref.hls;
-
-    _classCallCheck(this, Api);
-
+class Api {
+  constructor({
+    video,
+    playContainer,
+    event,
+    flv,
+    hls
+  }) {
     this.player = video;
     this.playContainer = playContainer;
     this.flv = flv;
@@ -1754,374 +1208,366 @@ function () {
    */
 
 
-  _createClass(Api, [{
-    key: "updateChunk",
-    value: function updateChunk(_ref2) {
-      var flv = _ref2.flv,
-          hls = _ref2.hls;
-      this.flv = flv;
-      this.hls = hls;
+  updateChunk({
+    flv,
+    hls
+  }) {
+    this.flv = flv;
+    this.hls = hls;
+  }
+  /**
+   * 全屏
+   */
+
+
+  requestFullScreen() {
+    if (!isFullscreen(this.playContainer)) {
+      fullscreen(this.playContainer);
     }
-    /**
-     * 全屏
-     */
+  }
+  /**
+   * 退出全屏
+   */
 
-  }, {
-    key: "requestFullScreen",
-    value: function requestFullScreen() {
-      if (!isFullscreen(this.playContainer)) {
-        fullscreen(this.playContainer);
-      }
+
+  cancelFullScreen() {
+    if (isFullscreen(this.playContainer)) {
+      exitFullscreen();
     }
-    /**
-     * 退出全屏
-     */
+  }
 
-  }, {
-    key: "cancelFullScreen",
-    value: function cancelFullScreen() {
-      if (isFullscreen(this.playContainer)) {
-        exitFullscreen();
-      }
+  play() {
+    if (this.player.paused) {
+      this.player.play();
     }
-  }, {
-    key: "play",
-    value: function play() {
-      if (this.player.paused) {
-        this.player.play();
-      }
+  }
+
+  pause() {
+    if (!this.player.paused) {
+      this.player.pause();
     }
-  }, {
-    key: "pause",
-    value: function pause() {
-      if (!this.player.paused) {
-        this.player.pause();
-      }
+  }
+
+  destroy() {
+    this.player.removeAttribute('src');
+    this.unload();
+
+    if (this.flv) {
+      this.flv.destroy();
     }
-  }, {
-    key: "destroy",
-    value: function destroy() {
-      this.player.removeAttribute('src');
-      this.unload();
 
-      if (this.flv) {
-        this.flv.destroy();
-      }
-
-      if (this.hls) {
-        this.hls.destroy();
-      }
+    if (this.hls) {
+      this.hls.destroy();
     }
-    /**
-     * 设置currentTime实现seek
-     * @param {*} seconds
-     * @param {*} noEmit
-     */
+  }
+  /**
+   * 设置currentTime实现seek
+   * @param {*} seconds
+   * @param {*} noEmit
+   */
 
-  }, {
-    key: "seekTo",
-    value: function seekTo(seconds, noEmit) {
-      var buffered = this.getBufferedTime();
 
-      if (this.flv && buffered[0] > seconds) {
-        this.flv.unload();
-        this.flv.load();
-      }
+  seekTo(seconds, noEmit) {
+    const buffered = this.getBufferedTime();
 
-      this.player.currentTime = seconds;
-
-      if (!noEmit) {
-        this.event.emit(EventName.SEEK, seconds);
-      }
+    if (this.flv && buffered[0] > seconds) {
+      this.flv.unload();
+      this.flv.load();
     }
-    /**
-     * 视频重载
-     */
 
-  }, {
-    key: "reload",
-    value: function reload() {
-      this.unload();
-      this.load();
-      this.play();
-      this.event.emit(EventName.RELOAD);
+    this.player.currentTime = seconds;
 
-      if (this.getCurrentTime !== 0) {
-        this.seekTo(0);
-      }
+    if (!noEmit) {
+      this.event.emit(EventName.SEEK, seconds);
     }
-  }, {
-    key: "unload",
-    value: function unload() {
-      this.flv && this.flv.unload();
-      this.hls && this.hls.stopLoad();
-    }
-  }, {
-    key: "load",
-    value: function load() {
-      this.flv && this.flv.load();
+  }
+  /**
+   * 视频重载
+   */
 
-      if (this.hls) {
-        try {
-          this.hls.swapAudioCodec();
-          this.hls.recoverMediaError();
-        } catch (e) {
-          console.warn(e);
-        }
 
-        this.hls.startLoad();
-      }
+  reload(notEmit) {
+    if (this.getCurrentTime !== 0) {
+      this.seekTo(0);
     }
-  }, {
-    key: "setVolume",
-    value: function setVolume(fraction) {
-      this.player.volume = fraction;
-    }
-  }, {
-    key: "mute",
-    value: function mute() {
-      this.player.muted = true;
-    }
-  }, {
-    key: "unmute",
-    value: function unmute() {
-      this.player.muted = false;
-    }
-    /**
-     * 开启画中画功能
-     */
 
-  }, {
-    key: "requestPictureInPicture",
-    value: function requestPictureInPicture() {
-      if (this.player.requestPictureInPicture && document.pictureInPictureElement !== this.player) {
-        this.player.requestPictureInPicture();
-      }
+    if (this.hls) {
+      this.hls.swapAudioCodec();
+      this.hls.recoverMediaError();
     }
-    /**
-     * 关闭画中画功能
-     */
 
-  }, {
-    key: "exitPictureInPicture",
-    value: function exitPictureInPicture() {
-      if (document.exitPictureInPicture && document.pictureInPictureElement === this.player) {
-        document.exitPictureInPicture();
-      }
+    this.unload();
+    this.load();
+    !notEmit && this.event.emit(EventName.RELOAD);
+  }
+
+  unload() {
+    this.flv && this.flv.unload();
+    this.hls && this.hls.stopLoad();
+  }
+
+  load() {
+    if (this.flv) {
+      this.flv.load();
     }
-    /**
-     * 设置播放速率
-     * @param {*} rate
-     */
 
-  }, {
-    key: "setPlaybackRate",
-    value: function setPlaybackRate(rate) {
-      this.player.playbackRate = rate;
+    if (this.hls) {
+      this.hls.startLoad();
+      this.hls.loadSource(this.hls.url);
     }
-    /**
-     * 获取视频总时长
-     */
+  }
 
-  }, {
-    key: "getDuration",
-    value: function getDuration() {
-      if (!this.player) return null;
-      var _this$player = this.player,
-          duration = _this$player.duration,
-          seekable = _this$player.seekable;
+  setVolume(fraction) {
+    this.player.volume = fraction;
+  }
 
-      if (duration === Infinity && seekable.length > 0) {
-        return seekable.end(seekable.length - 1);
-      }
+  mute() {
+    this.player.muted = true;
+  }
 
+  unmute() {
+    this.player.muted = false;
+  }
+  /**
+   * 开启画中画功能
+   */
+
+
+  requestPictureInPicture() {
+    if (this.player.requestPictureInPicture && document.pictureInPictureElement !== this.player) {
+      this.player.requestPictureInPicture();
+    }
+  }
+  /**
+   * 关闭画中画功能
+   */
+
+
+  exitPictureInPicture() {
+    if (document.exitPictureInPicture && document.pictureInPictureElement === this.player) {
+      document.exitPictureInPicture();
+    }
+  }
+  /**
+   * 设置播放速率
+   * @param {*} rate
+   */
+
+
+  setPlaybackRate(rate) {
+    this.player.playbackRate = rate;
+  }
+  /**
+   * 获取视频总时长
+   */
+
+
+  getDuration() {
+    if (!this.player) return null;
+    const {
+      duration,
+      seekable
+    } = this.player;
+
+    if (duration === Infinity && seekable.length > 0) {
+      return seekable.end(seekable.length - 1);
+    }
+
+    return duration;
+  }
+  /**
+   * 获取当前播放时间
+   */
+
+
+  getCurrentTime() {
+    if (!this.player) return null;
+    return this.player.currentTime;
+  }
+  /**
+   * 获取缓存时间
+   */
+
+
+  getSecondsLoaded() {
+    return this.getBufferedTime()[1];
+  }
+  /**
+   * 获取当前视频缓存的起止时间
+   */
+
+
+  getBufferedTime() {
+    if (!this.player) return null;
+    const {
+      buffered
+    } = this.player;
+
+    if (buffered.length === 0) {
+      return [0, 0];
+    }
+
+    const end = buffered.end(buffered.length - 1);
+    const start = buffered.start(buffered.length - 1);
+    const duration = this.getDuration();
+
+    if (end > duration) {
       return duration;
     }
-    /**
-     * 获取当前播放时间
-     */
 
-  }, {
-    key: "getCurrentTime",
-    value: function getCurrentTime() {
-      if (!this.player) return null;
-      return this.player.currentTime;
-    }
-    /**
-     * 获取缓存时间
-     */
+    return [start, end];
+  }
+  /**
+   * 快进通过seekTo方法实现
+   * @param {*} second
+   */
 
-  }, {
-    key: "getSecondsLoaded",
-    value: function getSecondsLoaded() {
-      return this.getBufferedTime()[1];
-    }
-    /**
-     * 获取当前视频缓存的起止时间
-     */
 
-  }, {
-    key: "getBufferedTime",
-    value: function getBufferedTime() {
-      if (!this.player) return null;
-      var buffered = this.player.buffered;
+  fastForward(second = 5) {
+    const duration = this.getDuration();
+    const currentTime = this.getCurrentTime();
+    const time = currentTime + second;
+    this.seekTo(time > duration - 1 ? duration - 1 : time);
+  }
+  /**
+   * 快退通过seekTo方法实现
+   * @param {*} second
+   */
 
-      if (buffered.length === 0) {
-        return [0, 0];
+
+  backWind(second = 5) {
+    const currentTime = this.getCurrentTime();
+    const time = currentTime - second;
+    this.seekTo(time < 1 ? 1 : time);
+  }
+  /**
+   * 视频截屏方法
+   */
+
+
+  snapshot() {
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+    canvas.width = this.player.videoWidth;
+    canvas.height = this.player.videoHeight;
+    ctx.drawImage(this.player, 0, 0, canvas.width, canvas.height);
+    setTimeout(() => {
+      canvas.remove();
+      canvas = null;
+      ctx = null;
+    }, 200);
+    return canvas.toDataURL();
+  }
+
+  setScale(num, isRest = false) {
+    let scale = this.scale + num;
+
+    if (isRest) {
+      scale = num;
+    } else {
+      if (scale < 1) {
+        scale = 1;
       }
 
-      var end = buffered.end(buffered.length - 1);
-      var start = buffered.start(buffered.length - 1);
-      var duration = this.getDuration();
-
-      if (end > duration) {
-        return duration;
+      if (scale > 3) {
+        scale = 3;
       }
-
-      return [start, end];
     }
-    /**
-     * 快进通过seekTo方法实现
-     * @param {*} second
-     */
 
-  }, {
-    key: "fastForward",
-    value: function fastForward() {
-      var second = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 5;
-      var duration = this.getDuration();
-      var currentTime = this.getCurrentTime();
-      var time = currentTime + second;
-      this.seekTo(time > duration - 1 ? duration - 1 : time);
+    this.scale = scale;
+    this.player.style.transition = 'transform 0.3s';
+
+    this.__setTransform();
+
+    this.event.emit(EventName.TRANSFORM);
+    setTimeout(() => {
+      this.player.style.transition = 'unset';
+    }, 500);
+  }
+
+  getScale() {
+    return this.scale;
+  }
+
+  setPosition(position, isAnimate) {
+    this.position = position;
+    this.player.style.transition = isAnimate ? 'transform 0.3s' : 'unset';
+
+    this.__setTransform();
+  }
+
+  getPosition() {
+    return this.position;
+  }
+
+  __setTransform() {
+    this.player.style.transform = `scale(${this.scale}) translate(${this.position[0]}px,${this.position[1]}px)`;
+  }
+
+  getApi() {
+    return {
+      play: this.play.bind(this),
+      reload: this.reload.bind(this),
+      pause: this.pause.bind(this),
+      seekTo: this.seekTo.bind(this),
+      setVolume: this.setVolume.bind(this),
+      mute: this.mute.bind(this),
+      unmute: this.unmute.bind(this),
+      requestPictureInPicture: this.requestPictureInPicture.bind(this),
+      exitPictureInPicture: this.exitPictureInPicture.bind(this),
+      setPlaybackRate: this.setPlaybackRate.bind(this),
+      destroy: this.destroy.bind(this),
+      getDuration: this.getDuration.bind(this),
+      getCurrentTime: this.getCurrentTime.bind(this),
+      getSecondsLoaded: this.getSecondsLoaded.bind(this),
+      getBufferedTime: this.getBufferedTime.bind(this),
+      fastForward: this.fastForward.bind(this),
+      backWind: this.backWind.bind(this),
+      snapshot: this.snapshot.bind(this),
+      requestFullScreen: this.requestFullScreen.bind(this),
+      cancelFullScreen: this.cancelFullScreen.bind(this),
+      __player: this.player,
+      flv: this.flv,
+      hls: this.hls
+    };
+  }
+
+}
+
+const videoContext = React.createContext(null);
+const Provider = videoContext.Provider;
+const Consumer = videoContext.Consumer;
+function videoDec(Component) {
+  class ComponentWithVideoDec extends React.Component {
+    render() {
+      const {
+        forwardRef,
+        ...props
+      } = this.props;
+      return React.createElement(Consumer, null, context => React.createElement(Component, _extends({}, props, context, {
+        ref: forwardRef
+      })));
     }
-    /**
-     * 快退通过seekTo方法实现
-     * @param {*} second
-     */
 
-  }, {
-    key: "backWind",
-    value: function backWind() {
-      var second = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 5;
-      var currentTime = this.getCurrentTime();
-      var time = currentTime - second;
-      this.seekTo(time < 1 ? 1 : time);
-    }
-    /**
-     * 视频截屏方法
-     */
+  }
 
-  }, {
-    key: "snapshot",
-    value: function snapshot() {
-      var canvas = document.createElement('canvas');
-      var ctx = canvas.getContext('2d');
-      canvas.width = this.player.videoWidth;
-      canvas.height = this.player.videoHeight;
-      ctx.drawImage(this.player, 0, 0, canvas.width, canvas.height);
-      setTimeout(function () {
-        canvas.remove();
-        canvas = null;
-        ctx = null;
-      }, 200);
-      return canvas.toDataURL();
-    }
-  }, {
-    key: "setScale",
-    value: function setScale(num) {
-      var _this = this;
-
-      var isRest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      var scale = this.scale + num;
-
-      if (isRest) {
-        scale = num;
-      } else {
-        if (scale < 1) {
-          scale = 1;
-        }
-
-        if (scale > 3) {
-          scale = 3;
-        }
-      }
-
-      this.scale = scale;
-      this.player.style.transition = 'transform 0.3s';
-
-      this.__setTransform();
-
-      this.event.emit(EventName.TRANSFORM);
-      setTimeout(function () {
-        _this.player.style.transition = 'unset';
-      }, 500);
-    }
-  }, {
-    key: "getScale",
-    value: function getScale() {
-      return this.scale;
-    }
-  }, {
-    key: "setPosition",
-    value: function setPosition(position, isAnimate) {
-      this.position = position;
-      this.player.style.transition = isAnimate ? 'transform 0.3s' : 'unset';
-
-      this.__setTransform();
-    }
-  }, {
-    key: "getPosition",
-    value: function getPosition() {
-      return this.position;
-    }
-  }, {
-    key: "__setTransform",
-    value: function __setTransform() {
-      this.player.style.transform = "scale(".concat(this.scale, ") translate(").concat(this.position[0], "px,").concat(this.position[1], "px)");
-    }
-  }, {
-    key: "getApi",
-    value: function getApi() {
-      return {
-        play: this.play.bind(this),
-        reload: this.reload.bind(this),
-        pause: this.pause.bind(this),
-        seekTo: this.seekTo.bind(this),
-        setVolume: this.setVolume.bind(this),
-        mute: this.mute.bind(this),
-        unmute: this.unmute.bind(this),
-        requestPictureInPicture: this.requestPictureInPicture.bind(this),
-        exitPictureInPicture: this.exitPictureInPicture.bind(this),
-        setPlaybackRate: this.setPlaybackRate.bind(this),
-        destroy: this.destroy.bind(this),
-        getDuration: this.getDuration.bind(this),
-        getCurrentTime: this.getCurrentTime.bind(this),
-        getSecondsLoaded: this.getSecondsLoaded.bind(this),
-        getBufferedTime: this.getBufferedTime.bind(this),
-        fastForward: this.fastForward.bind(this),
-        backWind: this.backWind.bind(this),
-        snapshot: this.snapshot.bind(this),
-        requestFullScreen: this.requestFullScreen.bind(this),
-        cancelFullScreen: this.cancelFullScreen.bind(this),
-        __player: this.player,
-        flv: this.flv,
-        hls: this.hls
-      };
-    }
-  }]);
-
-  return Api;
-}();
+  ComponentWithVideoDec.propTypes = {
+    forwardRef: PropTypes.ref
+  };
+  return React.forwardRef((props, ref) => React.createElement(ComponentWithVideoDec, _extends({}, props, {
+    forwardRef: ref
+  })));
+}
 
 function getHiddenProp() {
-  var prefixes = ["webkit", "moz", "ms", "o"]; // 如果hidden 属性是原生支持的，我们就直接返回
+  const prefixes = ["webkit", "moz", "ms", "o"]; // 如果hidden 属性是原生支持的，我们就直接返回
 
   if ("hidden" in document) {
     return "hidden";
   } // 其他的情况就循环现有的浏览器前缀，拼接我们所需要的属性
 
 
-  for (var i = 0; i < prefixes.length; i++) {
+  for (let i = 0; i < prefixes.length; i++) {
     // 如果当前的拼接的前缀在 document对象中存在 返回即可
     if (prefixes[i] + "Hidden" in document) {
       return prefixes[i] + "Hidden";
@@ -2133,13 +1579,13 @@ function getHiddenProp() {
 }
 
 function getVisibilityState() {
-  var prefixes = ["webkit", "moz", "ms", "o"];
+  const prefixes = ["webkit", "moz", "ms", "o"];
 
   if ("visibilityState" in document) {
     return "visibilityState";
   }
 
-  for (var i = 0; i < prefixes.length; i++) {
+  for (let i = 0; i < prefixes.length; i++) {
     if (prefixes[i] + "VisibilityState" in document) {
       return prefixes[i] + "VisibilityState";
     }
@@ -2154,141 +1600,140 @@ function visibilityState() {
 }
 
 function addEventListener(listener) {
-  var visProp = getHiddenProp();
-  var evtname = visProp.replace(/[H|h]idden/, "") + "visibilitychange";
+  const visProp = getHiddenProp();
+  const evtname = visProp.replace(/[H|h]idden/, "") + "visibilitychange";
   document.addEventListener(evtname, listener, false);
 }
 
 function removeEventListener(listener) {
-  var visProp = getHiddenProp();
-  var evtname = visProp.replace(/[H|h]idden/, "") + "visibilitychange";
+  const visProp = getHiddenProp();
+  const evtname = visProp.replace(/[H|h]idden/, "") + "visibilitychange";
   document.removeEventListener(evtname, listener, false);
 }
 
 var BrowserTab = {
-  addEventListener: addEventListener,
-  removeEventListener: removeEventListener,
-  visibilityState: visibilityState
+  addEventListener,
+  removeEventListener,
+  visibilityState
 };
 
-var _class$5, _temp$5;
+var _class, _temp;
 
-var LiveHeart = videoDec(_class$5 = (_temp$5 =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(LiveHeart, _React$Component);
+let LiveHeart = videoDec(_class = (_temp = class LiveHeart extends React.Component {
+  constructor(props) {
+    super(props);
 
-  function LiveHeart(props) {
-    var _this;
-
-    _classCallCheck(this, LiveHeart);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(LiveHeart).call(this, props));
-
-    _this.browserTabChange = function () {
+    this.browserTabChange = () => {
       if (BrowserTab.visibilityState() === "visible") {
-        _this.focusSeekAction();
+        this.focusSeekAction();
       }
     };
 
-    _this.canplay = function () {
-      var api = _this.props.api;
-      _this.isCanPlay = true;
+    this.canplay = () => {
+      const {
+        api
+      } = this.props;
+      this.isCanPlay = true;
       api.play();
     };
 
-    _this.focusSeekAction = function () {
-      var api = _this.props.api;
-      var current = api.getCurrentTime();
-      var buffered = api.getSecondsLoaded();
+    this.focusSeekAction = () => {
+      const {
+        api
+      } = this.props;
+      const current = api.getCurrentTime();
+      const buffered = api.getSecondsLoaded();
 
       if (buffered - current > 5) {
-        console.warn("\u5F53\u524D\u5EF6\u65F6\u8FC7\u5927current->".concat(current, " buffered->").concat(buffered, ", \u57FA\u4E8E\u89C6\u9891\u5F53\u524D\u7F13\u5B58\u65F6\u95F4\u66F4\u65B0\u5F53\u524D\u64AD\u653E\u65F6\u95F4 updateTime -> ").concat(buffered - 2));
+        console.warn(`当前延时过大current->${current} buffered->${buffered}, 基于视频当前缓存时间更新当前播放时间 updateTime -> ${buffered - 2}`);
         api.seekTo(buffered - 2 > 0 ? buffered - 2 : 0);
       }
     };
 
-    _this.timer = null;
-    _this.isCanPlay = false;
-    return _this;
+    this.timer = null;
+    this.isCanPlay = false;
   }
 
-  _createClass(LiveHeart, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var event = this.props.event;
-      BrowserTab.addEventListener(this.browserTabChange);
-      event.addEventListener("canplay", this.canplay);
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      BrowserTab.removeEventListener(this.browserTabChange);
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return null;
-    }
-  }]);
+  componentDidMount() {
+    const {
+      event
+    } = this.props;
+    BrowserTab.addEventListener(this.browserTabChange);
+    event.addEventListener("canplay", this.canplay);
+  }
 
-  return LiveHeart;
-}(React.Component), _temp$5)) || _class$5;
+  componentWillUnmount() {
+    BrowserTab.removeEventListener(this.browserTabChange);
+  }
+
+  render() {
+    return null;
+  }
+
+}, _temp)) || _class;
 
 LiveHeart.propTypes = {
-  api: PropTypes$1.object,
-  event: PropTypes$1.object
+  api: PropTypes.object,
+  event: PropTypes.object
 };
 
-function SinglePlayer(_ref) {
-  var type = _ref.type,
-      file = _ref.file,
-      className = _ref.className,
-      autoPlay = _ref.autoPlay,
-      muted = _ref.muted,
-      poster = _ref.poster,
-      playsinline = _ref.playsinline,
-      loop = _ref.loop,
-      preload = _ref.preload,
-      onInitPlayer = _ref.onInitPlayer,
-      props = _objectWithoutProperties(_ref, ["type", "file", "className", "autoPlay", "muted", "poster", "playsinline", "loop", "preload", "onInitPlayer"]);
-
-  var playContainerRef = useRef(null);
-
-  var _useRef = useRef({}),
-      _useRef2 = _slicedToArray(_useRef, 2),
-      playerObj = _useRef2[0],
-      setPlayerObj = _useRef2[1];
-
-  useEffect(function () {
+function SinglePlayer({
+  type,
+  file,
+  className,
+  autoPlay,
+  muted,
+  poster,
+  playsinline,
+  loop,
+  preload,
+  children,
+  onInitPlayer,
+  ...props
+}) {
+  const playContainerRef = useRef(null);
+  const [playerObj, setPlayerObj] = useState(null);
+  useEffect(() => {
     if (!file) {
       return;
     }
 
-    var playerObject = {
+    const playerObject = {
       playContainer: playContainerRef.current,
       video: playContainerRef.current.querySelector('video')
     };
-    var formartType = getVideoType(file);
+    const formartType = getVideoType(file);
 
     if (formartType === 'flv' || type === 'flv') {
-      playerObject.flv = createFlvPlayer(playerObject.video, props);
-      return;
+      playerObject.flv = createFlvPlayer(playerObject.video, { ...props,
+        file
+      });
     }
 
     if (formartType === 'm3u8' || type === 'hls') {
       playerObject.hls = createHlsPlayer(playerObject.video, file);
-      return;
     }
 
-    playerObject.video.src = file;
-    playerObj.event = new VideoEventInstance(playerObject.video);
-    playerObj.api = new Api(playerObject);
-    setPlayerObj(playerObj);
-    onInitPlayer && onInitPlayer(playerObj);
+    if (formartType === 'mp4' || type === 'native') {
+      playerObject.video.src = file;
+    }
+
+    playerObject.event = new VideoEventInstance(playerObject.video);
+    playerObject.api = new Api(playerObject);
+    setPlayerObj(playerObject);
+
+    if (onInitPlayer) {
+      onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()));
+    }
+
+    return () => {
+      if (playerObject.api) {
+        playerObject.api.unload();
+      }
+    };
   }, [file]);
   return React.createElement("div", {
-    className: "lm-player-container ".concat(className),
+    className: `lm-player-container ${className}`,
     ref: playContainerRef
   }, React.createElement("div", {
     className: "player-mask-layout"
@@ -2303,54 +1748,96 @@ function SinglePlayer(_ref) {
   })), React.createElement(VideoTools, {
     playerObj: playerObj,
     isLive: props.isLive,
-    hideContrallerBar: props.hideContrallerBar
-  }), this.props.children);
+    hideContrallerBar: props.hideContrallerBar,
+    errorReloadTimer: props.errorReloadTimer,
+    scale: props.scale,
+    snapshot: props.snapshot,
+    leftExtContents: props.leftExtContents,
+    leftMidExtContents: props.leftMidExtContents,
+    rightExtContents: props.rightExtContents,
+    rightMidExtContents: props.rightMidExtContents,
+    draggable: props.draggable
+  }), children);
 }
 
-function VideoTools(_ref2) {
-  var playerObj = _ref2.playerObj,
-      isLive = _ref2.isLive,
-      hideContrallerBar = _ref2.hideContrallerBar;
-
+function VideoTools({
+  playerObj,
+  draggable,
+  isLive,
+  hideContrallerBar,
+  scale,
+  snapshot,
+  leftExtContents,
+  leftMidExtContents,
+  rightExtContents,
+  rightMidExtContents,
+  errorReloadTimer
+}) {
   if (!playerObj) {
     return React.createElement(NoSource, null);
   }
 
-  return React.createElement(React.Fragment, null, React.createElement(ContrallerBar, {
-    visibel: !hideContrallerBar,
+  return React.createElement(React.Fragment, null, React.createElement(VideoMessage, {
     api: playerObj.api,
     event: playerObj.event
-  }), React.createElement(VideoMessage, null), React.createElement(DragEvent, null), React.createElement(ContrallerEvent, null, React.createElement(ContrallerBar, null), !isLive && React.createElement(TineLine, null)), React.createElement(ErrorEvent, {
-    flvPlayer: this.flv,
-    hlsPlayer: this.hls
+  }), draggable && React.createElement(DragEvent, {
+    playContainer: playerObj.playContainer,
+    api: playerObj.api,
+    event: playerObj.event
+  }), !hideContrallerBar && React.createElement(ContrallerEvent, {
+    event: playerObj.event,
+    playContainer: playerObj.playContainer
+  }, React.createElement(ContrallerBar, {
+    api: playerObj.api,
+    event: playerObj.event,
+    playContainer: playerObj.playContainer,
+    video: playerObj.video,
+    snapshot: snapshot,
+    rightExtContents: rightExtContents,
+    rightMidExtContents: rightMidExtContents,
+    scale: scale,
+    isHistory: false,
+    isLive: isLive,
+    leftExtContents: leftExtContents,
+    leftMidExtContents: leftMidExtContents
+  }), !isLive && React.createElement(TineLine, {
+    api: playerObj.api,
+    event: playerObj.event
+  })), React.createElement(ErrorEvent, {
+    flv: playerObj.flv,
+    hls: playerObj.hls,
+    api: playerObj.api,
+    event: playerObj.event,
+    errorReloadTimer: errorReloadTimer
   }), isLive && React.createElement(LiveHeart, {
-    key: this.props.file
+    api: playerObj.api,
+    event: playerObj.event
   }));
 }
 
 SinglePlayer.propTypes = {
-  file: PropTypes$1.string.isRequired,
+  file: PropTypes.string.isRequired,
   //播放地址 必填
-  isLive: PropTypes$1.bool,
+  isLive: PropTypes.bool,
   //是否实时视频
-  errorReloadTimer: PropTypes$1.number,
+  errorReloadTimer: PropTypes.number,
   //视频错误重连次数
-  type: PropTypes$1.oneOf(['flv', 'hls', 'native']),
+  type: PropTypes.oneOf(['flv', 'hls', 'native']),
   //强制视频流类型
-  onInitPlayer: PropTypes$1.func,
-  draggable: PropTypes$1.bool,
-  hideContrallerBar: PropTypes$1.bool,
-  scale: PropTypes$1.bool,
-  muted: PropTypes$1.string,
-  autoPlay: PropTypes$1.bool,
-  playsInline: PropTypes$1.bool,
-  preload: PropTypes$1.string,
-  poster: PropTypes$1.string,
-  loop: PropTypes$1.bool,
-  snapshot: PropTypes$1.func,
-  className: PropTypes$1.string,
-  playsinline: PropTypes$1.bool,
-  children: PropTypes$1.any
+  onInitPlayer: PropTypes.func,
+  draggable: PropTypes.bool,
+  hideContrallerBar: PropTypes.bool,
+  scale: PropTypes.bool,
+  muted: PropTypes.string,
+  autoPlay: PropTypes.bool,
+  playsInline: PropTypes.bool,
+  preload: PropTypes.string,
+  poster: PropTypes.string,
+  loop: PropTypes.bool,
+  snapshot: PropTypes.func,
+  className: PropTypes.string,
+  playsinline: PropTypes.bool,
+  children: PropTypes.any
 };
 SinglePlayer.defaultProps = {
   isLive: true,
@@ -2365,5 +1852,467 @@ SinglePlayer.defaultProps = {
   hideContrallerBar: false
 };
 
+const computedLineList = historyList => {
+  const duration = historyList.duration;
+  return historyList.fragments.map(v => {
+    return {
+      disabled: !v.file,
+      size: (v.end - v.begin) / duration * 100
+    };
+  });
+};
+
+function TineLine$1({
+  event,
+  api,
+  visibel,
+  historyList,
+  playIndex,
+  seekTo
+}) {
+  const [state, setState] = useState({
+    duration: 1,
+    currentTime: 0,
+    buffered: 0,
+    isEnd: false
+  });
+  useEffect(() => {
+    const getDuration = () => setState(old => ({ ...old,
+      duration: api.getDuration()
+    }));
+
+    const getCurrentTime = () => setState(old => ({ ...old,
+      currentTime: api.getCurrentTime(),
+      buffered: api.getSecondsLoaded()
+    }));
+
+    const getBuffered = () => setState(old => ({ ...old,
+      buffered: api.getSecondsLoaded()
+    }));
+
+    const historyPlayEnd = () => setState(old => ({ ...old,
+      isEnd: true
+    }));
+
+    const reload = () => setState(old => ({ ...old,
+      isEnd: false,
+      currentTime: api.getCurrentTime()
+    }));
+
+    const seekendPlay = () => api.play();
+
+    event.addEventListener('loadedmetadata', getDuration);
+    event.addEventListener('durationchange', getDuration);
+    event.addEventListener('timeupdate', getCurrentTime);
+    event.addEventListener('progress', getBuffered);
+    event.addEventListener('suspend', getBuffered);
+    event.addEventListener('seeked', seekendPlay);
+    event.on(EventName.HISTORY_PLAY_END, historyPlayEnd);
+    event.on(EventName.RELOAD, reload);
+    return () => {
+      event.removeEventListener('loadedmetadata', getDuration);
+      event.removeEventListener('durationchange', getDuration);
+      event.removeEventListener('timeupdate', getCurrentTime);
+      event.removeEventListener('progress', getBuffered);
+      event.removeEventListener('suspend', getBuffered);
+      event.removeEventListener('seeked', seekendPlay);
+      event.off(EventName.HISTORY_PLAY_END, historyPlayEnd);
+      event.off(EventName.RELOAD, reload);
+    };
+  }, [event, api]);
+  const changePlayTime = useCallback(percent => {
+    const currentTime = percent * historyList.duration; //修正一下误差
+
+    seekTo(currentTime);
+    setState(old => ({ ...old,
+      currentTime,
+      isEnd: false
+    }));
+  }, [historyList]);
+
+  const renderTimeLineTips = percent => {
+    const currentTime = percent * historyList.duration * 1000;
+    const date = dateFormat(historyList.beginDate + currentTime);
+    return React.createElement("span", null, date);
+  };
+
+  const {
+    currentTime,
+    buffered,
+    isEnd
+  } = state;
+  const lineList = useMemo(() => computedLineList(historyList), [historyList]);
+  const currentLine = useMemo(() => lineList.filter((_, i) => i < playIndex).map(v => v.size), [playIndex, lineList]);
+  const currentIndexTime = useMemo(() => currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0], [currentLine]);
+  const playPercent = useMemo(() => currentTime / historyList.duration * 100 + currentIndexTime, [currentIndexTime, historyList, currentTime]);
+  const bufferedPercent = useMemo(() => buffered / historyList.duration * 100 + currentIndexTime, [historyList, currentIndexTime, buffered]);
+  return React.createElement("div", {
+    className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
+  }, React.createElement(IconFont, {
+    type: "lm-player-PrevFast",
+    onClick: api.backWind,
+    className: "time-line-action-item"
+  }), React.createElement(Slider, {
+    className: "time-line-box",
+    currentPercent: isEnd ? '100' : playPercent,
+    availablePercent: bufferedPercent,
+    onChange: changePlayTime,
+    renderTips: renderTimeLineTips
+  }, React.createElement(React.Fragment, null, lineList.map((v, i) => {
+    const currentSizeLine = lineList.filter((v, i2) => i2 < i).map(v => v.size);
+    const currentIndexSize = currentSizeLine.length === 0 ? 0 : currentSizeLine.length > 1 ? currentSizeLine.reduce((p, c) => p + c) : currentSizeLine[0];
+    return React.createElement("div", {
+      className: `history-time-line-item ${v.disabled ? 'history-time-line-disabled' : ''}`,
+      key: i,
+      style: {
+        width: `${v.size}%`,
+        left: `${currentIndexSize}%`
+      }
+    });
+  }))), React.createElement(IconFont, {
+    type: "lm-player-NextFast_Light",
+    onClick: api.fastForward,
+    className: "time-line-action-item"
+  }));
+}
+
+TineLine$1.propTypes = {
+  event: PropTypes.object,
+  api: PropTypes.object,
+  changePlayIndex: PropTypes.func,
+  playIndex: PropTypes.number,
+  historyList: PropTypes.array,
+  seekTo: PropTypes.func,
+  visibel: PropTypes.bool
+};
+
+/**
+ * history下使用 用户切换下个播放地址
+ */
+
+function PlayEnd({
+  event,
+  changePlayIndex,
+  playIndex
+}) {
+  useEffect(() => {
+    const endedHandle = () => changePlayIndex(playIndex + 1);
+
+    event.addEventListener('ended', endedHandle, false);
+    return () => {
+      event.removeEventListener('ended', endedHandle, false);
+    };
+  }, [event, playIndex]);
+  return React.createElement(React.Fragment, null);
+}
+
+PlayEnd.propTypes = {
+  event: PropTypes.object,
+  changePlayIndex: PropTypes.func,
+  playIndex: PropTypes.number
+};
+
+const computedIndexFormTime = (historyList, time) => {
+  return historyList.fragments.findIndex(v => v.end > time);
+};
+
+const computedTimeAndIndex = (historyList, currentTime) => {
+  const index = computedIndexFormTime(historyList, currentTime);
+  const fragment = historyList.fragments[index];
+
+  if (!fragment) {
+    return [0, 0];
+  }
+
+  const seekTime = currentTime - fragment.begin - 1;
+  return [index, seekTime];
+};
+
+function HistoryPlayer({
+  type,
+  historyList,
+  defaultTime,
+  className,
+  autoPlay,
+  muted,
+  poster,
+  playsinline,
+  loop,
+  preload,
+  children,
+  onInitPlayer,
+  ...props
+}) {
+  const playContainerRef = useRef(null);
+  const [playerObj, setPlayerObj] = useState(null);
+  const [playStatus, setPlayStatus] = useState(() => computedTimeAndIndex(historyList, defaultTime));
+  const file = useMemo(() => {
+    let url;
+
+    try {
+      url = historyList.fragments[playStatus[0]].file;
+    } catch (e) {
+      console.warn('未找打播放地址！', e);
+    }
+
+    return url;
+  }, [historyList, playStatus[0]]);
+  /**
+   * 重写api下的seekTo方法
+   */
+
+  const seekTo = useCallback(currentTime => {
+    const [index, seekTime] = computedTimeAndIndex(historyList, currentTime);
+
+    if (playerObj.event && playerObj.api) {
+      if (index !== playStatus[0]) {
+        setPlayStatus([index, seekTime]);
+      }
+
+      playerObj.api.seekTo(seekTime, true);
+      playerObj.event.emit(EventName.SEEK, currentTime);
+    }
+  }, [playerObj, playerObj, historyList]);
+  const changePlayIndex = useCallback(index => {
+    if (index > historyList.fragments.length - 1) {
+      return playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END);
+    }
+
+    if (playerObj.event) {
+      playerObj.event.emit(EventName.CHANGE_PLAY_INDEX, index);
+    }
+
+    setPlayStatus([index, 0]);
+  }, [playerObj]);
+  const reloadHistory = useCallback(() => {
+    setPlayStatus([0, 0]);
+    playerObj.event.emit(EventName.RELOAD);
+  }, [playerObj]);
+  useEffect(() => {
+    if (!file) {
+      return;
+    }
+
+    const seekTime = playStatus[1];
+    const playerObject = {
+      playContainer: playContainerRef.current,
+      video: playContainerRef.current.querySelector('video')
+    };
+    const formartType = getVideoType(file);
+
+    if (formartType === 'flv' || type === 'flv') {
+      playerObject.flv = createFlvPlayer(playerObject.video, { ...props,
+        file
+      });
+    }
+
+    if (formartType === 'm3u8' || type === 'hls') {
+      playerObject.hls = createHlsPlayer(playerObject.video, file);
+    }
+
+    if (formartType === 'mp4' || type === 'native') {
+      playerObject.video.src = file;
+    }
+
+    playerObject.event = new VideoEventInstance(playerObject.video);
+    playerObject.api = new Api(playerObject);
+    setPlayerObj(playerObject);
+
+    if (seekTime) {
+      playerObject.api.seekTo(seekTime);
+    }
+
+    if (onInitPlayer) {
+      onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), {
+        seekTo,
+        changePlayIndex,
+        reload: reloadHistory
+      }));
+    }
+
+    return () => {
+      if (playerObject.api) {
+        playerObject.api.unload();
+      }
+    };
+  }, [playStatus, historyList, file]);
+  /**
+   * 根据时间计算当前对应的播放索引
+   */
+
+  return React.createElement("div", {
+    className: `lm-player-container ${className}`,
+    ref: playContainerRef
+  }, React.createElement("div", {
+    className: "player-mask-layout"
+  }, React.createElement("video", {
+    autoPlay: autoPlay,
+    preload: preload,
+    muted: muted,
+    poster: poster,
+    controls: false,
+    playsInline: playsinline,
+    loop: loop
+  })), React.createElement(VideoTools$1, {
+    playerObj: playerObj,
+    isLive: props.isLive,
+    hideContrallerBar: props.hideContrallerBar,
+    errorReloadTimer: props.errorReloadTimer,
+    scale: props.scale,
+    snapshot: props.snapshot,
+    leftExtContents: props.leftExtContents,
+    leftMidExtContents: props.leftMidExtContents,
+    rightExtContents: props.rightExtContents,
+    rightMidExtContents: props.rightMidExtContents,
+    draggable: props.draggable,
+    changePlayIndex: changePlayIndex,
+    reloadHistory: reloadHistory,
+    historyList: historyList,
+    playIndex: playStatus[0],
+    seekTo: seekTo
+  }), children);
+}
+
+function VideoTools$1({
+  playerObj,
+  draggable,
+  isLive,
+  hideContrallerBar,
+  scale,
+  snapshot,
+  leftExtContents,
+  leftMidExtContents,
+  rightExtContents,
+  rightMidExtContents,
+  errorReloadTimer,
+  changePlayIndex,
+  reloadHistory,
+  historyList,
+  seekTo,
+  playIndex
+}) {
+  if (!playerObj) {
+    return React.createElement(NoSource, null);
+  }
+
+  return React.createElement(React.Fragment, null, React.createElement(VideoMessage, {
+    api: playerObj.api,
+    event: playerObj.event
+  }), draggable && React.createElement(DragEvent, {
+    playContainer: playerObj.playContainer,
+    api: playerObj.api,
+    event: playerObj.event
+  }), !hideContrallerBar && React.createElement(ContrallerEvent, {
+    event: playerObj.event,
+    playContainer: playerObj.playContainer
+  }, React.createElement(ContrallerBar, {
+    api: playerObj.api,
+    event: playerObj.event,
+    playContainer: playerObj.playContainer,
+    video: playerObj.video,
+    snapshot: snapshot,
+    rightExtContents: rightExtContents,
+    rightMidExtContents: rightMidExtContents,
+    scale: scale,
+    isHistory: true,
+    isLive: isLive,
+    leftExtContents: leftExtContents,
+    leftMidExtContents: leftMidExtContents,
+    reloadHistory: reloadHistory
+  }), React.createElement(TineLine$1, {
+    changePlayIndex: changePlayIndex,
+    historyList: historyList,
+    playIndex: playIndex,
+    seekTo: seekTo,
+    api: playerObj.api,
+    event: playerObj.event
+  })), React.createElement(ErrorEvent, {
+    changePlayIndex: changePlayIndex,
+    playIndex: playIndex,
+    isHistory: true,
+    flv: playerObj.flv,
+    hls: playerObj.hls,
+    api: playerObj.api,
+    event: playerObj.event,
+    errorReloadTimer: errorReloadTimer
+  }), React.createElement(PlayEnd, {
+    event: playerObj.event,
+    changePlayIndex: changePlayIndex,
+    playIndex: playIndex
+  }));
+}
+
+HistoryPlayer.propTypes = {
+  historyList: PropTypes.object.isRequired,
+  //播放地址 必填
+  errorReloadTimer: PropTypes.number,
+  //视频错误重连次数
+  type: PropTypes.oneOf(['flv', 'hls', 'native']),
+  //强制视频流类型
+  onInitPlayer: PropTypes.func,
+  isDraggable: PropTypes.bool,
+  isScale: PropTypes.bool,
+  muted: PropTypes.string,
+  autoPlay: PropTypes.bool,
+  playsInline: PropTypes.bool,
+  preload: PropTypes.string,
+  poster: PropTypes.string,
+  loop: PropTypes.bool,
+  defaultTime: PropTypes.number,
+  className: PropTypes.string,
+  playsinline: PropTypes.bool,
+  children: PropTypes.any,
+  autoplay: PropTypes.bool
+};
+HistoryPlayer.defaultProps = {
+  draggable: true,
+  scale: true,
+  errorReloadTimer: 5,
+  muted: 'muted',
+  autoPlay: true,
+  playsInline: false,
+  preload: 'auto',
+  loop: false,
+  defaultTime: 0,
+  historyList: {
+    beginDate: 0,
+    duration: 0,
+    fragments: []
+  }
+};
+
+function createPlayer({
+  container,
+  children,
+  onInitPlayer,
+  ...props
+}) {
+  ReactDOM.render(React.createElement(SinglePlayer, _extends({}, props, {
+    onInitPlayer: player => {
+      player.destroy = function () {
+        ReactDOM.unmountComponentAtNode(container);
+      };
+
+      onInitPlayer && onInitPlayer(player);
+    }
+  }), children), container);
+}
+function createHistoryPlayer({
+  container,
+  children,
+  onInitPlayer,
+  ...props
+}) {
+  ReactDOM.render(React.createElement(HistoryPlayer, _extends({}, props, {
+    onInitPlayer: player => {
+      player.destroy = function () {
+        ReactDOM.unmountComponentAtNode(container);
+      };
+
+      onInitPlayer && onInitPlayer(player);
+    }
+  }), children), container);
+}
+
 export default SinglePlayer;
-export { Bar, SinglePlayer as Player };
+export { Bar, HistoryPlayer, SinglePlayer as Player, createHistoryPlayer, createPlayer };

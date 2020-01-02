@@ -46,8 +46,10 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
   const seekTo = useCallback(
     currentTime => {
       const [index, seekTime] = computedTimeAndIndex(historyList, currentTime)
-      if (index !== undefined && playerObj.event && playerObj.api) {
-        setPlayStatus([index, seekTime])
+      if (playerObj.event && playerObj.api) {
+        if (index !== playStatus[0]) {
+          setPlayStatus([index, seekTime])
+        }
         playerObj.api.seekTo(seekTime, true)
         playerObj.event.emit(EventName.SEEK, currentTime)
       }
@@ -100,6 +102,11 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
     }
     if (onInitPlayer) {
       onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), { seekTo, changePlayIndex, reload: reloadHistory }))
+    }
+    return () => {
+      if (playerObject.api) {
+        playerObject.api.unload()
+      }
     }
   }, [playStatus, historyList, file])
 

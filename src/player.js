@@ -40,6 +40,12 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
     if (onInitPlayer) {
       onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()))
     }
+
+    return () => {
+      if (playerObject.api) {
+        playerObject.api.unload()
+      }
+    }
   }, [file])
   return (
     <div className={`lm-player-container ${className}`} ref={playContainerRef}>
