@@ -107,7 +107,6 @@
    */
 
   function createFlvPlayer(video, options) {
-    console.log(options);
     const {
       flvOptions = {},
       flvConfig = {}
@@ -129,7 +128,6 @@
         stashInitialSize: 128,
         isLive: options.isLive || true
       }));
-      console.log(player);
       player.attachMediaElement(video);
       player.load();
       return player;
@@ -184,6 +182,21 @@
     }
 
     return time;
+  }
+  /**
+   * 日期格式化
+   * @param {*} timetemp
+   */
+
+  function dateFormat(timetemp) {
+    const date = new Date(timetemp);
+    let YYYY = date.getFullYear();
+    let DD = date.getDate();
+    let MM = date.getMonth() + 1;
+    let hh = date.getHours();
+    let mm = date.getMinutes();
+    let ss = date.getSeconds();
+    return `${YYYY}.${MM > 9 ? MM : '0' + MM}.${DD > 9 ? DD : '0' + DD} ${hh > 9 ? hh : '0' + hh}.${mm > 9 ? mm : '0' + mm}.${ss > 9 ? ss : '0' + ss}`;
   }
   /**
    * 全屏
@@ -995,11 +1008,13 @@
         currentTime
       }));
     }, [duration, api]);
-    const renderTimeLineTips = React.useCallback(percent => {
+
+    const renderTimeLineTips = percent => {
       const currentTime = percent * duration;
       const time = timeStamp(currentTime);
       return React__default.createElement("span", null, time);
-    }, [duration]);
+    };
+
     return React__default.createElement("div", {
       className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
     }, React__default.createElement(IconFont, {
@@ -1835,8 +1850,471 @@
     hideContrallerBar: false
   };
 
+  const computedLineList = historyList => {
+    const duration = historyList.duration;
+    return historyList.fragments.map(v => {
+      return {
+        disabled: !v.file,
+        size: (v.end - v.begin) / duration * 100
+      };
+    });
+  };
+
+  function TineLine$1({
+    event,
+    api,
+    visibel,
+    historyList,
+    playIndex,
+    seekTo
+  }) {
+    const [state, setState] = React.useState({
+      duration: 1,
+      currentTime: 0,
+      buffered: 0,
+      isEnd: false
+    });
+    React.useEffect(() => {
+      const getDuration = () => setState(old => ({ ...old,
+        duration: api.getDuration()
+      }));
+
+      const getCurrentTime = () => setState(old => ({ ...old,
+        currentTime: api.getCurrentTime(),
+        buffered: api.getSecondsLoaded()
+      }));
+
+      const getBuffered = () => setState(old => ({ ...old,
+        buffered: api.getSecondsLoaded()
+      }));
+
+      const historyPlayEnd = () => setState(old => ({ ...old,
+        isEnd: true
+      }));
+
+      const reload = () => setState(old => ({ ...old,
+        isEnd: false,
+        currentTime: api.getCurrentTime()
+      }));
+
+      const seekendPlay = () => api.play();
+
+      event.addEventListener('loadedmetadata', getDuration);
+      event.addEventListener('durationchange', getDuration);
+      event.addEventListener('timeupdate', getCurrentTime);
+      event.addEventListener('progress', getBuffered);
+      event.addEventListener('suspend', getBuffered);
+      event.addEventListener('seeked', seekendPlay);
+      event.on(EventName.HISTORY_PLAY_END, historyPlayEnd);
+      event.on(EventName.RELOAD, reload);
+      return () => {
+        event.removeEventListener('loadedmetadata', getDuration);
+        event.removeEventListener('durationchange', getDuration);
+        event.removeEventListener('timeupdate', getCurrentTime);
+        event.removeEventListener('progress', getBuffered);
+        event.removeEventListener('suspend', getBuffered);
+        event.removeEventListener('seeked', seekendPlay);
+        event.off(EventName.HISTORY_PLAY_END, historyPlayEnd);
+        event.off(EventName.RELOAD, reload);
+      };
+    }, [event, api]);
+
+    const changePlayTime = percent => {
+      const numSize = historyList.duration.toString().length;
+      const currentTime = (percent + numSize / Math.pow(10, numSize - 1)) * historyList.duration; //修正一下误差
+
+      const playIndex = historyList.fragments.findIndex(v => v.end > currentTime);
+      const fragment = historyList.fragments[playIndex];
+
+      if (fragment.file) {
+        seekTo(currentTime);
+        setState(old => ({ ...old,
+          currentTime,
+          isEnd: false
+        }));
+      }
+    };
+
+    const renderTimeLineTips = percent => {
+      const currentTime = percent * historyList.duration * 1000;
+      const date = dateFormat(historyList.beginDate + currentTime);
+      return React__default.createElement("span", null, date);
+    };
+
+    const {
+      currentTime,
+      buffered,
+      isEnd
+    } = state;
+    const lineList = React.useMemo(() => computedLineList(historyList), [historyList]);
+    const currentLine = React.useMemo(() => lineList.filter((_, i) => i < playIndex).map(v => v.size), [playIndex, lineList]);
+    const currentIndexTime = React.useMemo(() => currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0], [currentLine]);
+    const playPercent = React.useMemo(() => currentTime / historyList.duration * 100 + currentIndexTime, [currentIndexTime, historyList, currentTime]);
+    const bufferedPercent = React.useMemo(() => buffered / historyList.duration * 100 + currentIndexTime, [historyList, currentIndexTime, buffered]);
+    return React__default.createElement("div", {
+      className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
+    }, React__default.createElement(IconFont, {
+      type: "lm-player-PrevFast",
+      onClick: api.backWind,
+      className: "time-line-action-item"
+    }), React__default.createElement(Slider, {
+      className: "time-line-box",
+      currentPercent: isEnd ? '100' : playPercent,
+      availablePercent: bufferedPercent,
+      onChange: changePlayTime,
+      renderTips: renderTimeLineTips
+    }, React__default.createElement(React__default.Fragment, null, lineList.map((v, i) => {
+      const currentSizeLine = lineList.filter((v, i2) => i2 < i).map(v => v.size);
+      const currentIndexSize = currentSizeLine.length === 0 ? 0 : currentSizeLine.length > 1 ? currentSizeLine.reduce((p, c) => p + c) : currentSizeLine[0];
+      return React__default.createElement("div", {
+        className: `history-time-line-item ${v.disabled ? 'history-time-line-disabled' : ''}`,
+        key: i,
+        style: {
+          width: `${v.size}%`,
+          left: `${currentIndexSize}%`
+        }
+      });
+    }))), React__default.createElement(IconFont, {
+      type: "lm-player-NextFast_Light",
+      onClick: api.fastForward,
+      className: "time-line-action-item"
+    }));
+  }
+
+  TineLine$1.propTypes = {
+    event: PropTypes.object,
+    api: PropTypes.object,
+    changePlayIndex: PropTypes.func,
+    playIndex: PropTypes.number,
+    historyList: PropTypes.array,
+    seekTo: PropTypes.func,
+    visibel: PropTypes.bool
+  };
+
+  /**
+   * history下使用 用户切换下个播放地址
+   */
+
+  function PlayEnd({
+    event,
+    changePlayIndex,
+    playIndex
+  }) {
+    React.useEffect(() => {
+      const endedHandle = () => changePlayIndex(playIndex + 1);
+
+      event.addEventListener('ended', endedHandle, false);
+      return () => {
+        event.removeEventListener('ended', endedHandle, false);
+      };
+    }, [event, playIndex]);
+    return React__default.createElement(React__default.Fragment, null);
+  }
+
+  PlayEnd.propTypes = {
+    event: PropTypes.object,
+    changePlayIndex: PropTypes.func,
+    playIndex: PropTypes.number
+  };
+
+  const computedIndexFormTime = (historyList, time) => {
+    return historyList.fragments.findIndex(v => v.end > time);
+  };
+
+  const computedTimeAndIndex = (historyList, currentTime) => {
+    const index = computedIndexFormTime(historyList, currentTime);
+    const fragment = historyList.fragments[index];
+
+    if (!fragment) {
+      return [0, 0];
+    }
+
+    const seekTime = currentTime - fragment.begin - 1;
+    return [index, seekTime];
+  };
+
+  function HistoryPlayer({
+    type,
+    historyList,
+    defaultTime,
+    className,
+    autoPlay,
+    muted,
+    poster,
+    playsinline,
+    loop,
+    preload,
+    children,
+    onInitPlayer,
+    ...props
+  }) {
+    const playContainerRef = React.useRef(null);
+    const [playerObj, setPlayerObj] = React.useState(null);
+    const [playStatus, setPlayStatus] = React.useState(() => computedTimeAndIndex(historyList, defaultTime));
+    const file = React.useMemo(() => {
+      let url;
+
+      try {
+        url = historyList.fragments[playStatus[0]].file;
+      } catch (e) {
+        console.warn('未找打播放地址！', e);
+      }
+
+      return url;
+    }, [historyList, playStatus[0]]);
+    /**
+     * 重写api下的seekTo方法
+     */
+
+    const seekTo = React.useCallback(currentTime => {
+      const [index, seekTime] = computedTimeAndIndex(historyList, currentTime);
+
+      if (index !== undefined && playerObj.event && playerObj.api) {
+        setPlayStatus([index, seekTime]);
+        playerObj.api.seekTo(seekTime, true);
+        playerObj.event.emit(EventName.SEEK, currentTime);
+      }
+    }, [playerObj, playerObj, historyList]);
+    const changePlayIndex = React.useCallback(index => {
+      if (index > historyList.fragments.length - 1) {
+        return playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END);
+      }
+
+      if (playerObj.event) {
+        playerObj.event.emit(EventName.CHANGE_PLAY_INDEX, index);
+      }
+
+      setPlayStatus([index, 0]);
+    }, [playerObj]);
+    const reloadHistory = React.useCallback(() => {
+      setPlayStatus([0, 0]);
+      playerObj.event.emit(EventName.RELOAD);
+    }, [playerObj]);
+    React.useEffect(() => {
+      if (!file) {
+        return;
+      }
+
+      const seekTime = playStatus[1];
+      const playerObject = {
+        playContainer: playContainerRef.current,
+        video: playContainerRef.current.querySelector('video')
+      };
+      const formartType = getVideoType(file);
+
+      if (formartType === 'flv' || type === 'flv') {
+        playerObject.flv = createFlvPlayer(playerObject.video, { ...props,
+          file
+        });
+      }
+
+      if (formartType === 'm3u8' || type === 'hls') {
+        playerObject.hls = createHlsPlayer(playerObject.video, file);
+      }
+
+      if (formartType === 'mp4' || type === 'native') {
+        playerObject.video.src = file;
+      }
+
+      playerObject.event = new VideoEventInstance(playerObject.video);
+      playerObject.api = new Api(playerObject);
+      setPlayerObj(playerObject);
+
+      if (seekTime) {
+        playerObject.api.seekTo(seekTime);
+      }
+
+      if (onInitPlayer) {
+        onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), {
+          seekTo,
+          changePlayIndex,
+          reload: reloadHistory
+        }));
+      }
+    }, [playStatus, historyList, file]);
+    /**
+     * 根据时间计算当前对应的播放索引
+     */
+
+    return React__default.createElement("div", {
+      className: `lm-player-container ${className}`,
+      ref: playContainerRef
+    }, React__default.createElement("div", {
+      className: "player-mask-layout"
+    }, React__default.createElement("video", {
+      autoPlay: autoPlay,
+      preload: preload,
+      muted: muted,
+      poster: poster,
+      controls: false,
+      playsInline: playsinline,
+      loop: loop
+    })), React__default.createElement(VideoTools$1, {
+      playerObj: playerObj,
+      isLive: props.isLive,
+      hideContrallerBar: props.hideContrallerBar,
+      errorReloadTimer: props.errorReloadTimer,
+      scale: props.scale,
+      snapshot: props.snapshot,
+      leftExtContents: props.leftExtContents,
+      leftMidExtContents: props.leftMidExtContents,
+      rightExtContents: props.rightExtContents,
+      rightMidExtContents: props.rightMidExtContents,
+      draggable: props.draggable,
+      changePlayIndex: changePlayIndex,
+      reloadHistory: reloadHistory,
+      historyList: historyList,
+      playIndex: playStatus[0],
+      seekTo: seekTo
+    }), children);
+  }
+
+  function VideoTools$1({
+    playerObj,
+    draggable,
+    isLive,
+    hideContrallerBar,
+    scale,
+    snapshot,
+    leftExtContents,
+    leftMidExtContents,
+    rightExtContents,
+    rightMidExtContents,
+    errorReloadTimer,
+    changePlayIndex,
+    reloadHistory,
+    historyList,
+    seekTo,
+    playIndex
+  }) {
+    if (!playerObj) {
+      return React__default.createElement(NoSource, null);
+    }
+
+    return React__default.createElement(React__default.Fragment, null, React__default.createElement(VideoMessage, {
+      api: playerObj.api,
+      event: playerObj.event
+    }), draggable && React__default.createElement(DragEvent, {
+      playContainer: playerObj.playContainer,
+      api: playerObj.api,
+      event: playerObj.event
+    }), !hideContrallerBar && React__default.createElement(ContrallerEvent, {
+      event: playerObj.event,
+      playContainer: playerObj.playContainer
+    }, React__default.createElement(ContrallerBar, {
+      api: playerObj.api,
+      event: playerObj.event,
+      playContainer: playerObj.playContainer,
+      video: playerObj.video,
+      snapshot: snapshot,
+      rightExtContents: rightExtContents,
+      rightMidExtContents: rightMidExtContents,
+      scale: scale,
+      isHistory: true,
+      isLive: isLive,
+      leftExtContents: leftExtContents,
+      leftMidExtContents: leftMidExtContents,
+      reloadHistory: reloadHistory
+    }), React__default.createElement(TineLine$1, {
+      changePlayIndex: changePlayIndex,
+      historyList: historyList,
+      playIndex: playIndex,
+      seekTo: seekTo,
+      api: playerObj.api,
+      event: playerObj.event
+    })), React__default.createElement(ErrorEvent, {
+      changePlayIndex: changePlayIndex,
+      playIndex: playIndex,
+      isHistory: true,
+      flv: playerObj.flv,
+      hls: playerObj.hls,
+      api: playerObj.api,
+      event: playerObj.event,
+      errorReloadTimer: errorReloadTimer
+    }), React__default.createElement(PlayEnd, {
+      event: playerObj.event,
+      changePlayIndex: changePlayIndex,
+      playIndex: playIndex
+    }));
+  }
+
+  HistoryPlayer.propTypes = {
+    historyList: PropTypes.object.isRequired,
+    //播放地址 必填
+    errorReloadTimer: PropTypes.number,
+    //视频错误重连次数
+    type: PropTypes.oneOf(['flv', 'hls', 'native']),
+    //强制视频流类型
+    onInitPlayer: PropTypes.func,
+    isDraggable: PropTypes.bool,
+    isScale: PropTypes.bool,
+    muted: PropTypes.string,
+    autoPlay: PropTypes.bool,
+    playsInline: PropTypes.bool,
+    preload: PropTypes.string,
+    poster: PropTypes.string,
+    loop: PropTypes.bool,
+    defaultTime: PropTypes.number,
+    className: PropTypes.string,
+    playsinline: PropTypes.bool,
+    children: PropTypes.any,
+    autoplay: PropTypes.bool
+  };
+  HistoryPlayer.defaultProps = {
+    draggable: true,
+    scale: true,
+    errorReloadTimer: 5,
+    muted: 'muted',
+    autoPlay: true,
+    playsInline: false,
+    preload: 'auto',
+    loop: false,
+    defaultTime: 0,
+    historyList: {
+      beginDate: 0,
+      duration: 0,
+      fragments: []
+    }
+  };
+
+  function createPlayer({
+    container,
+    children,
+    onInitPlayer,
+    ...props
+  }) {
+    ReactDOM.render(React__default.createElement(SinglePlayer, _extends({}, props, {
+      onInitPlayer: player => {
+        player.destroy = function () {
+          ReactDOM.unmountComponentAtNode(container);
+        };
+
+        onInitPlayer && onInitPlayer(player);
+      }
+    }), children), container);
+  }
+  function createHistoryPlayer({
+    container,
+    children,
+    onInitPlayer,
+    ...props
+  }) {
+    ReactDOM.render(React__default.createElement(HistoryPlayer, _extends({}, props, {
+      onInitPlayer: player => {
+        player.destroy = function () {
+          ReactDOM.unmountComponentAtNode(container);
+        };
+
+        onInitPlayer && onInitPlayer(player);
+      }
+    }), children), container);
+  }
+
   exports.Bar = Bar;
+  exports.HistoryPlayer = HistoryPlayer;
   exports.Player = SinglePlayer;
+  exports.createHistoryPlayer = createHistoryPlayer;
+  exports.createPlayer = createPlayer;
   exports.default = SinglePlayer;
 
   Object.defineProperty(exports, '__esModule', { value: true });

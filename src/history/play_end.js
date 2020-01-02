@@ -2,27 +2,18 @@
  * history下使用 用户切换下个播放地址
  */
 
-import React from 'react'
-import { videoDec } from '../context'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-@videoDec
-class PlayEnd extends React.Component {
-  componentDidMount() {
-    const { event } = this.props
-    event.addEventListener('ended', this.endedHandle, false)
-  }
-  componentWillUnmount() {
-    const { event } = this.props
-    event.removeEventListener('ended', this.endedHandle, false)
-  }
-  endedHandle = () => {
-    let index = this.props.playIndex
-    this.props.changePlayIndex(index + 1)
-  }
-  render() {
-    return null
-  }
+function PlayEnd({ event, changePlayIndex, playIndex }) {
+  useEffect(() => {
+    const endedHandle = () => changePlayIndex(playIndex + 1)
+    event.addEventListener('ended', endedHandle, false)
+    return () => {
+      event.removeEventListener('ended', endedHandle, false)
+    }
+  }, [event, playIndex])
+  return <></>
 }
 
 PlayEnd.propTypes = {

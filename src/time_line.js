@@ -44,14 +44,11 @@ function TineLine({ event, api, visibel }) {
     [duration, api]
   )
 
-  const renderTimeLineTips = useCallback(
-    percent => {
-      const currentTime = percent * duration
-      const time = timeStamp(currentTime)
-      return <span>{time}</span>
-    },
-    [duration]
-  )
+  const renderTimeLineTips = percent => {
+    const currentTime = percent * duration
+    const time = timeStamp(currentTime)
+    return <span>{time}</span>
+  }
 
   return (
     <div className={`video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`}>

@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { Provider } from '../context'
 import ContrallerBar from '../contraller_bar'
 import VideoMessage, { NoSource } from '../message'
 import HistoryTimeLine from './time_line_history'
@@ -11,243 +10,193 @@ import VideoEvent from '../event'
 import PlayEnd from './play_end'
 import EventName from '../event/eventName'
 import ContrallerEvent from '../event/contrallerEvent'
-import { getVideoType, createFlvPlayer, createHlsPlayer, getRandom } from '../util'
+import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util'
 
-class HistoryPlayer extends React.Component {
-  constructor(props) {
-    super(props)
-    this.playIndex = 0
-    this.player = null
-    this.event = null
-    this.flv = null
-    this.hls = null
-    this.playContainerRef = React.createRef()
-    this.playContainer = null
-    this.state = {
-      playChange: false,
-      historyList: []
-    }
+const computedIndexFormTime = (historyList, time) => {
+  return historyList.fragments.findIndex(v => v.end > time)
+}
+const computedTimeAndIndex = (historyList, currentTime) => {
+  const index = computedIndexFormTime(historyList, currentTime)
+  const fragment = historyList.fragments[index]
+  if (!fragment) {
+    return [0, 0]
   }
-  static getDerivedStateFromProps(props, state) {
-    if (props.historyList !== state.historyList) {
-      return { historyList: props.historyList, playChange: true }
-    }
-    return null
-  }
-  componentDidMount() {
-    this.playContainer = this.playContainerRef.current
-    this.player = this.playContainer.querySelector('video')
-    this.isInit = true
-    this.createPlayer()
-  }
+  const seekTime = currentTime - fragment.begin - 1
+  return [index, seekTime]
+}
 
-  componentDidUpdate() {
-    if (this.state.playChange) {
-      this.setState({ playChange: false })
-      this.playIndex = 0
-      this.createPlayer()
-    }
-  }
-  componentWillUnmount() {
-    this.event && this.event.destroy()
-    this.api && this.api.destroy()
-    this.player = null
-    this.event = null
-    this.api = null
-    this.playContainerRef = null
-    this.playContainer = null
-    this.flv = null
-    this.hls = null
-  }
+function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, muted, poster, playsinline, loop, preload, children, onInitPlayer, ...props }) {
+  const playContainerRef = useRef(null)
+  const [playerObj, setPlayerObj] = useState(null)
+  const [playStatus, setPlayStatus] = useState(() => computedTimeAndIndex(historyList, defaultTime))
 
-  createPlayer() {
-    const { defaultTime, historyList } = this.props
-    const isInit = this.changePlayIndex(this.playIndex)
-    if (!isInit) {
-      return
+  const file = useMemo(() => {
+    let url
+    try {
+      url = historyList.fragments[playStatus[0]].file
+    } catch (e) {
+      console.warn('未找打播放地址！', e)
     }
-    this.event = new VideoEvent(this.player)
-    this.api = new Api(this.player, this.playContainer, this.event, this.flv, this.hls)
-    this.props.onInitPlayer && this.props.onInitPlayer(this.getPlayerApiContext())
-
-    if (defaultTime) {
-      this.seekTo((defaultTime - historyList.beginDate) / 1000)
-    }
-  }
-
-  initPlayer = index => {
-    const { historyList } = this.props
-    if (!historyList || !historyList.fragments[index] || !historyList.fragments[index].file) {
-      return null
-    }
-    if (this.flv) {
-      this.flv.unload()
-      this.flv.destroy()
-    }
-    if (this.hls) {
-      this.hls.stopLoad()
-      this.hls.destroy()
-    }
-    this.playIndex = index
-    const type = getVideoType(historyList.fragments[index].file)
-    if (type === 'flv' || this.props.type === 'flv') {
-      this.flv = createFlvPlayer(this.player, {
-        file: historyList.fragments[index].file
-      })
-      this.api && this.api.updateChunk({ flv: this.flv })
-      return this.forceUpdate()
-    }
-    if (type === 'm3u8' || this.props.type === 'hls') {
-      this.hls = createHlsPlayer(this.player, historyList.fragments[index].file)
-      this.api && this.api.updateChunk({ hls: this.hls })
-      return this.forceUpdate()
-    }
-    this.player.src = historyList.fragments[index].file
-    return this.forceUpdate()
-  }
-  /**
-   * @历史视频
-   * @专用修改历史视频播放的索引
-   */
-  changePlayIndex = index => {
-    const { historyList } = this.props
-    if (!historyList || !historyList.fragments[index]) {
-      this.event && this.event.emit(EventName.HISTORY_PLAY_END)
-      return false
-    }
-    if (!historyList.fragments[index].file) {
-      this.changePlayIndex(index + 1)
-    } else {
-      this.initPlayer(index)
-    }
-    this.api && this.api.play()
-    this.event && this.event.emit(EventName.CHANGE_PLAY_INDEX, index)
-    return true
-  }
-
-  /**
-   * 覆盖Player中暴漏的api，重写seek相关的方法
-   */
-  getPlayerApiContext = () => {
-    if (this.api && this.event) {
-      return Object.assign({}, this.api.getApi(), this.event.getApi(), { seekTo: this.seekTo })
-    }
-    return {}
-  }
-
-  /**
-   * 根据时间计算当前对应的播放索引
-   */
-  computedIndexFormTime = time => {
-    const { historyList } = this.props
-    return historyList.fragments.findIndex(v => v.end > time)
-  }
+    return url
+  }, [historyList, playStatus[0]])
 
   /**
    * 重写api下的seekTo方法
    */
-  seekTo = currentTime => {
-    const { historyList } = this.props
-    const playIndex = this.computedIndexFormTime(currentTime)
-    const fragment = historyList.fragments[playIndex]
-    if (!fragment) {
+  const seekTo = useCallback(
+    currentTime => {
+      const [index, seekTime] = computedTimeAndIndex(historyList, currentTime)
+      if (index !== undefined && playerObj.event && playerObj.api) {
+        setPlayStatus([index, seekTime])
+        playerObj.api.seekTo(seekTime, true)
+        playerObj.event.emit(EventName.SEEK, currentTime)
+      }
+    },
+    [playerObj, playerObj, historyList]
+  )
+
+  const changePlayIndex = useCallback(
+    index => {
+      if (index > historyList.fragments.length - 1) {
+        return playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END)
+      }
+      if (playerObj.event) {
+        playerObj.event.emit(EventName.CHANGE_PLAY_INDEX, index)
+      }
+      setPlayStatus([index, 0])
+    },
+    [playerObj]
+  )
+
+  const reloadHistory = useCallback(() => {
+    setPlayStatus([0, 0])
+    playerObj.event.emit(EventName.RELOAD)
+  }, [playerObj])
+
+  useEffect(() => {
+    if (!file) {
       return
     }
-    const seekTime = currentTime - fragment.begin - 1
-    this.api && this.api.pause()
-    if (playIndex !== this.playIndex || !this.api) {
-      this.changePlayIndex(playIndex)
+    const seekTime = playStatus[1]
+    const playerObject = {
+      playContainer: playContainerRef.current,
+      video: playContainerRef.current.querySelector('video')
     }
-    this.api.seekTo(seekTime, true)
-    this.event.emit(EventName.SEEK, currentTime)
-  }
+    const formartType = getVideoType(file)
+    if (formartType === 'flv' || type === 'flv') {
+      playerObject.flv = createFlvPlayer(playerObject.video, { ...props, file })
+    }
+    if (formartType === 'm3u8' || type === 'hls') {
+      playerObject.hls = createHlsPlayer(playerObject.video, file)
+    }
+    if (formartType === 'mp4' || type === 'native') {
+      playerObject.video.src = file
+    }
+    playerObject.event = new VideoEvent(playerObject.video)
+    playerObject.api = new Api(playerObject)
+    setPlayerObj(playerObject)
+    if (seekTime) {
+      playerObject.api.seekTo(seekTime)
+    }
+    if (onInitPlayer) {
+      onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), { seekTo, changePlayIndex, reload: reloadHistory }))
+    }
+  }, [playStatus, historyList, file])
 
   /**
-   * 重写reload方法
+   * 根据时间计算当前对应的播放索引
    */
-  reloadHistory = () => {
-    this.changePlayIndex(0)
-    this.api.seekTo(0)
-    this.event.emit(EventName.RELOAD)
-    this.api.play()
-  }
-  /**
-   * 覆盖Player中的context的value，新增一些历史视频专用的方法
-   */
-  getProvider = () => {
-    return {
-      video: this.player,
-      event: this.event,
-      playerProps: this.props,
-      api: this.api,
-      playContainer: this.playContainer,
-      changePlayIndex: this.changePlayIndex,
-      playIndex: this.playIndex,
-      historyList: this.props.historyList,
-      seekTo: this.seekTo,
-      isHistory: true,
-      reloadHistory: this.reloadHistory
-    }
-  }
-  renderVideoTools = () => {
-    const file = this.getCurrentFile()
-    if (this.isInit && file && this.api && this.event) {
-      return (
-        <>
-          <VideoMessage />
-          <ErrorEvent flvPlayer={this.flv} hlsPlayer={this.hls} key={file} />
-          <DragEvent />
-          <ContrallerEvent>
-            <ContrallerBar />
-            <HistoryTimeLine />
-          </ContrallerEvent>
-          <PlayEnd />
-        </>
-      )
-    }
+
+  return (
+    <div className={`lm-player-container ${className}`} ref={playContainerRef}>
+      <div className="player-mask-layout">
+        <video autoPlay={autoPlay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
+      </div>
+      <VideoTools
+        playerObj={playerObj}
+        isLive={props.isLive}
+        hideContrallerBar={props.hideContrallerBar}
+        errorReloadTimer={props.errorReloadTimer}
+        scale={props.scale}
+        snapshot={props.snapshot}
+        leftExtContents={props.leftExtContents}
+        leftMidExtContents={props.leftMidExtContents}
+        rightExtContents={props.rightExtContents}
+        rightMidExtContents={props.rightMidExtContents}
+        draggable={props.draggable}
+        changePlayIndex={changePlayIndex}
+        reloadHistory={reloadHistory}
+        historyList={historyList}
+        playIndex={playStatus[0]}
+        seekTo={seekTo}
+      />
+      {children}
+    </div>
+  )
+}
+
+function VideoTools({
+  playerObj,
+  draggable,
+  isLive,
+  hideContrallerBar,
+  scale,
+  snapshot,
+  leftExtContents,
+  leftMidExtContents,
+  rightExtContents,
+  rightMidExtContents,
+  errorReloadTimer,
+  changePlayIndex,
+  reloadHistory,
+  historyList,
+  seekTo,
+  playIndex
+}) {
+  if (!playerObj) {
     return <NoSource />
   }
-  getErrorKey() {
-    return this.getCurrentFile() || getRandom()
-  }
-
-  getCurrentFile() {
-    let file
-    try {
-      file = this.props.historyList.fragments[this.playIndex].file
-    } catch (error) {
-      console.warn(error)
-    }
-    return file
-  }
-
-  render() {
-    const { autoplay, poster, preload, muted = 'muted', loop = false, className = '', playsinline = false } = this.props
-    const providerValue = this.getProvider()
-    const file = this.getCurrentFile()
-    return (
-      <div className={`lm-player-container ${className}`} ref={this.playContainerRef}>
-        <div className="player-mask-layout">
-          <video
-            autoPlay={autoplay && !!file}
-            preload={preload}
-            muted={muted}
-            poster={poster}
-            controls={false}
-            playsInline={playsinline}
-            loop={loop}
+  return (
+    <>
+      <VideoMessage api={playerObj.api} event={playerObj.event} />
+      {draggable && <DragEvent playContainer={playerObj.playContainer} api={playerObj.api} event={playerObj.event} />}
+      {!hideContrallerBar && (
+        <ContrallerEvent event={playerObj.event} playContainer={playerObj.playContainer}>
+          <ContrallerBar
+            api={playerObj.api}
+            event={playerObj.event}
+            playContainer={playerObj.playContainer}
+            video={playerObj.video}
+            snapshot={snapshot}
+            rightExtContents={rightExtContents}
+            rightMidExtContents={rightMidExtContents}
+            scale={scale}
+            isHistory={true}
+            isLive={isLive}
+            leftExtContents={leftExtContents}
+            leftMidExtContents={leftMidExtContents}
+            reloadHistory={reloadHistory}
           />
-        </div>
-        <Provider value={providerValue}>{this.renderVideoTools()}</Provider>
-        {this.props.children}
-      </div>
-    )
-  }
+          <HistoryTimeLine changePlayIndex={changePlayIndex} historyList={historyList} playIndex={playIndex} seekTo={seekTo} api={playerObj.api} event={playerObj.event} />
+        </ContrallerEvent>
+      )}
+      <ErrorEvent
+        changePlayIndex={changePlayIndex}
+        playIndex={playIndex}
+        isHistory={true}
+        flv={playerObj.flv}
+        hls={playerObj.hls}
+        api={playerObj.api}
+        event={playerObj.event}
+        errorReloadTimer={errorReloadTimer}
+      />
+      <PlayEnd event={playerObj.event} changePlayIndex={changePlayIndex} playIndex={playIndex} />
+    </>
+  )
 }
 
 HistoryPlayer.propTypes = {
   historyList: PropTypes.object.isRequired, //播放地址 必填
-  isLive: PropTypes.bool, //是否实时视频
   errorReloadTimer: PropTypes.number, //视频错误重连次数
   type: PropTypes.oneOf(['flv', 'hls', 'native']), //强制视频流类型
   onInitPlayer: PropTypes.func,
@@ -266,16 +215,16 @@ HistoryPlayer.propTypes = {
   autoplay: PropTypes.bool
 }
 HistoryPlayer.defaultProps = {
-  isLive: true,
-  isDraggable: true,
-  isScale: true,
+  draggable: true,
+  scale: true,
   errorReloadTimer: 5,
   muted: 'muted',
   autoPlay: true,
   playsInline: false,
   preload: 'auto',
   loop: false,
-  defaultTime: 0
+  defaultTime: 0,
+  historyList: { beginDate: 0, duration: 0, fragments: [] }
 }
 
 export default HistoryPlayer
