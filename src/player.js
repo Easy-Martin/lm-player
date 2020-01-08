@@ -110,7 +110,7 @@ function VideoTools({
         </ContrallerEvent>
       )}
       <ErrorEvent flv={playerObj.flv} hls={playerObj.hls} api={playerObj.api} event={playerObj.event} errorReloadTimer={errorReloadTimer} />
-      {isLive && <LiveHeart api={playerObj.api} event={playerObj.event} />}
+      {isLive && <LiveHeart api={playerObj.api} />}
     </>
   )
 }

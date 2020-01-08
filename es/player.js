@@ -1534,31 +1534,6 @@ class Api {
 
 }
 
-const videoContext = React.createContext(null);
-const Provider = videoContext.Provider;
-const Consumer = videoContext.Consumer;
-function videoDec(Component) {
-  class ComponentWithVideoDec extends React.Component {
-    render() {
-      const {
-        forwardRef,
-        ...props
-      } = this.props;
-      return React.createElement(Consumer, null, context => React.createElement(Component, _extends({}, props, context, {
-        ref: forwardRef
-      })));
-    }
-
-  }
-
-  ComponentWithVideoDec.propTypes = {
-    forwardRef: PropTypes.ref
-  };
-  return React.forwardRef((props, ref) => React.createElement(ComponentWithVideoDec, _extends({}, props, {
-    forwardRef: ref
-  })));
-}
-
 function getHiddenProp() {
   const prefixes = ["webkit", "moz", "ms", "o"]; // 如果hidden 属性是原生支持的，我们就直接返回
 
@@ -1617,65 +1592,29 @@ var BrowserTab = {
   visibilityState
 };
 
-var _class, _temp;
+function LiveHeart({
+  api
+}) {
+  useEffect(() => {
+    const browserTabChange = function () {
+      if (BrowserTab.visibilityState() === 'visible') {
+        const current = api.getCurrentTime();
+        const buffered = api.getSecondsLoaded();
 
-let LiveHeart = videoDec(_class = (_temp = class LiveHeart extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.browserTabChange = () => {
-      if (BrowserTab.visibilityState() === "visible") {
-        this.focusSeekAction();
+        if (buffered - current > 5) {
+          console.warn(`当前延时过大current->${current} buffered->${buffered}, 基于视频当前缓存时间更新当前播放时间 updateTime -> ${buffered - 2}`);
+          api.seekTo(buffered - 2 > 0 ? buffered - 2 : 0);
+        }
       }
     };
 
-    this.canplay = () => {
-      const {
-        api
-      } = this.props;
-      this.isCanPlay = true;
-      api.play();
+    BrowserTab.addEventListener(browserTabChange);
+    return () => {
+      BrowserTab.removeEventListener(browserTabChange);
     };
-
-    this.focusSeekAction = () => {
-      const {
-        api
-      } = this.props;
-      const current = api.getCurrentTime();
-      const buffered = api.getSecondsLoaded();
-
-      if (buffered - current > 5) {
-        console.warn(`当前延时过大current->${current} buffered->${buffered}, 基于视频当前缓存时间更新当前播放时间 updateTime -> ${buffered - 2}`);
-        api.seekTo(buffered - 2 > 0 ? buffered - 2 : 0);
-      }
-    };
-
-    this.timer = null;
-    this.isCanPlay = false;
-  }
-
-  componentDidMount() {
-    const {
-      event
-    } = this.props;
-    BrowserTab.addEventListener(this.browserTabChange);
-    event.addEventListener("canplay", this.canplay);
-  }
-
-  componentWillUnmount() {
-    BrowserTab.removeEventListener(this.browserTabChange);
-  }
-
-  render() {
-    return null;
-  }
-
-}, _temp)) || _class;
-
-LiveHeart.propTypes = {
-  api: PropTypes.object,
-  event: PropTypes.object
-};
+  }, [api]);
+  return React.createElement(React.Fragment, null);
+}
 
 function SinglePlayer({
   type,
@@ -1810,8 +1749,7 @@ function VideoTools({
     event: playerObj.event,
     errorReloadTimer: errorReloadTimer
   }), isLive && React.createElement(LiveHeart, {
-    api: playerObj.api,
-    event: playerObj.event
+    api: playerObj.api
   }));
 }
 
