@@ -13,15 +13,26 @@ import ContrallerEvent from '../event/contrallerEvent'
 import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util'
 
 const computedIndexFormTime = (historyList, time) => {
-  return historyList.fragments.findIndex(v => v.end > time)
+  let index = 0
+  try {
+    index = historyList.fragments.findIndex(v => v.end > time)
+  } catch (e) {
+    console.error('historyList data error', historyList)
+  }
+  return index
 }
 const computedTimeAndIndex = (historyList, currentTime) => {
   const index = computedIndexFormTime(historyList, currentTime)
-  const fragment = historyList.fragments[index]
-  if (!fragment) {
-    return [0, 0]
+  let seekTime = 0
+  try {
+    const fragment = historyList.fragments[index]
+    if (!fragment) {
+      return [0, 0]
+    }
+    seekTime = currentTime - fragment.begin - 1
+  } catch (e) {
+    console.error('historyList data error', historyList)
   }
-  const seekTime = currentTime - fragment.begin - 1
   return [index, seekTime]
 }
 

@@ -13,34 +13,92 @@
     <script src="https://cdn.bootcss.com/hls.js/8.0.0-beta.3/hls.min.js"></script>
 
     <script src="../umd/player.js"></script>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+    </style>
     <link rel="stylesheet" href="../umd/player.css" />
   </head>
   <body>
     <div id="app"></div>
-    <script src="./data.js"></script>
+    <script src="./utils.js"></script>
     <script type="text/babel">
       const app = document.getElementById('app')
       const Player = LMPlayer.Player
       const HistoryPlayer = LMPlayer.HistoryPlayer
-      const playList = formatHistoryList(historyList, historyList[0].beginTime, historyList[historyList.length - 1].endTime)
-
-      const RootCompoent = () => (
-        <div style={{ display: 'flex' }}>
-          <div style={{ width: 800, height: 600 }}>
-            <Player
-              type="flv"
-              file="https://jxsr-eye.antelopecloud.cn/staticResource/v2/video/live.flv/538470642?Authorization=eyJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb25JZCI6IjEwMDEwMTAwMDQ0NSIsImV4dCI6MTYwOTQ2MzU1NjY4MSwidWlkIjoiMTAxMDAwMDAwNjk5IiwidmFsaWRTdGF0ZSI6MTA0NDA2LCJyb2xlSWQiOlsxMDAwMDAxMTA1MThdLCJ2YWxpZFRpbWUiOjE1NzkyNzY3OTkwMDAsIm9wdENlbnRlcklkIjoiMTAwMTAwMDAwMjMzIiwidXNlclR5cGUiOjEwMDcwNCwiaWF0IjoxNTc3OTI3NTU2NjgxfQ.vVtJcXiTulvD0cSzbuWRTlL3V5wfQkpgiWIlfjEmsh0"
-            />
+      const { useState, useRef } = React
+      const options = [
+        { value: '', label: '自动' },
+        { value: 'flv', label: 'FLV' },
+        { value: 'hls', label: 'HLS' }
+      ]
+      const RootCompoent = () => {
+        const liveInputRef = useRef(null)
+        const historyInputRef = useRef(null)
+        const [file, setFile] = useState(null)
+        const [playList, setPlayList] = useState(null)
+        const [liveType, setLiveType] = useState('')
+        const [historyType, setHistoryType] = useState('')
+        return (
+          <div style={{ width: '100%', padding: 20 }}>
+            <div style={{ width: 800, margin: '0 auto 40px auto' }}>
+              <h2 style={{ marginBottom: 10 }}>SinglePlayer适用直播 或者其他单文件播放 支持flv m3u8</h2>
+              <div style={{ marginBottom: 10, display: 'flex' }}>
+                <select
+                  onChange={e => {
+                    const index = e.target.selectedIndex
+                    setLiveType(options[index].value)
+                  }}
+                >
+                  {options.map(v =>
+                    liveType === v.value ? (
+                      <option value={v.value} selected>
+                        {v.label}
+                      </option>
+                    ) : (
+                      <option value={v.value}>{v.label}</option>
+                    )
+                  )}
+                </select>
+                <input ref={liveInputRef} style={{ flex: 1, height: 32 }} type="text" placeholder="请输入视频地址" />
+                <button style={{ width: 60, height: 32 }} onClick={e => setFile(liveInputRef.current.value)}>
+                  播放
+                </button>
+              </div>
+              <Player type={liveType} file={file} />
+            </div>
+            <div style={{ width: 800, margin: '0 auto 40px auto' }}>
+              <h2 style={{ marginBottom: 10 }}>HistoryPlayer适用多地址拼凑一个播放 特殊场景使用</h2>
+              <div style={{ marginBottom: 10, display: 'flex' }}>
+                <select
+                  onChange={e => {
+                    const index = e.target.selectedIndex
+                    setHistoryType(options[index].value)
+                  }}
+                >
+                  {options.map(v =>
+                    historyType === v.value ? (
+                      <option value={v.value} selected>
+                        {v.label}
+                      </option>
+                    ) : (
+                      <option value={v.value}>{v.label}</option>
+                    )
+                  )}
+                </select>
+                <input ref={historyInputRef} style={{ flex: 1, height: 32 }} type="text" placeholder="请输入视频地址" />
+                <button style={{ width: 60, height: 32 }} onClick={e => setPlayList(() => formatHistoryList(JSON.parse(liveInputRef.current.value)))}>
+                  播放
+                </button>
+              </div>
+              <HistoryPlayer type={historyType} historyList={playList} />
+            </div>
           </div>
-          <div style={{ width: 800, height: 600 }}>
-            <HistoryPlayer
-              type="hls"
-              file="https://jxsr-eye.antelopecloud.cn/staticResource/v2/video/live.flv/538470642?Authorization=eyJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb25JZCI6IjEwMDEwMTAwMDQ0NSIsImV4dCI6MTYwOTQ2MzU1NjY4MSwidWlkIjoiMTAxMDAwMDAwNjk5IiwidmFsaWRTdGF0ZSI6MTA0NDA2LCJyb2xlSWQiOlsxMDAwMDAxMTA1MThdLCJ2YWxpZFRpbWUiOjE1NzkyNzY3OTkwMDAsIm9wdENlbnRlcklkIjoiMTAwMTAwMDAwMjMzIiwidXNlclR5cGUiOjEwMDcwNCwiaWF0IjoxNTc3OTI3NTU2NjgxfQ.vVtJcXiTulvD0cSzbuWRTlL3V5wfQkpgiWIlfjEmsh0"
-              historyList={playList}
-            />
-          </div>
-        </div>
-      )
+        )
+      }
       ReactDOM.render(<RootCompoent />, app)
     </script>
   </body>
