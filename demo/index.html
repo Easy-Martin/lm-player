@@ -12,7 +12,7 @@
     <script src="./flv.min.js"></script>
     <script src="https://cdn.bootcss.com/hls.js/8.0.0-beta.3/hls.min.js"></script>
 
-    <script src="./player.js"></script>
+    <script src="../umd/player.js"></script>
     <style>
       * {
         padding: 0;
@@ -20,37 +20,39 @@
         box-sizing: border-box;
       }
     </style>
-    <link rel="stylesheet" href="./player.css" />
+    <link rel="stylesheet" href="../umd/player.css" />
   </head>
   <body>
     <div id="app"></div>
     <script src="./utils.js"></script>
     <script type="text/babel">
-      const app = document.getElementById('app')
-      const Player = LMPlayer.Player
-      const HistoryPlayer = LMPlayer.HistoryPlayer
-      const { useState, useRef } = React
+      const app = document.getElementById("app");
+      const Player = LMPlayer.Player;
+      const HistoryPlayer = LMPlayer.HistoryPlayer;
+      const { useState, useRef } = React;
       const options = [
-        { value: '', label: '自动' },
-        { value: 'flv', label: 'FLV' },
-        { value: 'hls', label: 'HLS' }
-      ]
+        { value: "", label: "自动" },
+        { value: "flv", label: "FLV" },
+        { value: "hls", label: "HLS" }
+      ];
       const RootCompoent = () => {
-        const liveInputRef = useRef(null)
-        const historyInputRef = useRef(null)
-        const [file, setFile] = useState(null)
-        const [playList, setPlayList] = useState(null)
-        const [liveType, setLiveType] = useState('')
-        const [historyType, setHistoryType] = useState('')
+        const liveInputRef = useRef(null);
+        const historyInputRef = useRef(null);
+        const [file, setFile] = useState(null);
+        const [playList, setPlayList] = useState(null);
+        const [liveType, setLiveType] = useState("");
+        const [historyType, setHistoryType] = useState("");
         return (
-          <div style={{ width: '100%', padding: 20 }}>
-            <div style={{ width: 800, margin: '0 auto 40px auto' }}>
-              <h2 style={{ marginBottom: 10 }}>SinglePlayer适用直播 或者其他单文件播放 支持flv m3u8</h2>
-              <div style={{ marginBottom: 10, display: 'flex' }}>
+          <div style={{ width: "100%", padding: 20 }}>
+            <div style={{ width: 800, margin: "0 auto 40px auto" }}>
+              <h2 style={{ marginBottom: 10 }}>
+                SinglePlayer适用直播 或者其他单文件播放 支持flv m3u8
+              </h2>
+              <div style={{ marginBottom: 10, display: "flex" }}>
                 <select
                   onChange={e => {
-                    const index = e.target.selectedIndex
-                    setLiveType(options[index].value)
+                    const index = e.target.selectedIndex;
+                    setLiveType(options[index].value);
                   }}
                 >
                   {options.map(v =>
@@ -63,20 +65,30 @@
                     )
                   )}
                 </select>
-                <input ref={liveInputRef} style={{ flex: 1, height: 32 }} type="text" placeholder="请输入视频地址" />
-                <button style={{ width: 60, height: 32 }} onClick={e => setFile(liveInputRef.current.value)}>
+                <input
+                  ref={liveInputRef}
+                  style={{ flex: 1, height: 32 }}
+                  type="text"
+                  placeholder="请输入视频地址"
+                />
+                <button
+                  style={{ width: 60, height: 32 }}
+                  onClick={e => setFile(liveInputRef.current.value)}
+                >
                   播放
                 </button>
               </div>
               <Player type={liveType} file={file} />
             </div>
-            <div style={{ width: 800, margin: '0 auto 40px auto' }}>
-              <h2 style={{ marginBottom: 10 }}>HistoryPlayer适用多地址拼凑一个播放 特殊场景使用</h2>
-              <div style={{ marginBottom: 10, display: 'flex' }}>
+            <div style={{ width: 800, margin: "0 auto 40px auto" }}>
+              <h2 style={{ marginBottom: 10 }}>
+                HistoryPlayer适用多地址拼凑一个播放 特殊场景使用
+              </h2>
+              <div style={{ marginBottom: 10, display: "flex" }}>
                 <select
                   onChange={e => {
-                    const index = e.target.selectedIndex
-                    setHistoryType(options[index].value)
+                    const index = e.target.selectedIndex;
+                    setHistoryType(options[index].value);
                   }}
                 >
                   {options.map(v =>
@@ -89,17 +101,34 @@
                     )
                   )}
                 </select>
-                <input ref={historyInputRef} style={{ flex: 1, height: 32 }} type="text" placeholder="请输入视频地址" />
-                <button style={{ width: 60, height: 32 }} onClick={e => setPlayList(() => formatHistoryList(JSON.parse(liveInputRef.current.value)))}>
+                <input
+                  ref={historyInputRef}
+                  style={{ flex: 1, height: 32 }}
+                  type="text"
+                  placeholder="请输入视频地址"
+                />
+                <button
+                  style={{ width: 60, height: 32 }}
+                  onClick={e =>
+                    setPlayList(() => {
+                      const list = JSON.parse(historyInputRef.current.value);
+                      return formatHistoryList(
+                        list,
+                        list[0].beginTime,
+                        list[list.length - 1].endTime
+                      );
+                    })
+                  }
+                >
                   播放
                 </button>
               </div>
               <HistoryPlayer type={historyType} historyList={playList} />
             </div>
           </div>
-        )
-      }
-      ReactDOM.render(<RootCompoent />, app)
+        );
+      };
+      ReactDOM.render(<RootCompoent />, app);
     </script>
   </body>
 </html>

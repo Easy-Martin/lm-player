@@ -1999,17 +1999,19 @@ function HistoryPlayer({
   const playContainerRef = useRef(null);
   const [playerObj, setPlayerObj] = useState(null);
   const [playStatus, setPlayStatus] = useState(() => computedTimeAndIndex(historyList, defaultTime));
+  const playIndex = useMemo(() => playStatus[0], [playStatus]);
+  const defaultSeekTime = useMemo(() => playStatus[1], [playStatus]);
   const file = useMemo(() => {
     let url;
 
     try {
-      url = historyList.fragments[playStatus[0]].file;
+      url = historyList.fragments[playIndex].file;
     } catch (e) {
       console.warn('未找打播放地址！', e);
     }
 
     return url;
-  }, [historyList, playStatus[0]]);
+  }, [historyList, playIndex]);
   /**
    * 重写api下的seekTo方法
    */
@@ -2018,14 +2020,18 @@ function HistoryPlayer({
     const [index, seekTime] = computedTimeAndIndex(historyList, currentTime);
 
     if (playerObj.event && playerObj.api) {
-      if (index !== playStatus[0]) {
-        setPlayStatus([index, seekTime]);
-      }
-
-      playerObj.api.seekTo(seekTime, true);
-      playerObj.event.emit(EventName.SEEK, currentTime);
+      //判断是否需要更新索引
+      setPlayStatus(old => {
+        if (old[0] !== index) {
+          return [index, seekTime];
+        } else {
+          playerObj.api.seekTo(seekTime, true);
+          playerObj.event.emit(EventName.SEEK, currentTime);
+          return old;
+        }
+      });
     }
-  }, [playerObj, playerObj, historyList]);
+  }, [playIndex, playerObj, playerObj, historyList]);
   const changePlayIndex = useCallback(index => {
     if (index > historyList.fragments.length - 1) {
       return playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END);
@@ -2046,7 +2052,6 @@ function HistoryPlayer({
       return;
     }
 
-    const seekTime = playStatus[1];
     const playerObject = {
       playContainer: playContainerRef.current,
       video: playContainerRef.current.querySelector('video')
@@ -2071,8 +2076,8 @@ function HistoryPlayer({
     playerObject.api = new Api(playerObject);
     setPlayerObj(playerObject);
 
-    if (seekTime) {
-      playerObject.api.seekTo(seekTime);
+    if (defaultSeekTime) {
+      playerObject.api.seekTo(defaultSeekTime);
     }
 
     if (onInitPlayer) {
@@ -2088,7 +2093,7 @@ function HistoryPlayer({
         playerObject.api.unload();
       }
     };
-  }, [playStatus, historyList, file]);
+  }, [historyList, file]);
   /**
    * 根据时间计算当前对应的播放索引
    */
@@ -2121,7 +2126,7 @@ function HistoryPlayer({
     changePlayIndex: changePlayIndex,
     reloadHistory: reloadHistory,
     historyList: historyList,
-    playIndex: playStatus[0],
+    playIndex: playIndex,
     seekTo: seekTo
   }), children);
 }
