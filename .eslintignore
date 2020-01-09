@@ -5,3 +5,4 @@
 /umd/
 /es/
 rollup.config.js
+/demo/*.js
