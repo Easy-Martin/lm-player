@@ -30,7 +30,7 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
     if (formartType === 'm3u8' || type === 'hls') {
       playerObject.hls = createHlsPlayer(playerObject.video, file)
     }
-    if (formartType === 'mp4' || type === 'native') {
+    if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
       playerObject.video.src = file
     }
     playerObject.event = new VideoEvent(playerObject.video)

@@ -63,11 +63,11 @@ export function getVideoType(url) {
   const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i
   const resultArr = reg.exec(path)
   if (!resultArr) {
-    return url.indexOf('.flv') > -1 ? 'flv' : 'hls'
+    return url.indexOf('.flv') > -1 ? 'flv' : url.indexOf('.m3u8') > -1 ? 'm3u8' : 'native'
   }
   const suffix = resultArr[2].replace(resultArr[4], '')
   if (!suffix) {
-    return url.indexOf('.flv') > -1 ? 'flv' : 'hls'
+    return url.indexOf('.flv') > -1 ? 'flv' : url.indexOf('.m3u8') > -1 ? 'm3u8' : 'native'
   }
   return suffix
 }
@@ -158,13 +158,7 @@ export function isFullscreen(ele) {
   if (!ele) {
     return false
   }
-  return (
-    document.fullscreenElement === ele ||
-    document.msFullscreenElement === ele ||
-    document.mozFullScreenElement === ele ||
-    document.webkitFullscreenElement === ele ||
-    false
-  )
+  return document.fullscreenElement === ele || document.msFullscreenElement === ele || document.mozFullScreenElement === ele || document.webkitFullscreenElement === ele || false
 }
 // 添加 / 移除 全屏事件监听
 export function fullScreenListener(isAdd, fullscreenchange) {
