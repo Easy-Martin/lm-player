@@ -499,7 +499,8 @@
       } = this.state;
       const {
         availablePercent = 0,
-        className = ''
+        className = '',
+        tipsY
       } = this.props;
       return React__default.createElement("div", {
         className: `slider-layout ${className}`,
@@ -531,7 +532,7 @@
         className: "lm-player-slide-tips",
         style: {
           left: tipsX,
-          top: -20
+          top: tipsY
         },
         getContainer: () => this.sliderDomRef.current
       }, this.props.renderTips && this.props.renderTips(this.state.tempValue)));
@@ -547,7 +548,11 @@
     availablePercent: PropTypes.number,
     onChange: PropTypes.func,
     children: PropTypes.any,
-    className: PropTypes.string
+    className: PropTypes.string,
+    tipsY: PropTypes.number
+  };
+  Slider.defaultProps = {
+    tipsY: -10
   };
 
   function Tips({
@@ -692,7 +697,8 @@
       className: "volume-slider",
       currentPercent: volumePercent,
       onChange: onChangeVolume,
-      renderTips: precent => React__default.createElement("span", null, Math.round(precent * 100), "%")
+      renderTips: precent => React__default.createElement("span", null, Math.round(precent * 100), "%"),
+      tipsY: -2
     }))), React__default.createElement(Bar, null, React__default.createElement(IconFont, {
       onClick: reload,
       type: "lm-player-Refresh_Main",
@@ -1881,10 +1887,9 @@
     const currentLine = React.useMemo(() => lineList.filter((_, i) => i < playIndex).map(v => v.size), [playIndex, lineList]);
     const currentIndexTime = React.useMemo(() => currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0], [currentLine]);
     const playPercent = React.useMemo(() => currentTime / historyList.duration * 100 + currentIndexTime, [currentIndexTime, historyList, currentTime]);
-    const bufferedPercent = React.useMemo(() => buffered / historyList.duration * 100 + currentIndexTime, [historyList, currentIndexTime, buffered]); //hide-time-line
-
+    const bufferedPercent = React.useMemo(() => buffered / historyList.duration * 100 + currentIndexTime, [historyList, currentIndexTime, buffered]);
     return React__default.createElement("div", {
-      className: `video-time-line-layout ${!visibel ? '' : ''}`
+      className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
     }, React__default.createElement(IconFont, {
       type: "lm-player-PrevFast",
       onClick: api.backWind,

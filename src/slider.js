@@ -113,7 +113,7 @@ class Slider extends React.Component {
   }
   render() {
     const { value, showTips, tipsX } = this.state
-    const { availablePercent = 0, className = '' } = this.props
+    const { availablePercent = 0, className = '', tipsY } = this.props
     return (
       <div className={`slider-layout ${className}`} ref={this.sliderDomRef}>
         <div className="slider-content">
@@ -125,7 +125,7 @@ class Slider extends React.Component {
         <div className="slider-other-content">
           <div className="drag-change-icon" draggable={false} style={{ left: `${value}%` }} />
         </div>
-        <Tips visibel={showTips} className="lm-player-slide-tips" style={{ left: tipsX, top: -10 }} getContainer={() => this.sliderDomRef.current}>
+        <Tips visibel={showTips} className="lm-player-slide-tips" style={{ left: tipsX, top: tipsY }} getContainer={() => this.sliderDomRef.current}>
           {this.props.renderTips && this.props.renderTips(this.state.tempValue)}
         </Tips>
       </div>
@@ -141,7 +141,11 @@ Slider.propTypes = {
   availablePercent: PropTypes.number,
   onChange: PropTypes.func,
   children: PropTypes.any,
-  className: PropTypes.string
+  className: PropTypes.string,
+  tipsY: PropTypes.number
+}
+Slider.defaultProps = {
+  tipsY: -10
 }
 
 function Tips({ getContainer, visibel, children, style, className = '' }) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import flvjs from 'flv.lm.js';
 import * as Hls from 'hls.js';
 import { isSupported } from 'hls.js';
@@ -359,7 +359,7 @@ class Slider extends React.Component {
           width,
           top
         } = this.layoutDom.getBoundingClientRect();
-        const tipsX = e.pageX;
+        const tipsX = e.pageX - x;
         let percent = (e.pageX - x) / width;
         percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
         this.setState({
@@ -491,12 +491,12 @@ class Slider extends React.Component {
     const {
       value,
       showTips,
-      tipsX,
-      tipsY
+      tipsX
     } = this.state;
     const {
       availablePercent = 0,
-      className = ''
+      className = '',
+      tipsY
     } = this.props;
     return React.createElement("div", {
       className: `slider-layout ${className}`,
@@ -529,7 +529,8 @@ class Slider extends React.Component {
       style: {
         left: tipsX,
         top: tipsY
-      }
+      },
+      getContainer: () => this.sliderDomRef.current
     }, this.props.renderTips && this.props.renderTips(this.state.tempValue)));
   }
 
@@ -543,37 +544,35 @@ Slider.propTypes = {
   availablePercent: PropTypes.number,
   onChange: PropTypes.func,
   children: PropTypes.any,
-  className: PropTypes.string
+  className: PropTypes.string,
+  tipsY: PropTypes.number
+};
+Slider.defaultProps = {
+  tipsY: -10
 };
 
-class Tips extends React.Component {
-  constructor(props) {
-    super(props);
-    this.ele = document.createElement('div');
+function Tips({
+  getContainer,
+  visibel,
+  children,
+  style,
+  className = ''
+}) {
+  const ele = useRef(document.createElement('div'));
+  useEffect(() => {
+    const box = getContainer ? getContainer() || document.body : document.body;
+    box.appendChild(ele.current);
+    return () => box.removeChild(ele.current);
+  }, [getContainer]);
+
+  if (!visibel) {
+    return null;
   }
 
-  componentDidMount() {
-    document.body.appendChild(this.ele);
-  }
-
-  componentWillUnmount() {
-    document.body.removeChild(this.ele);
-    this.ele = null;
-  }
-
-  render() {
-    const {
-      visibel,
-      children,
-      style,
-      className = ''
-    } = this.props;
-    return ReactDOM.createPortal(visibel ? React.createElement("div", {
-      className: className,
-      style: style
-    }, children) : null, this.ele);
-  }
-
+  return ReactDOM.createPortal(React.createElement("div", {
+    className: className,
+    style: style
+  }, children), ele.current);
 }
 
 Tips.propTypes = {
@@ -694,7 +693,8 @@ function LeftBar({
     className: "volume-slider",
     currentPercent: volumePercent,
     onChange: onChangeVolume,
-    renderTips: precent => React.createElement("span", null, Math.round(precent * 100), "%")
+    renderTips: precent => React.createElement("span", null, Math.round(precent * 100), "%"),
+    tipsY: -2
   }))), React.createElement(Bar, null, React.createElement(IconFont, {
     onClick: reload,
     type: "lm-player-Refresh_Main",

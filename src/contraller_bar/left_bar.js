@@ -28,10 +28,7 @@ function LeftBar({ api, event, video, isHistory, reloadHistory, isLive, leftExtC
   const statusIconClassName = useMemo(() => (paused ? 'lm-player-Play_Main' : 'lm-player-Pause_Main'), [paused])
   const statusText = useMemo(() => (paused ? '播放' : '暂停'), [paused])
   const volumeVal = useMemo(() => (video.muted ? 0 : video.volume), [dep, video])
-  const volumeIcon = useMemo(
-    () => (volumeVal === 0 ? 'lm-player-volume-close' : video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben'),
-    [volumeVal]
-  )
+  const volumeIcon = useMemo(() => (volumeVal === 0 ? 'lm-player-volume-close' : video.volume === 1 ? 'lm-player-volume-max' : 'lm-player-volume-normal-fuben'), [volumeVal])
   const volumePercent = useMemo(() => (volumeVal === 0 ? 0 : volumeVal * 100), [volumeVal])
   const sliderClassName = useMemo(() => (openSliderVolume ? 'contraller-bar-hover-volume' : ''), [openSliderVolume])
 
@@ -59,19 +56,10 @@ function LeftBar({ api, event, video, isHistory, reloadHistory, isLive, leftExtC
       <Bar visibel={!isLive}>
         <IconFont onClick={changePlayStatus} type={statusIconClassName} title={statusText} />
       </Bar>
-      <Bar
-        className={`contraller-bar-volume ${sliderClassName}`}
-        onMouseOver={() => setOpenSliderVolume(true)}
-        onMouseOut={() => setOpenSliderVolume(false)}
-      >
+      <Bar className={`contraller-bar-volume ${sliderClassName}`} onMouseOver={() => setOpenSliderVolume(true)} onMouseOut={() => setOpenSliderVolume(false)}>
         <IconFont onClick={mutedChantgeStatus} type={volumeIcon} title="音量" />
         <div className="volume-slider-layout">
-          <Slider
-            className="volume-slider"
-            currentPercent={volumePercent}
-            onChange={onChangeVolume}
-            renderTips={precent => <span>{Math.round(precent * 100)}%</span>}
-          />
+          <Slider className="volume-slider" currentPercent={volumePercent} onChange={onChangeVolume} renderTips={precent => <span>{Math.round(precent * 100)}%</span>} tipsY={-2} />
         </div>
       </Bar>
       <Bar>
