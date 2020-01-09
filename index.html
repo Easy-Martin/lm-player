@@ -38,8 +38,8 @@
       const RootCompoent = () => {
         const liveInputRef = useRef(null);
         const historyInputRef = useRef(null);
-        const [file, setFile] = useState(null);
-        const [playList, setPlayList] = useState(null);
+        const [file, setFile] = useState(undefined);
+        const [playList, setPlayList] = useState(undefined);
         const [liveType, setLiveType] = useState("");
         const [historyType, setHistoryType] = useState("");
         return (
