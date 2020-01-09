@@ -142,13 +142,13 @@ function getVideoType(url) {
   const resultArr = reg.exec(path);
 
   if (!resultArr) {
-    return url.indexOf('.flv') > -1 ? 'flv' : 'hls';
+    return url.indexOf('.flv') > -1 ? 'flv' : url.indexOf('.m3u8') > -1 ? 'm3u8' : 'native';
   }
 
   const suffix = resultArr[2].replace(resultArr[4], '');
 
   if (!suffix) {
-    return url.indexOf('.flv') > -1 ? 'flv' : 'hls';
+    return url.indexOf('.flv') > -1 ? 'flv' : url.indexOf('.m3u8') > -1 ? 'm3u8' : 'native';
   }
 
   return suffix;
@@ -1653,7 +1653,7 @@ function SinglePlayer({
       playerObject.hls = createHlsPlayer(playerObject.video, file);
     }
 
-    if (formartType === 'mp4' || type === 'native') {
+    if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
       playerObject.video.src = file;
     }
 
@@ -2068,7 +2068,7 @@ function HistoryPlayer({
       playerObject.hls = createHlsPlayer(playerObject.video, file);
     }
 
-    if (formartType === 'mp4' || type === 'native') {
+    if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
       playerObject.video.src = file;
     }
 
