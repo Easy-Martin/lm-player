@@ -363,7 +363,7 @@
             width,
             top
           } = this.layoutDom.getBoundingClientRect();
-          const tipsX = e.pageX;
+          const tipsX = e.pageX - x;
           let percent = (e.pageX - x) / width;
           percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
           this.setState({
@@ -495,8 +495,7 @@
       const {
         value,
         showTips,
-        tipsX,
-        tipsY
+        tipsX
       } = this.state;
       const {
         availablePercent = 0,
@@ -532,8 +531,9 @@
         className: "lm-player-slide-tips",
         style: {
           left: tipsX,
-          top: tipsY
-        }
+          top: -20
+        },
+        getContainer: () => this.sliderDomRef.current
       }, this.props.renderTips && this.props.renderTips(this.state.tempValue)));
     }
 
@@ -550,34 +550,28 @@
     className: PropTypes.string
   };
 
-  class Tips extends React__default.Component {
-    constructor(props) {
-      super(props);
-      this.ele = document.createElement('div');
+  function Tips({
+    getContainer,
+    visibel,
+    children,
+    style,
+    className = ''
+  }) {
+    const ele = React.useRef(document.createElement('div'));
+    React.useEffect(() => {
+      const box = getContainer ? getContainer() || document.body : document.body;
+      box.appendChild(ele.current);
+      return () => box.removeChild(ele.current);
+    }, [getContainer]);
+
+    if (!visibel) {
+      return null;
     }
 
-    componentDidMount() {
-      document.body.appendChild(this.ele);
-    }
-
-    componentWillUnmount() {
-      document.body.removeChild(this.ele);
-      this.ele = null;
-    }
-
-    render() {
-      const {
-        visibel,
-        children,
-        style,
-        className = ''
-      } = this.props;
-      return ReactDOM.createPortal(visibel ? React__default.createElement("div", {
-        className: className,
-        style: style
-      }, children) : null, this.ele);
-    }
-
+    return ReactDOM.createPortal(React__default.createElement("div", {
+      className: className,
+      style: style
+    }, children), ele.current);
   }
 
   Tips.propTypes = {
@@ -1887,9 +1881,10 @@
     const currentLine = React.useMemo(() => lineList.filter((_, i) => i < playIndex).map(v => v.size), [playIndex, lineList]);
     const currentIndexTime = React.useMemo(() => currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0], [currentLine]);
     const playPercent = React.useMemo(() => currentTime / historyList.duration * 100 + currentIndexTime, [currentIndexTime, historyList, currentTime]);
-    const bufferedPercent = React.useMemo(() => buffered / historyList.duration * 100 + currentIndexTime, [historyList, currentIndexTime, buffered]);
+    const bufferedPercent = React.useMemo(() => buffered / historyList.duration * 100 + currentIndexTime, [historyList, currentIndexTime, buffered]); //hide-time-line
+
     return React__default.createElement("div", {
-      className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
+      className: `video-time-line-layout ${!visibel ? '' : ''}`
     }, React__default.createElement(IconFont, {
       type: "lm-player-PrevFast",
       onClick: api.backWind,

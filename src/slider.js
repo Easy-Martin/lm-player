@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import './style/slider.less'
@@ -60,7 +60,7 @@ class Slider extends React.Component {
     clearTimeout(this.timer)
     this.timer = setTimeout(() => {
       const { x, width, top } = this.layoutDom.getBoundingClientRect()
-      const tipsX = e.pageX
+      const tipsX = e.pageX - x
       let percent = (e.pageX - x) / width
       percent = percent < 0 ? 0 : percent > 1 ? 1 : percent
       this.setState({ tipsX, tipsY: top, showTips: true, tempValue: percent })
@@ -112,7 +112,7 @@ class Slider extends React.Component {
     this.props.onChange && this.props.onChange(percent)
   }
   render() {
-    const { value, showTips, tipsX, tipsY } = this.state
+    const { value, showTips, tipsX } = this.state
     const { availablePercent = 0, className = '' } = this.props
     return (
       <div className={`slider-layout ${className}`} ref={this.sliderDomRef}>
@@ -125,7 +125,7 @@ class Slider extends React.Component {
         <div className="slider-other-content">
           <div className="drag-change-icon" draggable={false} style={{ left: `${value}%` }} />
         </div>
-        <Tips visibel={showTips} className="lm-player-slide-tips" style={{ left: tipsX, top: tipsY }}>
+        <Tips visibel={showTips} className="lm-player-slide-tips" style={{ left: tipsX, top: -10 }} getContainer={() => this.sliderDomRef.current}>
           {this.props.renderTips && this.props.renderTips(this.state.tempValue)}
         </Tips>
       </div>
@@ -144,30 +144,23 @@ Slider.propTypes = {
   className: PropTypes.string
 }
 
-class Tips extends React.Component {
-  constructor(props) {
-    super(props)
-    this.ele = document.createElement('div')
-  }
-  componentDidMount() {
-    document.body.appendChild(this.ele)
-  }
-  componentWillUnmount() {
-    document.body.removeChild(this.ele)
-    this.ele = null
-  }
-  render() {
-    const { visibel, children, style, className = '' } = this.props
+function Tips({ getContainer, visibel, children, style, className = '' }) {
+  const ele = useRef(document.createElement('div'))
+  useEffect(() => {
+    const box = getContainer ? getContainer() || document.body : document.body
+    box.appendChild(ele.current)
+    return () => box.removeChild(ele.current)
+  }, [getContainer])
 
-    return ReactDOM.createPortal(
-      visibel ? (
-        <div className={className} style={style}>
-          {children}
-        </div>
-      ) : null,
-      this.ele
-    )
+  if (!visibel) {
+    return null
   }
+  return ReactDOM.createPortal(
+    <div className={className} style={style}>
+      {children}
+    </div>,
+    ele.current
+  )
 }
 
 Tips.propTypes = {

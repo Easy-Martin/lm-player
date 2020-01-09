@@ -69,7 +69,6 @@ function TineLine({ event, api, visibel, historyList, playIndex, seekTo }) {
   const currentIndexTime = useMemo(() => (currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0]), [currentLine])
   const playPercent = useMemo(() => (currentTime / historyList.duration) * 100 + currentIndexTime, [currentIndexTime, historyList, currentTime])
   const bufferedPercent = useMemo(() => (buffered / historyList.duration) * 100 + currentIndexTime, [historyList, currentIndexTime, buffered])
-
   return (
     <div className={`video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`}>
       <IconFont type="lm-player-PrevFast" onClick={api.backWind} className="time-line-action-item" />
