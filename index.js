@@ -1,1 +1,1 @@
-module.exports = require('./dist/LMPlayer.js')
+module.exports = require('./umd/player.js')
