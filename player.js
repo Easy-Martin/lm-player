@@ -363,7 +363,7 @@
             width,
             top
           } = this.layoutDom.getBoundingClientRect();
-          const tipsX = e.pageX;
+          const tipsX = e.pageX - x;
           let percent = (e.pageX - x) / width;
           percent = percent < 0 ? 0 : percent > 1 ? 1 : percent;
           this.setState({
@@ -495,12 +495,12 @@
       const {
         value,
         showTips,
-        tipsX,
-        tipsY
+        tipsX
       } = this.state;
       const {
         availablePercent = 0,
-        className = ''
+        className = '',
+        tipsY
       } = this.props;
       return React__default.createElement("div", {
         className: `slider-layout ${className}`,
@@ -533,7 +533,8 @@
         style: {
           left: tipsX,
           top: tipsY
-        }
+        },
+        getContainer: () => this.sliderDomRef.current
       }, this.props.renderTips && this.props.renderTips(this.state.tempValue)));
     }
 
@@ -547,37 +548,35 @@
     availablePercent: PropTypes.number,
     onChange: PropTypes.func,
     children: PropTypes.any,
-    className: PropTypes.string
+    className: PropTypes.string,
+    tipsY: PropTypes.number
+  };
+  Slider.defaultProps = {
+    tipsY: -10
   };
 
-  class Tips extends React__default.Component {
-    constructor(props) {
-      super(props);
-      this.ele = document.createElement('div');
+  function Tips({
+    getContainer,
+    visibel,
+    children,
+    style,
+    className = ''
+  }) {
+    const ele = React.useRef(document.createElement('div'));
+    React.useEffect(() => {
+      const box = getContainer ? getContainer() || document.body : document.body;
+      box.appendChild(ele.current);
+      return () => box.removeChild(ele.current);
+    }, [getContainer]);
+
+    if (!visibel) {
+      return null;
     }
 
-    componentDidMount() {
-      document.body.appendChild(this.ele);
-    }
-
-    componentWillUnmount() {
-      document.body.removeChild(this.ele);
-      this.ele = null;
-    }
-
-    render() {
-      const {
-        visibel,
-        children,
-        style,
-        className = ''
-      } = this.props;
-      return ReactDOM.createPortal(visibel ? React__default.createElement("div", {
-        className: className,
-        style: style
-      }, children) : null, this.ele);
-    }
-
+    return ReactDOM.createPortal(React__default.createElement("div", {
+      className: className,
+      style: style
+    }, children), ele.current);
   }
 
   Tips.propTypes = {
@@ -698,7 +697,8 @@
       className: "volume-slider",
       currentPercent: volumePercent,
       onChange: onChangeVolume,
-      renderTips: precent => React__default.createElement("span", null, Math.round(precent * 100), "%")
+      renderTips: precent => React__default.createElement("span", null, Math.round(precent * 100), "%"),
+      tipsY: -2
     }))), React__default.createElement(Bar, null, React__default.createElement(IconFont, {
       onClick: reload,
       type: "lm-player-Refresh_Main",
