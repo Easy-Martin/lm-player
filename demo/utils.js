@@ -14,6 +14,7 @@ function formatHistoryList(playlist, startTime, endTime) {
   
     let fragments = []
     // 有历史视频处理断片时间
+    
     if (playlist[0].beginTime !== startTime) {
       fragments.push({
         begin: 0,
