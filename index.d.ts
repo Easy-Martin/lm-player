@@ -77,5 +77,5 @@ declare namespace LMPlayer {
   }
 }
 
-export = LingMouBasicLibrary
-export as namespace LingMouBasicLibrary
+export = LMPlayer
+export as namespace LMPlayer
