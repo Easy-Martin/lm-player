@@ -133,7 +133,7 @@ const fragments = [
 | `getSecondsLoaded`        | -                       | 获取缓存时间               |
 | `getBufferedTime`         | -                       | 获取当前视频缓存的起止时间 |
 | `fastForward`             | `time`默认5秒           | 快进通过`seekTo`方法实现   |
-| `backWind`                | `time`默认5秒           | 快退通过seekTo方法实现     |
+| `backWind`                | `time`默认5秒           | 快退通过`seekTo`方法实现   |
 | `snapshot`                | -                       | 截图                       |
 | `requestFullScreen`       | -                       | 全屏                       |
 | `cancelFullScreen`        | -                       | 退出全屏                   |
