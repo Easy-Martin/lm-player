@@ -6,13 +6,14 @@
 export { Player as default, Player, HistoryPlayer, createHistoryPlayer, createPlayer, Bar }
 ```
 
-| Component/api       | description                      |
-| ------------------- | -------------------------------- |
-| Player              | 视频组件，适用于 React           |
-| HistoryPlayer       | 历史视频组件，适用于 React       |
-| createPlayer        | 创建视频控件，适用于非 React     |
-| createHistoryPlayer | 创建历史视频控件，适用于非 React |
-| Bar                 | 用于拓展组件 contraller_bar      |
+| Component/Factory     | description                        |
+| --------------------- | ---------------------------------- |
+| `Player`              | 视频组件，适用于 `React`           |
+| `HistoryPlayer`       | 历史视频组件，适用于 `React`       |
+| `createPlayer`        | 创建视频控件，适用于非 `React`     |
+| `createHistoryPlayer` | 创建历史视频控件，适用于非 `React` |
+| `Bar`                 | 用于拓展组件 `contraller_bar`      |
+| `EventName`           | 返回支持的事件                     |
 
 # 安装
 

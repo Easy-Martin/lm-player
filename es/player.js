@@ -1774,8 +1774,13 @@ SinglePlayer.propTypes = {
   loop: PropTypes.bool,
   snapshot: PropTypes.func,
   className: PropTypes.string,
-  playsinline: PropTypes.bool,
-  children: PropTypes.any
+  rightExtContents: PropTypes.element,
+  rightMidExtContents: PropTypes.element,
+  leftExtContents: PropTypes.element,
+  leftMidExtContents: PropTypes.element,
+  flvOptions: PropTypes.object,
+  flvConfig: PropTypes.object,
+  children: PropTypes.element
 };
 SinglePlayer.defaultProps = {
   isLive: true,
@@ -2220,7 +2225,13 @@ HistoryPlayer.propTypes = {
   className: PropTypes.string,
   playsinline: PropTypes.bool,
   children: PropTypes.any,
-  autoplay: PropTypes.bool
+  autoplay: PropTypes.bool,
+  rightExtContents: PropTypes.element,
+  rightMidExtContents: PropTypes.element,
+  leftExtContents: PropTypes.element,
+  leftMidExtContents: PropTypes.element,
+  flvOptions: PropTypes.object,
+  flvConfig: PropTypes.object
 };
 HistoryPlayer.defaultProps = {
   draggable: true,
@@ -2273,4 +2284,4 @@ function createHistoryPlayer({
 }
 
 export default SinglePlayer;
-export { Bar, HistoryPlayer, SinglePlayer as Player, createHistoryPlayer, createPlayer };
+export { Bar, EventName, HistoryPlayer, SinglePlayer as Player, createHistoryPlayer, createPlayer };
