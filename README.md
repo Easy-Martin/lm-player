@@ -122,7 +122,7 @@ const fragments = [
 | `reload`                  | -                       | 重连视频                   |
 | `pause`                   | -                       | 暂停播放                   |
 | `seekTo`                  | `time:number`           | 调整播放进度               |
-| `setVolume`               | `volume:number`         |                            |
+| `setVolume`               | `volume:number`         | 调整音量大小               |
 | `mute`                    | -                       | 禁音                       |
 | `unmute`                  | -                       | 退出禁音                   |
 | `requestPictureInPicture` | -                       | 开启画中画                 |
@@ -137,9 +137,9 @@ const fragments = [
 | `snapshot`                | -                       | 截图                       |
 | `requestFullScreen`       | -                       | 全屏                       |
 | `cancelFullScreen`        | -                       | 退出全屏                   |
-| `on`                      | `eventName`,`linstener` |                            |
-| `off`                     | `eventName`,`linstener` |                            |
-| `emit`                    | `eventName`,`data`      |                            |
+| `on`                      | `eventName`,`linstener` | 监听事件                   |
+| `off`                     | `eventName`,`linstener` | 移除监听事件               |
+| `emit`                    | `eventName`,`data`      | 触发监听事件               |
 
 ## 对象
 
