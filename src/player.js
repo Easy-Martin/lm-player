@@ -132,8 +132,13 @@ SinglePlayer.propTypes = {
   loop: PropTypes.bool,
   snapshot: PropTypes.func,
   className: PropTypes.string,
-  playsinline: PropTypes.bool,
-  children: PropTypes.any
+  rightExtContents: PropTypes.element,
+  rightMidExtContents: PropTypes.element,
+  leftExtContents: PropTypes.element,
+  leftMidExtContents: PropTypes.element,
+  flvOptions: PropTypes.object,
+  flvConfig: PropTypes.object,
+  children: PropTypes.element
 }
 SinglePlayer.defaultProps = {
   isLive: true,
