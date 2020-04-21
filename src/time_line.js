@@ -8,9 +8,9 @@ function TineLine({ event, api, visibel }) {
   const [state, setState] = useState({ duration: 0, currentTime: 0, buffered: 0 })
 
   useEffect(() => {
-    const getDuration = () => setState(old => ({ ...old, duration: api.getDuration() }))
-    const getCurrentTime = () => setState(old => ({ ...old, currentTime: api.getCurrentTime(), buffered: api.getSecondsLoaded() }))
-    const getBuffered = () => setState(old => ({ ...old, buffered: api.getSecondsLoaded() }))
+    const getDuration = () => setState((old) => ({ ...old, duration: api.getDuration() }))
+    const getCurrentTime = () => setState((old) => ({ ...old, currentTime: api.getCurrentTime(), buffered: api.getSecondsLoaded() }))
+    const getBuffered = () => setState((old) => ({ ...old, buffered: api.getSecondsLoaded() }))
     const seekendPlay = () => api.play()
 
     event.addEventListener('loadedmetadata', getDuration)
@@ -35,16 +35,16 @@ function TineLine({ event, api, visibel }) {
   const bufferedPercent = useMemo(() => Math.round((buffered / duration) * 100), [buffered, duration])
 
   const changePlayTime = useCallback(
-    percent => {
+    (percent) => {
       const currentTime = percent * duration
       api.pause()
       api.seekTo(currentTime)
-      setState(old => ({ ...old, currentTime }))
+      setState((old) => ({ ...old, currentTime }))
     },
     [duration, api]
   )
 
-  const renderTimeLineTips = percent => {
+  const renderTimeLineTips = (percent) => {
     const currentTime = percent * duration
     const time = timeStamp(currentTime)
     return <span>{time}</span>
@@ -52,9 +52,9 @@ function TineLine({ event, api, visibel }) {
 
   return (
     <div className={`video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`}>
-      <IconFont type="lm-player-PrevFast" onClick={api.backWind} className="time-line-action-item" />
+      <IconFont type="lm-player-PrevFast" onClick={() => api.backWind()} className="time-line-action-item" />
       <Slider className="time-line-box" currentPercent={playPercent} availablePercent={bufferedPercent} onChange={changePlayTime} renderTips={renderTimeLineTips} />
-      <IconFont type="lm-player-NextFast_Light" onClick={api.fastForward} className="time-line-action-item" />
+      <IconFont type="lm-player-NextFast_Light" onClick={() => api.fastForward()} className="time-line-action-item" />
     </div>
   )
 }

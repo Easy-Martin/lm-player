@@ -1015,7 +1015,7 @@ function TineLine({
     className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
   }, React.createElement(IconFont, {
     type: "lm-player-PrevFast",
-    onClick: api.backWind,
+    onClick: () => api.backWind(),
     className: "time-line-action-item"
   }), React.createElement(Slider, {
     className: "time-line-box",
@@ -1025,7 +1025,7 @@ function TineLine({
     renderTips: renderTimeLineTips
   }), React.createElement(IconFont, {
     type: "lm-player-NextFast_Light",
-    onClick: api.fastForward,
+    onClick: () => api.fastForward(),
     className: "time-line-action-item"
   }));
 }
@@ -1893,7 +1893,7 @@ function TineLine$1({
     className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
   }, React.createElement(IconFont, {
     type: "lm-player-PrevFast",
-    onClick: api.backWind,
+    onClick: () => api.backWind(),
     className: "time-line-action-item"
   }), React.createElement(Slider, {
     className: "time-line-box",
@@ -1914,7 +1914,7 @@ function TineLine$1({
     });
   }))), React.createElement(IconFont, {
     type: "lm-player-NextFast_Light",
-    onClick: api.fastForward,
+    onClick: () => api.fastForward(),
     className: "time-line-action-item"
   }));
 }
