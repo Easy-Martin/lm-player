@@ -2049,6 +2049,10 @@ function HistoryPlayer({
     setPlayStatus([index, 0]);
   }, [playerObj]);
   const reloadHistory = useCallback(() => {
+    if (playStatus[0] === 0) {
+      playerObj.api.seekTo(defaultSeekTime);
+    }
+
     setPlayStatus([0, 0]);
     playerObj.event.emit(EventName.RELOAD);
   }, [playerObj]);

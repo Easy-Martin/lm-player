@@ -15,7 +15,7 @@ import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util'
 const computedIndexFormTime = (historyList, time) => {
   let index = 0
   try {
-    index = historyList.fragments.findIndex(v => v.end > time)
+    index = historyList.fragments.findIndex((v) => v.end > time)
   } catch (e) {
     console.error('historyList data error', historyList)
   }
@@ -56,11 +56,11 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
    * 重写api下的seekTo方法
    */
   const seekTo = useCallback(
-    currentTime => {
+    (currentTime) => {
       const [index, seekTime] = computedTimeAndIndex(historyList, currentTime)
       if (playerObj.event && playerObj.api) {
         //判断是否需要更新索引
-        setPlayStatus(old => {
+        setPlayStatus((old) => {
           if (old[0] !== index) {
             return [index, seekTime]
           } else {
@@ -75,7 +75,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
   )
 
   const changePlayIndex = useCallback(
-    index => {
+    (index) => {
       if (index > historyList.fragments.length - 1) {
         return playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END)
       }
@@ -88,7 +88,11 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
   )
 
   const reloadHistory = useCallback(() => {
+    if (playStatus[0] === 0) {
+      playerObj.api.seekTo(defaultSeekTime)
+    }
     setPlayStatus([0, 0])
+
     playerObj.event.emit(EventName.RELOAD)
   }, [playerObj])
 
@@ -98,7 +102,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
     }
     const playerObject = {
       playContainer: playContainerRef.current,
-      video: playContainerRef.current.querySelector('video')
+      video: playContainerRef.current.querySelector('video'),
     }
     const formartType = getVideoType(file)
     if (formartType === 'flv' || type === 'flv') {
@@ -174,7 +178,7 @@ function VideoTools({
   reloadHistory,
   historyList,
   seekTo,
-  playIndex
+  playIndex,
 }) {
   if (!playerObj) {
     return <NoSource />
@@ -241,7 +245,7 @@ HistoryPlayer.propTypes = {
   leftExtContents: PropTypes.element,
   leftMidExtContents: PropTypes.element,
   flvOptions: PropTypes.object,
-  flvConfig: PropTypes.object
+  flvConfig: PropTypes.object,
 }
 HistoryPlayer.defaultProps = {
   draggable: true,
@@ -253,7 +257,7 @@ HistoryPlayer.defaultProps = {
   preload: 'auto',
   loop: false,
   defaultTime: 0,
-  historyList: { beginDate: 0, duration: 0, fragments: [] }
+  historyList: { beginDate: 0, duration: 0, fragments: [] },
 }
 
 export default HistoryPlayer
