@@ -739,7 +739,10 @@
       const dragDom = playContainer.querySelector('.player-mask-layout');
       api.setScale(...args);
       let position = computedBound(dragDom, api.getPosition(), api.getScale());
-      position && api.setPosition(position, true);
+
+      if (position) {
+        api.setPosition(position, true);
+      }
     }, [api, playContainer]);
     return /*#__PURE__*/React__default.createElement("div", {
       className: "contraller-right-bar"
@@ -1486,7 +1489,7 @@
       this.event.emit(EventName.TRANSFORM);
       setTimeout(() => {
         this.player.style.transition = 'unset';
-      }, 500);
+      }, 1000);
     }
 
     getScale() {

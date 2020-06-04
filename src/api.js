@@ -232,7 +232,7 @@ export default class Api {
     this.event.emit(EventName.TRANSFORM)
     setTimeout(() => {
       this.player.style.transition = 'unset'
-    }, 500)
+    }, 1000)
   }
   getScale() {
     return this.scale

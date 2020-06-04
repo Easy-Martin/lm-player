@@ -25,7 +25,9 @@ function RightBar({ playContainer, api, scale, snapshot, rightExtContents, right
       const dragDom = playContainer.querySelector('.player-mask-layout')
       api.setScale(...args)
       let position = computedBound(dragDom, api.getPosition(), api.getScale())
-      position && api.setPosition(position, true)
+      if (position) {
+        api.setPosition(position, true)
+      }
     },
     [api, playContainer]
   )
@@ -66,6 +68,6 @@ RightBar.propTypes = {
   playerProps: PropTypes.object,
   playContainer: PropTypes.node,
   reloadHistory: PropTypes.func,
-  isHistory: PropTypes.bool
+  isHistory: PropTypes.bool,
 }
 export default RightBar

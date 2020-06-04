@@ -38,8 +38,9 @@
       const RootCompoent = () => {
         const liveInputRef = useRef(null);
         const historyInputRef = useRef(null);
-        const [file, setFile] = useState(null);
-        const [playList, setPlayList] = useState(null);
+        const [isLive, setIsLive] = useState(true);
+        const [file, setFile] = useState(undefined);
+        const [playList, setPlayList] = useState(undefined);
         const [liveType, setLiveType] = useState("");
         const [historyType, setHistoryType] = useState("");
         return (
@@ -71,6 +72,30 @@
                   type="text"
                   placeholder="请输入视频地址"
                 />
+                <select
+                  name="isLive"
+                  onChange={e => {
+                    const arr = [true, false];
+                    const index = e.target.selectedIndex;
+                    setIsLive(arr[index]);
+                  }}
+                >
+                  {isLive ? (
+                    <option value={true} selected>
+                      直播
+                    </option>
+                  ) : (
+                    <option value={true}>直播</option>
+                  )}
+
+                  {!isLive ? (
+                    <option value={false} selected>
+                      录像
+                    </option>
+                  ) : (
+                    <option value={false}>录像</option>
+                  )}
+                </select>
                 <button
                   style={{ width: 60, height: 32 }}
                   onClick={e => setFile(liveInputRef.current.value)}
@@ -78,7 +103,7 @@
                   播放
                 </button>
               </div>
-              <Player type={liveType} file={file} onInitPlayer={console.log}/>
+              <Player type={liveType} file={file} isLive={isLive} />
             </div>
             <div style={{ width: 800, margin: "0 auto 40px auto" }}>
               <h2 style={{ marginBottom: 10 }}>
