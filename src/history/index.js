@@ -11,30 +11,7 @@ import PlayEnd from './play_end'
 import EventName from '../event/eventName'
 import ContrallerEvent from '../event/contrallerEvent'
 import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util'
-
-const computedIndexFormTime = (historyList, time) => {
-  let index = 0
-  try {
-    index = historyList.fragments.findIndex((v) => v.end > time)
-  } catch (e) {
-    console.error('historyList data error', historyList)
-  }
-  return index
-}
-const computedTimeAndIndex = (historyList, currentTime) => {
-  const index = computedIndexFormTime(historyList, currentTime)
-  let seekTime = 0
-  try {
-    const fragment = historyList.fragments[index]
-    if (!fragment) {
-      return [0, 0]
-    }
-    seekTime = currentTime - fragment.begin - 1
-  } catch (e) {
-    console.error('historyList data error', historyList)
-  }
-  return [index, seekTime]
-}
+import { computedTimeAndIndex } from './utils'
 
 function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, muted, poster, playsinline, loop, preload, children, onInitPlayer, ...props }) {
   const playContainerRef = useRef(null)
@@ -79,6 +56,11 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
       if (index > historyList.fragments.length - 1) {
         return playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END)
       }
+
+      if (!historyList.fragments[index].file) {
+        changePlayIndex(index + 1)
+      }
+
       if (playerObj.event) {
         playerObj.event.emit(EventName.CHANGE_PLAY_INDEX, index)
       }
@@ -123,6 +105,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
     if (onInitPlayer) {
       onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), { seekTo, changePlayIndex, reload: reloadHistory }))
     }
+    
     return () => {
       if (playerObject.api) {
         playerObject.api.unload()
@@ -140,6 +123,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
         <video autoPlay={autoPlay} preload={preload} muted={muted} poster={poster} controls={false} playsInline={playsinline} loop={loop} />
       </div>
       <VideoTools
+        defaultTime={defaultSeekTime}
         playerObj={playerObj}
         isLive={props.isLive}
         hideContrallerBar={props.hideContrallerBar}
@@ -179,6 +163,7 @@ function VideoTools({
   historyList,
   seekTo,
   playIndex,
+  defaultTime,
 }) {
   if (!playerObj) {
     return <NoSource />
@@ -204,7 +189,15 @@ function VideoTools({
             leftMidExtContents={leftMidExtContents}
             reloadHistory={reloadHistory}
           />
-          <HistoryTimeLine changePlayIndex={changePlayIndex} historyList={historyList} playIndex={playIndex} seekTo={seekTo} api={playerObj.api} event={playerObj.event} />
+          <HistoryTimeLine
+            defaultTime={defaultTime}
+            changePlayIndex={changePlayIndex}
+            historyList={historyList}
+            playIndex={playIndex}
+            seekTo={seekTo}
+            api={playerObj.api}
+            event={playerObj.event}
+          />
         </ContrallerEvent>
       )}
       <ErrorEvent

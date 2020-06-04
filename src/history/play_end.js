@@ -12,13 +12,13 @@ function PlayEnd({ event, changePlayIndex, playIndex }) {
     return () => {
       event.removeEventListener('ended', endedHandle, false)
     }
-  }, [event, playIndex])
+  }, [event, playIndex, changePlayIndex])
   return <></>
 }
 
 PlayEnd.propTypes = {
   event: PropTypes.object,
   changePlayIndex: PropTypes.func,
-  playIndex: PropTypes.number
+  playIndex: PropTypes.number,
 }
 export default PlayEnd

@@ -4,6 +4,7 @@ import Slider from '../slider'
 import { dateFormat } from '../util'
 import EventName from '../event/eventName'
 import PropTypes from 'prop-types'
+import { computedTimeAndIndex } from './utils'
 import '../style/time-line.less'
 
 const computedLineList = (historyList) => {
@@ -16,8 +17,10 @@ const computedLineList = (historyList) => {
   })
 }
 
-function TineLine({ event, api, visibel, historyList, playIndex, seekTo }) {
-  const [state, setState] = useState({ duration: 1, currentTime: 0, buffered: 0, isEnd: false })
+function TineLine({ event, api, visibel, historyList, playIndex, seekTo, defaultTime }) {
+  const [state, setState] = useState({ duration: 1, currentTime: defaultTime, buffered: 0, isEnd: false })
+
+  useEffect(() => setState((old) => ({ ...old, currentTime: defaultTime })), [defaultTime])
 
   useEffect(() => {
     const getDuration = () => setState((old) => ({ ...old, duration: api.getDuration() }))
@@ -51,8 +54,9 @@ function TineLine({ event, api, visibel, historyList, playIndex, seekTo }) {
   const changePlayTime = useCallback(
     (percent) => {
       const currentTime = percent * historyList.duration //修正一下误差
-      seekTo(currentTime)
-      setState((old) => ({ ...old, currentTime, isEnd: false }))
+      const [index, time] = computedTimeAndIndex(historyList, currentTime)
+      seekTo(currentTime, index)
+      setState((old) => ({ ...old, currentTime: time, isEnd: false }))
     },
     [historyList]
   )
@@ -69,6 +73,7 @@ function TineLine({ event, api, visibel, historyList, playIndex, seekTo }) {
   const currentIndexTime = useMemo(() => (currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0]), [currentLine])
   const playPercent = useMemo(() => (currentTime / historyList.duration) * 100 + currentIndexTime, [currentIndexTime, historyList, currentTime])
   const bufferedPercent = useMemo(() => (buffered / historyList.duration) * 100 + currentIndexTime, [historyList, currentIndexTime, buffered])
+
   return (
     <div className={`video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`}>
       <IconFont type="lm-player-PrevFast" onClick={() => api.backWind()} className="time-line-action-item" />
