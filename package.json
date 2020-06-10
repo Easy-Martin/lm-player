@@ -1,6 +1,6 @@
 {
   "name": "lm-player",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "video for html5 support flv m3u8",
   "repository": {
     "type": "git",
@@ -55,6 +55,7 @@
     "rollup-plugin-uglify": "^6.0.3"
   },
   "scripts": {
+    "dev":"rollup --config rollup.config.umd.js --watch",
     "es": "rollup --config rollup.config.es.js",
     "umd": "rollup --config rollup.config.umd.js"
   }

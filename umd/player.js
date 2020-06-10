@@ -778,6 +778,37 @@
     isHistory: PropTypes.bool
   };
 
+  function ScaleBar({
+    playContainer,
+    api,
+    scale
+  }) {
+    const setScale = React.useCallback((...args) => {
+      const dragDom = playContainer.querySelector('.player-mask-layout');
+      api.setScale(...args);
+      let position = computedBound(dragDom, api.getPosition(), api.getScale());
+
+      if (position) {
+        api.setPosition(position, true);
+      }
+    }, [api, playContainer]);
+    return /*#__PURE__*/React__default.createElement("div", {
+      className: "contraller-scale-bar"
+    }, scale && /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+      title: "\u7F29\u5C0F",
+      onClick: () => setScale(-0.2),
+      type: 'lm-player-ZoomOut_Main'
+    })), /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+      title: "\u590D\u4F4D",
+      onClick: () => setScale(1, true),
+      type: 'lm-player-ZoomDefault_Main'
+    })), /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+      title: "\u653E\u5927",
+      onClick: () => setScale(0.2),
+      type: 'lm-player-ZoomIn_Main'
+    }))));
+  }
+
   function ContrallerBar({
     playContainer,
     snapshot,
@@ -794,7 +825,7 @@
     leftExtContents,
     leftMidExtContents
   }) {
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
       className: `contraller-bar-layout ${!visibel ? 'hide-contraller-bar' : ''}`
     }, /*#__PURE__*/React__default.createElement(LeftBar, {
       api: api,
@@ -809,11 +840,16 @@
       api: api,
       event: event,
       playContainer: playContainer,
-      scale: scale,
       snapshot: snapshot,
       rightExtContents: rightExtContents,
       rightMidExtContents: rightMidExtContents
-    }));
+    })), /*#__PURE__*/React__default.createElement("div", {
+      className: `contraller-scale-layout ${!visibel ? 'hide-contraller-bar' : ''}`
+    }, /*#__PURE__*/React__default.createElement(ScaleBar, {
+      api: api,
+      playContainer: playContainer,
+      scale: scale
+    })));
   }
 
   ContrallerBar.propTypes = {
