@@ -1163,7 +1163,7 @@ class DragEvent extends React.Component {
     this.openDrag = e => {
       this.position.start = [e.pageX, e.pageY];
       this.dragDom.addEventListener('mousemove', this.moveChange);
-      this.dragDom.addEventListener('mouseup', this.stopDrag);
+      document.body.addEventListener('mouseup', this.stopDrag);
     };
 
     this.moveChange = e => {
@@ -1181,7 +1181,7 @@ class DragEvent extends React.Component {
 
     this.stopDrag = () => {
       this.dragDom.removeEventListener('mousemove', this.moveChange);
-      this.dragDom.removeEventListener('mouseup', this.stopDrag);
+      document.body.removeEventListener('mouseup', this.stopDrag);
       this.transformChange();
     };
 

@@ -23,7 +23,7 @@ class DragEvent extends React.Component {
   openDrag = e => {
     this.position.start = [e.pageX, e.pageY]
     this.dragDom.addEventListener('mousemove', this.moveChange)
-    this.dragDom.addEventListener('mouseup', this.stopDrag)
+    document.body.addEventListener('mouseup', this.stopDrag)
   }
   moveChange = e => {
     const { api } = this.props
@@ -37,7 +37,7 @@ class DragEvent extends React.Component {
   }
   stopDrag = () => {
     this.dragDom.removeEventListener('mousemove', this.moveChange)
-    this.dragDom.removeEventListener('mouseup', this.stopDrag)
+    document.body.removeEventListener('mouseup', this.stopDrag)
     this.transformChange()
   }
   transformChange = () => {
