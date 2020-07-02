@@ -54,14 +54,14 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
   const changePlayIndex = useCallback(
     (index) => {
       if (index > historyList.fragments.length - 1) {
-        return playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END)
+        return playerObj && playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END)
       }
 
       if (!historyList.fragments[index].file) {
         changePlayIndex(index + 1)
       }
 
-      if (playerObj.event) {
+      if (playerObj && playerObj.event) {
         playerObj.event.emit(EventName.CHANGE_PLAY_INDEX, index)
       }
       setPlayStatus([index, 0])
@@ -77,6 +77,12 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
 
     playerObj.event.emit(EventName.RELOAD)
   }, [playerObj])
+
+  useEffect(() => {
+    if (!file) {
+      changePlayIndex(playIndex + 1)
+    }
+  }, [])
 
   useEffect(() => {
     if (!file) {
@@ -105,17 +111,13 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
     if (onInitPlayer) {
       onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), { seekTo, changePlayIndex, reload: reloadHistory }))
     }
-    
+
     return () => {
       if (playerObject.api) {
         playerObject.api.unload()
       }
     }
   }, [historyList, file])
-
-  /**
-   * 根据时间计算当前对应的播放索引
-   */
 
   return (
     <div className={`lm-player-container ${className}`} ref={playContainerRef}>
