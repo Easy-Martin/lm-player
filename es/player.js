@@ -2086,7 +2086,7 @@ function HistoryPlayer({
     }
 
     if (!historyList.fragments[index].file) {
-      changePlayIndex(index + 1);
+      return changePlayIndex(index + 1);
     }
 
     if (playerObj && playerObj.event) {
@@ -2094,7 +2094,7 @@ function HistoryPlayer({
     }
 
     setPlayStatus([index, 0]);
-  }, [playerObj]);
+  }, [playerObj, historyList]);
   const reloadHistory = useCallback(() => {
     if (playStatus[0] === 0) {
       playerObj.api.seekTo(defaultSeekTime);
@@ -2107,7 +2107,7 @@ function HistoryPlayer({
     if (!file) {
       changePlayIndex(playIndex + 1);
     }
-  }, []);
+  }, [file, playIndex, historyList]);
   useEffect(() => {
     if (!file) {
       return;

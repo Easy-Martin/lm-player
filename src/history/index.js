@@ -58,7 +58,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
       }
 
       if (!historyList.fragments[index].file) {
-        changePlayIndex(index + 1)
+        return changePlayIndex(index + 1)
       }
 
       if (playerObj && playerObj.event) {
@@ -66,7 +66,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
       }
       setPlayStatus([index, 0])
     },
-    [playerObj]
+    [playerObj, historyList]
   )
 
   const reloadHistory = useCallback(() => {
@@ -82,8 +82,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
     if (!file) {
       changePlayIndex(playIndex + 1)
     }
-  }, [])
-
+  }, [file, playIndex, historyList])
   useEffect(() => {
     if (!file) {
       return
