@@ -86,11 +86,11 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
 
   useEffect(
     () => () => {
-      if (playerObj && playerObj.api) {
-        playerObj.api.destroy()
-      }
       if (playerObj && playerObj.event) {
         playerObj.event.destroy()
+      }
+      if (playerObj && playerObj.api) {
+        playerObj.api.destroy()
       }
     },
     [file, playerObj]

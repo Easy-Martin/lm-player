@@ -48,10 +48,10 @@ export default class Api {
     this.player.removeAttribute('src')
     this.unload()
     if (this.flv) {
-      this.flv.destroy()
+      setTimeout(() => this.flv.destroy, 200)
     }
     if (this.hls) {
-      this.hls.destroy()
+      setTimeout(() => this.hls.destroy(), 200)
     }
   }
 
@@ -272,7 +272,7 @@ export default class Api {
       cancelFullScreen: this.cancelFullScreen.bind(this),
       __player: this.player,
       flv: this.flv,
-      hls: this.hls
+      hls: this.hls,
     }
   }
 }

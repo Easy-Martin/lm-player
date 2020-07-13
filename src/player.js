@@ -18,12 +18,11 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
 
   useEffect(
     () => () => {
-      if (playerObj && playerObj.api) {
-        console.log(playerObj.api)
-        playerObj.api.destroy()
-      }
       if (playerObj && playerObj.event) {
         playerObj.event.destroy()
+      }
+      if (playerObj && playerObj.api) {
+        playerObj.api.destroy()
       }
     },
     [file, playerObj]
@@ -44,7 +43,6 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
       playerObject.hls = createHlsPlayer(playerObject.video, file)
     }
     if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
-      console.log(formartType)
       playerObject.video.src = file
     }
     playerObject.event = new VideoEvent(playerObject.video)

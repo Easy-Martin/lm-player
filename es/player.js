@@ -1292,11 +1292,11 @@ class Api {
     this.unload();
 
     if (this.flv) {
-      this.flv.destroy();
+      setTimeout(() => this.flv.destroy, 200);
     }
 
     if (this.hls) {
-      this.hls.destroy();
+      setTimeout(() => this.hls.destroy(), 200);
     }
   }
   /**
@@ -1672,13 +1672,12 @@ function SinglePlayer({
   const playContainerRef = useRef(null);
   const [playerObj, setPlayerObj] = useState(null);
   useEffect(() => () => {
-    if (playerObj && playerObj.api) {
-      console.log(playerObj.api);
-      playerObj.api.destroy();
-    }
-
     if (playerObj && playerObj.event) {
       playerObj.event.destroy();
+    }
+
+    if (playerObj && playerObj.api) {
+      playerObj.api.destroy();
     }
   }, [file, playerObj]);
   useEffect(() => {
@@ -1703,7 +1702,6 @@ function SinglePlayer({
     }
 
     if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
-      console.log(formartType);
       playerObject.video.src = file;
     }
 
@@ -2115,12 +2113,12 @@ function HistoryPlayer({
     }
   }, [file, playIndex, historyList]);
   useEffect(() => () => {
-    if (playerObj && playerObj.api) {
-      playerObj.api.destroy();
-    }
-
     if (playerObj && playerObj.event) {
       playerObj.event.destroy();
+    }
+
+    if (playerObj && playerObj.api) {
+      playerObj.api.destroy();
     }
   }, [file, playerObj]);
   useEffect(() => {

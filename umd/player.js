@@ -1296,11 +1296,11 @@
       this.unload();
 
       if (this.flv) {
-        this.flv.destroy();
+        setTimeout(() => this.flv.destroy, 200);
       }
 
       if (this.hls) {
-        this.hls.destroy();
+        setTimeout(() => this.hls.destroy(), 200);
       }
     }
     /**
@@ -1676,13 +1676,12 @@
     const playContainerRef = React.useRef(null);
     const [playerObj, setPlayerObj] = React.useState(null);
     React.useEffect(() => () => {
-      if (playerObj && playerObj.api) {
-        console.log(playerObj.api);
-        playerObj.api.destroy();
-      }
-
       if (playerObj && playerObj.event) {
         playerObj.event.destroy();
+      }
+
+      if (playerObj && playerObj.api) {
+        playerObj.api.destroy();
       }
     }, [file, playerObj]);
     React.useEffect(() => {
@@ -1707,7 +1706,6 @@
       }
 
       if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
-        console.log(formartType);
         playerObject.video.src = file;
       }
 
@@ -2119,12 +2117,12 @@
       }
     }, [file, playIndex, historyList]);
     React.useEffect(() => () => {
-      if (playerObj && playerObj.api) {
-        playerObj.api.destroy();
-      }
-
       if (playerObj && playerObj.event) {
         playerObj.event.destroy();
+      }
+
+      if (playerObj && playerObj.api) {
+        playerObj.api.destroy();
       }
     }, [file, playerObj]);
     React.useEffect(() => {
