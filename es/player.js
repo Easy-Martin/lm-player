@@ -2049,6 +2049,7 @@ function HistoryPlayer({
 }) {
   const playContainerRef = useRef(null);
   const [playerObj, setPlayerObj] = useState(null);
+  const playerRef = useRef(null);
   const [playStatus, setPlayStatus] = useState(() => computedTimeAndIndex(historyList, defaultTime));
   const playIndex = useMemo(() => playStatus[0], [playStatus]);
   const defaultSeekTime = useMemo(() => playStatus[1], [playStatus]);
@@ -2112,14 +2113,14 @@ function HistoryPlayer({
     }
   }, [file, playIndex, historyList]);
   useEffect(() => () => {
-    if (playerObj && playerObj.event) {
-      playerObj.event.destroy();
+    if (playerRef.current && playerRef.current.event) {
+      playerRef.current.event.destroy();
     }
 
-    if (playerObj && playerObj.api) {
-      playerObj.api.destroy();
+    if (playerRef.current && playerRef.current.api) {
+      playerRef.current.api.destroy();
     }
-  }, [file, playerObj]);
+  }, [file]);
   useEffect(() => {
     if (!file) {
       return;
@@ -2147,6 +2148,7 @@ function HistoryPlayer({
 
     playerObject.event = new VideoEventInstance(playerObject.video);
     playerObject.api = new Api(playerObject);
+    playerRef.current = playerObject;
     setPlayerObj(playerObject);
 
     if (defaultSeekTime) {

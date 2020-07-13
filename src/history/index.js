@@ -16,6 +16,7 @@ import { computedTimeAndIndex } from './utils'
 function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, muted, poster, playsinline, loop, preload, children, onInitPlayer, ...props }) {
   const playContainerRef = useRef(null)
   const [playerObj, setPlayerObj] = useState(null)
+  const playerRef = useRef(null)
   const [playStatus, setPlayStatus] = useState(() => computedTimeAndIndex(historyList, defaultTime))
   const playIndex = useMemo(() => playStatus[0], [playStatus])
   const defaultSeekTime = useMemo(() => playStatus[1], [playStatus])
@@ -86,14 +87,14 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
 
   useEffect(
     () => () => {
-      if (playerObj && playerObj.event) {
-        playerObj.event.destroy()
+      if (playerRef.current && playerRef.current.event) {
+        playerRef.current.event.destroy()
       }
-      if (playerObj && playerObj.api) {
-        playerObj.api.destroy()
+      if (playerRef.current && playerRef.current.api) {
+        playerRef.current.api.destroy()
       }
     },
-    [file, playerObj]
+    [file]
   )
 
   useEffect(() => {
@@ -116,6 +117,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
     }
     playerObject.event = new VideoEvent(playerObject.video)
     playerObject.api = new Api(playerObject)
+    playerRef.current = playerObject
     setPlayerObj(playerObject)
     if (defaultSeekTime) {
       playerObject.api.seekTo(defaultSeekTime)

@@ -2053,6 +2053,7 @@
   }) {
     const playContainerRef = React.useRef(null);
     const [playerObj, setPlayerObj] = React.useState(null);
+    const playerRef = React.useRef(null);
     const [playStatus, setPlayStatus] = React.useState(() => computedTimeAndIndex(historyList, defaultTime));
     const playIndex = React.useMemo(() => playStatus[0], [playStatus]);
     const defaultSeekTime = React.useMemo(() => playStatus[1], [playStatus]);
@@ -2116,14 +2117,14 @@
       }
     }, [file, playIndex, historyList]);
     React.useEffect(() => () => {
-      if (playerObj && playerObj.event) {
-        playerObj.event.destroy();
+      if (playerRef.current && playerRef.current.event) {
+        playerRef.current.event.destroy();
       }
 
-      if (playerObj && playerObj.api) {
-        playerObj.api.destroy();
+      if (playerRef.current && playerRef.current.api) {
+        playerRef.current.api.destroy();
       }
-    }, [file, playerObj]);
+    }, [file]);
     React.useEffect(() => {
       if (!file) {
         return;
@@ -2151,6 +2152,7 @@
 
       playerObject.event = new VideoEventInstance(playerObject.video);
       playerObject.api = new Api(playerObject);
+      playerRef.current = playerObject;
       setPlayerObj(playerObject);
 
       if (defaultSeekTime) {
