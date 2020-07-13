@@ -15,17 +15,18 @@ import './style/index.less'
 function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinline, loop, preload, children, onInitPlayer, ...props }) {
   const playContainerRef = useRef(null)
   const [playerObj, setPlayerObj] = useState(null)
+  const playerRef = useRef(null)
 
   useEffect(
     () => () => {
-      if (playerObj && playerObj.event) {
-        playerObj.event.destroy()
+      if (playerRef.current && playerRef.current.event) {
+        playerRef.current.event.destroy()
       }
-      if (playerObj && playerObj.api) {
-        playerObj.api.destroy()
+      if (playerRef.current && playerRef.current.api) {
+        playerRef.current.api.destroy()
       }
     },
-    [file, playerObj]
+    [file]
   )
   useEffect(() => {
     if (!file) {
@@ -47,7 +48,8 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
     }
     playerObject.event = new VideoEvent(playerObject.video)
     playerObject.api = new Api(playerObject)
-    setPlayerObj(playerObject)
+    playerRef.current = playerObject
+    setPlayerObj(() => playerObject)
 
     if (onInitPlayer) {
       onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()))

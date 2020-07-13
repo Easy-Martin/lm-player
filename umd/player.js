@@ -649,12 +649,11 @@
 
       event.addEventListener('play', updateRender);
       event.addEventListener('pause', updateRender);
-      event.addEventListener('volumechange', updateRender);
-      return () => {
-        event.removeEventListener('play', updateRender);
-        event.removeEventListener('pause', updateRender);
-        event.removeEventListener('volumechange', updateRender);
-      };
+      event.addEventListener('volumechange', updateRender); // return () => {
+      //   event.removeEventListener('play', updateRender)
+      //   event.removeEventListener('pause', updateRender)
+      //   event.removeEventListener('volumechange', updateRender)
+      // }
     }, [event]); //缓存值
 
     const paused = React.useMemo(() => video.paused, [dep, video]);
@@ -905,7 +904,7 @@
       }
 
       if (state.status === 'reload') {
-        return `视频加载错误，正在进行重连第${state.errorTimer}重连`;
+        return `视频加载错误，正在进行重连第${state.errorTimer}次重连`;
       }
     }, [state.errorTimer, state.status]);
     React.useEffect(() => {
@@ -950,20 +949,19 @@
       event.on(EventName.RELOAD_SUCCESS, reloadSuccess);
       event.on(EventName.RELOAD, reload);
       event.on(EventName.HISTORY_PLAY_END, playEnd);
-      event.on(EventName.CLEAR_ERROR_TIMER, reloadSuccess);
-      return () => {
-        event.removeEventListener('loadstart', openLoading);
-        event.removeEventListener('waiting', openLoading);
-        event.removeEventListener('seeking', openLoading);
-        event.removeEventListener('loadeddata', closeLoading);
-        event.removeEventListener('canplay', closeLoading);
-        event.off(EventName.ERROR_RELOAD, errorReload);
-        event.off(EventName.RELOAD_FAIL, reloadFail);
-        event.off(EventName.RELOAD_SUCCESS, reloadSuccess);
-        event.off(EventName.RELOAD, reload);
-        event.off(EventName.HISTORY_PLAY_END, playEnd);
-        event.off(EventName.CLEAR_ERROR_TIMER, reloadSuccess);
-      };
+      event.on(EventName.CLEAR_ERROR_TIMER, reloadSuccess); // return () => {
+      //   event.removeEventListener('loadstart', openLoading)
+      //   event.removeEventListener('waiting', openLoading)
+      //   event.removeEventListener('seeking', openLoading)
+      //   event.removeEventListener('loadeddata', closeLoading)
+      //   event.removeEventListener('canplay', closeLoading)
+      //   event.off(EventName.ERROR_RELOAD, errorReload)
+      //   event.off(EventName.RELOAD_FAIL, reloadFail)
+      //   event.off(EventName.RELOAD_SUCCESS, reloadSuccess)
+      //   event.off(EventName.RELOAD, reload)
+      //   event.off(EventName.HISTORY_PLAY_END, playEnd)
+      //   event.off(EventName.CLEAR_ERROR_TIMER, reloadSuccess)
+      // }
     }, [event]);
     const {
       loading,
@@ -1022,15 +1020,14 @@
       event.addEventListener('timeupdate', getCurrentTime);
       event.addEventListener('progress', getBuffered);
       event.addEventListener('suspend', getBuffered);
-      event.addEventListener('seeked', seekendPlay);
-      return () => {
-        event.removeEventListener('loadedmetadata', getDuration);
-        event.removeEventListener('durationchange', getDuration);
-        event.removeEventListener('timeupdate', getCurrentTime);
-        event.removeEventListener('progress', getBuffered);
-        event.removeEventListener('suspend', getBuffered);
-        event.removeEventListener('seeked', seekendPlay);
-      };
+      event.addEventListener('seeked', seekendPlay); // return () => {
+      //   event.removeEventListener('loadedmetadata', getDuration)
+      //   event.removeEventListener('durationchange', getDuration)
+      //   event.removeEventListener('timeupdate', getCurrentTime)
+      //   event.removeEventListener('progress', getBuffered)
+      //   event.removeEventListener('suspend', getBuffered)
+      //   event.removeEventListener('seeked', seekendPlay)
+      // }
     }, [event, api]);
     const {
       duration,
@@ -1120,24 +1117,20 @@
 
       event.addEventListener('error', errorHandle, false); //获取video状态清除错误状态
 
-      event.addEventListener('canplay', reloadSuccess, false);
-      return () => {
-        if (flv) {
-          flv.off('error', errorHandle);
-        }
-
-        if (hls) {
-          hls.off('hlsError', errorHandle);
-        }
-
-        if (isHistory) {
-          event.off(EventName.CHANGE_PLAY_INDEX, clearErrorTimer);
-          event.off(EventName.CLEAR_ERROR_TIMER, clearErrorTimer);
-        }
-
-        event.removeEventListener('error', errorHandle, false);
-        event.removeEventListener('canplay', reloadSuccess, false);
-      };
+      event.addEventListener('canplay', reloadSuccess, false); // return () => {
+      //   if (flv) {
+      //     flv.off('error', errorHandle)
+      //   }
+      //   if (hls) {
+      //     hls.off('hlsError', errorHandle)
+      //   }
+      //   if (isHistory) {
+      //     event.off(EventName.CHANGE_PLAY_INDEX, clearErrorTimer)
+      //     event.off(EventName.CLEAR_ERROR_TIMER, clearErrorTimer)
+      //   }
+      //   event.removeEventListener('error', errorHandle, false)
+      //   event.removeEventListener('canplay', reloadSuccess, false)
+      // }
     }, [event, flv, hls, errorTimer]);
     React.useEffect(() => {
       if (errorTimer === 0) {
@@ -1229,6 +1222,7 @@
     playerProps: PropTypes.object
   };
 
+  let index = 0;
   class Api {
     constructor({
       video,
@@ -1296,12 +1290,16 @@
       this.unload();
 
       if (this.flv) {
-        setTimeout(() => this.flv.destroy, 200);
+        index++;
+        this.flv.destroy();
       }
 
       if (this.hls) {
-        setTimeout(() => this.hls.destroy(), 200);
+        index++;
+        this.hls.destroy();
       }
+
+      console.warn('destroy', index);
     }
     /**
      * 设置currentTime实现seek
@@ -1675,15 +1673,16 @@
   }) {
     const playContainerRef = React.useRef(null);
     const [playerObj, setPlayerObj] = React.useState(null);
+    const playerRef = React.useRef(null);
     React.useEffect(() => () => {
-      if (playerObj && playerObj.event) {
-        playerObj.event.destroy();
+      if (playerRef.current && playerRef.current.event) {
+        playerRef.current.event.destroy();
       }
 
-      if (playerObj && playerObj.api) {
-        playerObj.api.destroy();
+      if (playerRef.current && playerRef.current.api) {
+        playerRef.current.api.destroy();
       }
-    }, [file, playerObj]);
+    }, [file]);
     React.useEffect(() => {
       if (!file) {
         return;
@@ -1711,7 +1710,8 @@
 
       playerObject.event = new VideoEventInstance(playerObject.video);
       playerObject.api = new Api(playerObject);
-      setPlayerObj(playerObject);
+      playerRef.current = playerObject;
+      setPlayerObj(() => playerObject);
 
       if (onInitPlayer) {
         onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()));
@@ -1932,17 +1932,16 @@
       event.addEventListener('suspend', getBuffered);
       event.addEventListener('seeked', seekendPlay);
       event.on(EventName.HISTORY_PLAY_END, historyPlayEnd);
-      event.on(EventName.RELOAD, reload);
-      return () => {
-        event.removeEventListener('loadedmetadata', getDuration);
-        event.removeEventListener('durationchange', getDuration);
-        event.removeEventListener('timeupdate', getCurrentTime);
-        event.removeEventListener('progress', getBuffered);
-        event.removeEventListener('suspend', getBuffered);
-        event.removeEventListener('seeked', seekendPlay);
-        event.off(EventName.HISTORY_PLAY_END, historyPlayEnd);
-        event.off(EventName.RELOAD, reload);
-      };
+      event.on(EventName.RELOAD, reload); // return () => {
+      //   event.removeEventListener('loadedmetadata', getDuration)
+      //   event.removeEventListener('durationchange', getDuration)
+      //   event.removeEventListener('timeupdate', getCurrentTime)
+      //   event.removeEventListener('progress', getBuffered)
+      //   event.removeEventListener('suspend', getBuffered)
+      //   event.removeEventListener('seeked', seekendPlay)
+      //   event.off(EventName.HISTORY_PLAY_END, historyPlayEnd)
+      //   event.off(EventName.RELOAD, reload)
+      // }
     }, [event, api]);
     const changePlayTime = React.useCallback(percent => {
       const currentTime = percent * historyList.duration; //修正一下误差

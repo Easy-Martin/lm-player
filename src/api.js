@@ -1,5 +1,7 @@
 import { fullscreen, isFullscreen, exitFullscreen } from './util'
 import EventName from './event/eventName'
+
+let index = 0
 export default class Api {
   constructor({ video, playContainer, event, flv, hls }) {
     this.player = video
@@ -48,11 +50,14 @@ export default class Api {
     this.player.removeAttribute('src')
     this.unload()
     if (this.flv) {
-      setTimeout(() => this.flv.destroy, 200)
+      index++
+      this.flv.destroy()
     }
     if (this.hls) {
-      setTimeout(() => this.hls.destroy(), 200)
+      index++
+      this.hls.destroy()
     }
+    console.warn('destroy', index)
   }
 
   /**
