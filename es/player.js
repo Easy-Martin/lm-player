@@ -1671,6 +1671,16 @@ function SinglePlayer({
 }) {
   const playContainerRef = useRef(null);
   const [playerObj, setPlayerObj] = useState(null);
+  useEffect(() => () => {
+    if (playerObj && playerObj.api) {
+      console.log(playerObj.api);
+      playerObj.api.destroy();
+    }
+
+    if (playerObj && playerObj.event) {
+      playerObj.event.destroy();
+    }
+  }, [file, playerObj]);
   useEffect(() => {
     if (!file) {
       return;
@@ -1693,6 +1703,7 @@ function SinglePlayer({
     }
 
     if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
+      console.log(formartType);
       playerObject.video.src = file;
     }
 
@@ -1703,12 +1714,6 @@ function SinglePlayer({
     if (onInitPlayer) {
       onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()));
     }
-
-    return () => {
-      if (playerObject.api) {
-        playerObject.api.unload();
-      }
-    };
   }, [file]);
   return /*#__PURE__*/React.createElement("div", {
     className: `lm-player-container ${className}`,
@@ -1726,6 +1731,7 @@ function SinglePlayer({
   })), /*#__PURE__*/React.createElement(VideoTools, {
     playerObj: playerObj,
     isLive: props.isLive,
+    key: file,
     hideContrallerBar: props.hideContrallerBar,
     errorReloadTimer: props.errorReloadTimer,
     scale: props.scale,
@@ -2108,6 +2114,15 @@ function HistoryPlayer({
       changePlayIndex(playIndex + 1);
     }
   }, [file, playIndex, historyList]);
+  useEffect(() => () => {
+    if (playerObj && playerObj.api) {
+      playerObj.api.destroy();
+    }
+
+    if (playerObj && playerObj.event) {
+      playerObj.event.destroy();
+    }
+  }, [file, playerObj]);
   useEffect(() => {
     if (!file) {
       return;
@@ -2148,12 +2163,6 @@ function HistoryPlayer({
         reload: reloadHistory
       }));
     }
-
-    return () => {
-      if (playerObject.api) {
-        playerObject.api.unload();
-      }
-    };
   }, [historyList, file]);
   return /*#__PURE__*/React.createElement("div", {
     className: `lm-player-container ${className}`,
@@ -2185,7 +2194,8 @@ function HistoryPlayer({
     reloadHistory: reloadHistory,
     historyList: historyList,
     playIndex: playIndex,
-    seekTo: seekTo
+    seekTo: seekTo,
+    key: file
   }), children);
 }
 

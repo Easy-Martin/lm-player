@@ -15,13 +15,26 @@ import './style/index.less'
 function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinline, loop, preload, children, onInitPlayer, ...props }) {
   const playContainerRef = useRef(null)
   const [playerObj, setPlayerObj] = useState(null)
+
+  useEffect(
+    () => () => {
+      if (playerObj && playerObj.api) {
+        console.log(playerObj.api)
+        playerObj.api.destroy()
+      }
+      if (playerObj && playerObj.event) {
+        playerObj.event.destroy()
+      }
+    },
+    [file, playerObj]
+  )
   useEffect(() => {
     if (!file) {
       return
     }
     const playerObject = {
       playContainer: playContainerRef.current,
-      video: playContainerRef.current.querySelector('video')
+      video: playContainerRef.current.querySelector('video'),
     }
     const formartType = getVideoType(file)
     if (formartType === 'flv' || type === 'flv') {
@@ -31,6 +44,7 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
       playerObject.hls = createHlsPlayer(playerObject.video, file)
     }
     if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
+      console.log(formartType)
       playerObject.video.src = file
     }
     playerObject.event = new VideoEvent(playerObject.video)
@@ -39,12 +53,6 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
 
     if (onInitPlayer) {
       onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()))
-    }
-
-    return () => {
-      if (playerObject.api) {
-        playerObject.api.unload()
-      }
     }
   }, [file])
   return (
@@ -55,6 +63,7 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
       <VideoTools
         playerObj={playerObj}
         isLive={props.isLive}
+        key={file}
         hideContrallerBar={props.hideContrallerBar}
         errorReloadTimer={props.errorReloadTimer}
         scale={props.scale}
@@ -81,7 +90,7 @@ function VideoTools({
   leftMidExtContents,
   rightExtContents,
   rightMidExtContents,
-  errorReloadTimer
+  errorReloadTimer,
 }) {
   if (!playerObj) {
     return <NoSource />
@@ -138,7 +147,7 @@ SinglePlayer.propTypes = {
   leftMidExtContents: PropTypes.element,
   flvOptions: PropTypes.object,
   flvConfig: PropTypes.object,
-  children: PropTypes.element
+  children: PropTypes.element,
 }
 SinglePlayer.defaultProps = {
   isLive: true,
@@ -150,7 +159,7 @@ SinglePlayer.defaultProps = {
   playsInline: false,
   preload: 'auto',
   loop: false,
-  hideContrallerBar: false
+  hideContrallerBar: false,
 }
 
 export default SinglePlayer

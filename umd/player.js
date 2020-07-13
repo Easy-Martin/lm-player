@@ -1675,6 +1675,16 @@
   }) {
     const playContainerRef = React.useRef(null);
     const [playerObj, setPlayerObj] = React.useState(null);
+    React.useEffect(() => () => {
+      if (playerObj && playerObj.api) {
+        console.log(playerObj.api);
+        playerObj.api.destroy();
+      }
+
+      if (playerObj && playerObj.event) {
+        playerObj.event.destroy();
+      }
+    }, [file, playerObj]);
     React.useEffect(() => {
       if (!file) {
         return;
@@ -1697,6 +1707,7 @@
       }
 
       if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
+        console.log(formartType);
         playerObject.video.src = file;
       }
 
@@ -1707,12 +1718,6 @@
       if (onInitPlayer) {
         onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()));
       }
-
-      return () => {
-        if (playerObject.api) {
-          playerObject.api.unload();
-        }
-      };
     }, [file]);
     return /*#__PURE__*/React__default.createElement("div", {
       className: `lm-player-container ${className}`,
@@ -1730,6 +1735,7 @@
     })), /*#__PURE__*/React__default.createElement(VideoTools, {
       playerObj: playerObj,
       isLive: props.isLive,
+      key: file,
       hideContrallerBar: props.hideContrallerBar,
       errorReloadTimer: props.errorReloadTimer,
       scale: props.scale,
@@ -2112,6 +2118,15 @@
         changePlayIndex(playIndex + 1);
       }
     }, [file, playIndex, historyList]);
+    React.useEffect(() => () => {
+      if (playerObj && playerObj.api) {
+        playerObj.api.destroy();
+      }
+
+      if (playerObj && playerObj.event) {
+        playerObj.event.destroy();
+      }
+    }, [file, playerObj]);
     React.useEffect(() => {
       if (!file) {
         return;
@@ -2152,12 +2167,6 @@
           reload: reloadHistory
         }));
       }
-
-      return () => {
-        if (playerObject.api) {
-          playerObject.api.unload();
-        }
-      };
     }, [historyList, file]);
     return /*#__PURE__*/React__default.createElement("div", {
       className: `lm-player-container ${className}`,
@@ -2189,7 +2198,8 @@
       reloadHistory: reloadHistory,
       historyList: historyList,
       playIndex: playIndex,
-      seekTo: seekTo
+      seekTo: seekTo,
+      key: file
     }), children);
   }
 

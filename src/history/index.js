@@ -83,6 +83,19 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
       changePlayIndex(playIndex + 1)
     }
   }, [file, playIndex, historyList])
+
+  useEffect(
+    () => () => {
+      if (playerObj && playerObj.api) {
+        playerObj.api.destroy()
+      }
+      if (playerObj && playerObj.event) {
+        playerObj.event.destroy()
+      }
+    },
+    [file, playerObj]
+  )
+
   useEffect(() => {
     if (!file) {
       return
@@ -110,12 +123,6 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
     if (onInitPlayer) {
       onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), { seekTo, changePlayIndex, reload: reloadHistory }))
     }
-
-    return () => {
-      if (playerObject.api) {
-        playerObject.api.unload()
-      }
-    }
   }, [historyList, file])
 
   return (
@@ -141,6 +148,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
         historyList={historyList}
         playIndex={playIndex}
         seekTo={seekTo}
+        key={file}
       />
       {children}
     </div>
