@@ -1,4 +1,0 @@
-var historyList =[{"beginTime":"1591867693","endTime":"1591869493","url":"http://192.168.100.93:5460/records/m3u8_info2/1591867693_1591869493.m3u8?access_token=753383104_3356491776_1623371068_7180582b2b3b3906201bca28fc4708bd&head=1"},{"beginTime":"1591869493","endTime":"1591871275","url":"http://192.168.100.93:5460/records/m3u8_info2/1591869493_1591871275.m3u8?access_token=753383104_3356491776_1623371068_7180582b2b3b3906201bca28fc4708bd"}]
-
-const file =
-  'https://jxsr-eye.antelopecloud.cn/staticResource/v2/video/live.flv/538470642?Authorization=eyJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb25JZCI6IjEwMDEwMTAwMDQ0NSIsImV4dCI6MTYwOTQ2MzU1NjY4MSwidWlkIjoiMTAxMDAwMDAwNjk5IiwidmFsaWRTdGF0ZSI6MTA0NDA2LCJyb2xlSWQiOlsxMDAwMDAxMTA1MThdLCJ2YWxpZFRpbWUiOjE1NzkyNzY3OTkwMDAsIm9wdENlbnRlcklkIjoiMTAwMTAwMDAwMjMzIiwidXNlclR5cGUiOjEwMDcwNCwiaWF0IjoxNTc3OTI3NTU2NjgxfQ.vVtJcXiTulvD0cSzbuWRTlL3V5wfQkpgiWIlfjEmsh0'
