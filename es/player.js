@@ -1688,19 +1688,22 @@ function SinglePlayer({
       playContainer: playContainerRef.current,
       video: playContainerRef.current.querySelector('video')
     };
+    let isInit = false;
     const formartType = getVideoType(file);
 
     if (formartType === 'flv' || type === 'flv') {
+      isInit = true;
       playerObject.flv = createFlvPlayer(playerObject.video, { ...props,
         file
       });
     }
 
     if (formartType === 'm3u8' || type === 'hls') {
+      isInit = true;
       playerObject.hls = createHlsPlayer(playerObject.video, file);
     }
 
-    if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
+    if (!isInit && (!['flv', 'm3u8'].includes(formartType) || type === 'native')) {
       playerObject.video.src = file;
     }
 
@@ -2130,19 +2133,22 @@ function HistoryPlayer({
       playContainer: playContainerRef.current,
       video: playContainerRef.current.querySelector('video')
     };
+    let isInit = false;
     const formartType = getVideoType(file);
 
     if (formartType === 'flv' || type === 'flv') {
+      isInit = true;
       playerObject.flv = createFlvPlayer(playerObject.video, { ...props,
         file
       });
     }
 
     if (formartType === 'm3u8' || type === 'hls') {
+      isInit = true;
       playerObject.hls = createHlsPlayer(playerObject.video, file);
     }
 
-    if (!['flv', 'm3u8'].includes(formartType) || type === 'native') {
+    if (!isInit && (!['flv', 'm3u8'].includes(formartType) || type === 'native')) {
       playerObject.video.src = file;
     }
 

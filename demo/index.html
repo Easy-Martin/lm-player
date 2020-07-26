@@ -12,15 +12,31 @@
     <script src="./flv.min.js"></script>
     <script src="https://cdn.bootcss.com/hls.js/8.0.0-beta.3/hls.min.js"></script>
 
-    <script src="../umd/player.js"></script>
+    <script src="umd/player.js"></script>
     <style>
       * {
         padding: 0;
         margin: 0;
         box-sizing: border-box;
       }
+      .local-video{
+        width: 100px;
+        position: relative;
+      }
+      .local-video input{
+        position: absolute;
+        left: 0;
+        top:0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+      }
+      .local-video button{
+        width: 100%;
+        height: 32px;
+      }
     </style>
-    <link rel="stylesheet" href="../umd/player.css" />
+    <link rel="stylesheet" href="umd/player.css" />
   </head>
   <body>
     <div id="app"></div>
@@ -44,7 +60,12 @@
         const [playList, setPlayList] = useState(undefined)
         const [liveType, setLiveType] = useState('')
         const [historyType, setHistoryType] = useState('')
-        console.log(liveType)
+
+        const onFileChange = function(e){
+          setIsLive(false)
+          setLiveType("flv")
+          liveInputRef.current.value = URL.createObjectURL(e.target.files[0])
+        }
         return (
           <div style={{ width: '100%', padding: 20 }}>
             <div style={{ width: 800, margin: '0 auto 40px auto' }}>
@@ -66,7 +87,7 @@
                     )
                   )}
                 </select>
-                <input ref={liveInputRef} style={{ flex: 1, height: 32 }} type="text" placeholder="请输入视频地址" />
+                <input ref={liveInputRef} value={file} style={{ flex: 1, height: 32 }} type="text" placeholder="请输入视频地址" />
                 <select
                   name="isLive"
                   onChange={(e) => {
@@ -91,6 +112,10 @@
                     <option value={false}>录像</option>
                   )}
                 </select>
+                <span className="local-video">
+                  <input type="file" name="" id="" onChange={onFileChange} />
+                  <button>本地录像</button>
+                </span>
                 <button style={{ width: 60, height: 32 }} onClick={(e) => setFile(liveInputRef.current.value)}>
                   播放
                 </button>
