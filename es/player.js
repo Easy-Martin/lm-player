@@ -61,7 +61,9 @@ class VideoEventInstance {
     return {
       on: this.on.bind(this),
       off: this.off.bind(this),
-      emit: this.emit.bind(this)
+      emit: this.emit.bind(this),
+      addEventListener: this.addEventListener.bind(this),
+      removeEventListener: this.removeEventListener.bind(this)
     };
   }
 
@@ -135,23 +137,7 @@ function createFlvPlayer(video, options) {
  */
 
 function getVideoType(url) {
-  const urlInfo = new URL(url);
-  const path = `${urlInfo.origin}${urlInfo.pathname}`; // eslint-disable-next-line no-useless-escape
-
-  const reg = /([^\.\/\\]+)\.(([a-z]|[0-9])+(\?\S+)?)$/i;
-  const resultArr = reg.exec(path);
-
-  if (!resultArr) {
-    return url.indexOf('.flv') > -1 ? 'flv' : url.indexOf('.m3u8') > -1 ? 'm3u8' : 'native';
-  }
-
-  const suffix = resultArr[2].replace(resultArr[4], '');
-
-  if (!suffix) {
-    return url.indexOf('.flv') > -1 ? 'flv' : url.indexOf('.m3u8') > -1 ? 'm3u8' : 'native';
-  }
-
-  return suffix;
+  return url.indexOf('.flv') > -1 ? 'flv' : url.indexOf('.m3u8') > -1 ? 'm3u8' : 'native';
 }
 /**
  * 播放时间转字符串

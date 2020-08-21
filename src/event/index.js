@@ -41,7 +41,7 @@ class VideoEventInstance {
     index > -1 && this.events[eventName].listener.splice(index, 1)
   }
   getApi() {
-    return { on: this.on.bind(this), off: this.off.bind(this), emit: this.emit.bind(this) }
+    return { on: this.on.bind(this), off: this.off.bind(this), emit: this.emit.bind(this), addEventListener: this.addEventListener.bind(this), removeEventListener: this.removeEventListener.bind(this) }
   }
   destroy() {
     Object.keys(this.playerEvents).forEach(key => {
