@@ -16,11 +16,11 @@ function LeftBar({ api, event, video, isHistory, reloadHistory, isLive, leftExtC
     event.addEventListener('pause', updateRender)
     event.addEventListener('volumechange', updateRender)
 
-    // return () => {
-    //   event.removeEventListener('play', updateRender)
-    //   event.removeEventListener('pause', updateRender)
-    //   event.removeEventListener('volumechange', updateRender)
-    // }
+    return () => {
+      event.removeEventListener('play', updateRender)
+      event.removeEventListener('pause', updateRender)
+      event.removeEventListener('volumechange', updateRender)
+    }
   }, [event])
 
   //缓存值

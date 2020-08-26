@@ -19,7 +19,12 @@ function ContrallerEvent({ event, playContainer, children }) {
     }
     playContainer.addEventListener('mousemove', showContraller, false)
     playContainer.addEventListener('mouseout', hideContraller, false)
-  })
+
+    return () => {
+      playContainer.removeEventListener('mousemove', showContraller, false)
+      playContainer.removeEventListener('mouseout', hideContraller, false)
+    }
+  }, [])
 
   return React.Children.map(children, child => (React.isValidElement(child) ? React.cloneElement(child, { visibel }) : child))
 }

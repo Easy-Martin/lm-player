@@ -118,7 +118,13 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
     if (!isInit && (!['flv', 'm3u8'].includes(formartType) || type === 'native')) {
       playerObject.video.src = file
     }
+    if (playerObject.event) {
+      playerObject.event.destroy()
+    }
     playerObject.event = new VideoEvent(playerObject.video)
+    if (playerObject.api) {
+      playerObject.api.destroy()
+    }
     playerObject.api = new Api(playerObject)
     playerRef.current = playerObject
     setPlayerObj(playerObject)

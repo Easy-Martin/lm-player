@@ -20,14 +20,14 @@ function TineLine({ event, api, visibel }) {
     event.addEventListener('suspend', getBuffered)
     event.addEventListener('seeked', seekendPlay)
 
-    // return () => {
-    //   event.removeEventListener('loadedmetadata', getDuration)
-    //   event.removeEventListener('durationchange', getDuration)
-    //   event.removeEventListener('timeupdate', getCurrentTime)
-    //   event.removeEventListener('progress', getBuffered)
-    //   event.removeEventListener('suspend', getBuffered)
-    //   event.removeEventListener('seeked', seekendPlay)
-    // }
+    return () => {
+      event.removeEventListener('loadedmetadata', getDuration)
+      event.removeEventListener('durationchange', getDuration)
+      event.removeEventListener('timeupdate', getCurrentTime)
+      event.removeEventListener('progress', getBuffered)
+      event.removeEventListener('suspend', getBuffered)
+      event.removeEventListener('seeked', seekendPlay)
+    }
   }, [event, api])
 
   const { duration, currentTime, buffered } = state
