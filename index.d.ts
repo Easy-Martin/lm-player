@@ -57,8 +57,8 @@ declare namespace LMPlayer {
     defaultTime?: number
     historyList?: HistoryFileList
   }
-  function Player<P>(props: P): React.FunctionComponent<PlayerProps>
-  function HistoryPlayer<P>(props: P): React.FunctionComponent<PlayerProps>
+  declare const Player: React.FunctionComponent<PlayerProps>
+  declare const HistoryPlayer: React.FunctionComponent<PlayerProps>
   function createPlayer(options: PlayerProps): void
   function createHistoryPlayer(options: PlayerProps): void
   interface EventName {
