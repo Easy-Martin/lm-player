@@ -39,19 +39,19 @@ function VideoMessage({ event, api }) {
     event.on(EventName.HISTORY_PLAY_END, playEnd)
     event.on(EventName.CLEAR_ERROR_TIMER, reloadSuccess)
 
-    // return () => {
-    //   event.removeEventListener('loadstart', openLoading)
-    //   event.removeEventListener('waiting', openLoading)
-    //   event.removeEventListener('seeking', openLoading)
-    //   event.removeEventListener('loadeddata', closeLoading)
-    //   event.removeEventListener('canplay', closeLoading)
-    //   event.off(EventName.ERROR_RELOAD, errorReload)
-    //   event.off(EventName.RELOAD_FAIL, reloadFail)
-    //   event.off(EventName.RELOAD_SUCCESS, reloadSuccess)
-    //   event.off(EventName.RELOAD, reload)
-    //   event.off(EventName.HISTORY_PLAY_END, playEnd)
-    //   event.off(EventName.CLEAR_ERROR_TIMER, reloadSuccess)
-    // }
+    return () => {
+      event.removeEventListener('loadstart', openLoading)
+      event.removeEventListener('waiting', openLoading)
+      event.removeEventListener('seeking', openLoading)
+      event.removeEventListener('loadeddata', closeLoading)
+      event.removeEventListener('canplay', closeLoading)
+      event.off(EventName.ERROR_RELOAD, errorReload)
+      event.off(EventName.RELOAD_FAIL, reloadFail)
+      event.off(EventName.RELOAD_SUCCESS, reloadSuccess)
+      event.off(EventName.RELOAD, reload)
+      event.off(EventName.HISTORY_PLAY_END, playEnd)
+      event.off(EventName.CLEAR_ERROR_TIMER, reloadSuccess)
+    }
   }, [event])
 
   const { loading, status } = state

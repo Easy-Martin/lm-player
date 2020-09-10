@@ -51,6 +51,7 @@ class VideoEventInstance {
     })
     this.playerEvents = {}
     this.events = {}
+    this.video = null
   }
 }
 

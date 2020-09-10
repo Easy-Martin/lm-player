@@ -1,140 +1,140 @@
-import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react'
-import PropTypes from 'prop-types'
-import ContrallerBar from '../contraller_bar'
-import VideoMessage, { NoSource } from '../message'
-import HistoryTimeLine from './time_line_history'
-import ErrorEvent from '../event/errorEvent'
-import DragEvent from '../event/dragEvent'
-import Api from '../api'
-import VideoEvent from '../event'
-import PlayEnd from './play_end'
-import EventName from '../event/eventName'
-import ContrallerEvent from '../event/contrallerEvent'
-import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util'
-import { computedTimeAndIndex } from './utils'
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import ContrallerBar from '../contraller_bar';
+import VideoMessage, { NoSource } from '../message';
+import HistoryTimeLine from './time_line_history';
+import ErrorEvent from '../event/errorEvent';
+import DragEvent from '../event/dragEvent';
+import Api from '../api';
+import VideoEvent from '../event';
+import PlayEnd from './play_end';
+import EventName from '../event/eventName';
+import ContrallerEvent from '../event/contrallerEvent';
+import { getVideoType, createFlvPlayer, createHlsPlayer } from '../util';
+import { computedTimeAndIndex } from './utils';
 
 function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, muted, poster, playsinline, loop, preload, children, onInitPlayer, ...props }) {
-  const playContainerRef = useRef(null)
-  const [playerObj, setPlayerObj] = useState(null)
-  const playerRef = useRef(null)
-  const [playStatus, setPlayStatus] = useState(() => computedTimeAndIndex(historyList, defaultTime))
-  const playIndex = useMemo(() => playStatus[0], [playStatus])
-  const defaultSeekTime = useMemo(() => playStatus[1], [playStatus])
+  const playContainerRef = useRef(null);
+  const [playerObj, setPlayerObj] = useState(null);
+  const playerRef = useRef(null);
+  const [playStatus, setPlayStatus] = useState(() => computedTimeAndIndex(historyList, defaultTime));
+  const playIndex = useMemo(() => playStatus[0], [playStatus]);
+  const defaultSeekTime = useMemo(() => playStatus[1], [playStatus]);
   const file = useMemo(() => {
-    let url
+    let url;
     try {
-      url = historyList.fragments[playIndex].file
+      url = historyList.fragments[playIndex].file;
     } catch (e) {
-      console.warn('未找打播放地址！', historyList)
+      console.warn('未找打播放地址！', historyList);
     }
-    return url
-  }, [historyList, playIndex])
+    return url;
+  }, [historyList, playIndex]);
 
   /**
    * 重写api下的seekTo方法
    */
   const seekTo = useCallback(
     (currentTime) => {
-      const [index, seekTime] = computedTimeAndIndex(historyList, currentTime)
-      if (playerObj.event && playerObj.api) {
+      const [index, seekTime] = computedTimeAndIndex(historyList, currentTime);
+      if (playerRef.current.event && playerRef.current.api) {
         //判断是否需要更新索引
         setPlayStatus((old) => {
           if (old[0] !== index) {
-            return [index, seekTime]
+            return [index, seekTime];
           } else {
-            playerObj.api.seekTo(seekTime, true)
-            playerObj.event.emit(EventName.SEEK, currentTime)
-            return old
+            playerRef.current.api.seekTo(seekTime, true);
+            return old;
           }
-        })
+        });
       }
     },
-    [playIndex, playerObj, playerObj, historyList]
-  )
+    [playIndex, historyList]
+  );
 
   const changePlayIndex = useCallback(
     (index) => {
       if (index > historyList.fragments.length - 1) {
-        return playerObj && playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END)
+        return playerRef.current && playerRef.current.event && playerRef.current.event.emit(EventName.HISTORY_PLAY_END);
       }
 
       if (!historyList.fragments[index].file) {
-        return changePlayIndex(index + 1)
+        return changePlayIndex(index + 1);
       }
 
-      if (playerObj && playerObj.event) {
-        playerObj.event.emit(EventName.CHANGE_PLAY_INDEX, index)
+      if (playerRef.current && playerRef.current.event) {
+        playerRef.current.event.emit(EventName.CHANGE_PLAY_INDEX, index);
       }
-      setPlayStatus([index, 0])
+      setPlayStatus([index, 0]);
     },
-    [playerObj, historyList]
-  )
+    [historyList]
+  );
 
   const reloadHistory = useCallback(() => {
     if (playStatus[0] === 0) {
-      playerObj.api.seekTo(defaultSeekTime)
+      playerRef.current.api.seekTo(defaultSeekTime);
     }
-    setPlayStatus([0, 0])
+    setPlayStatus([0, 0]);
 
-    playerObj.event.emit(EventName.RELOAD)
-  }, [playerObj])
+    playerRef.current.event.emit(EventName.RELOAD);
+  }, []);
 
   useEffect(() => {
     if (!file) {
-      changePlayIndex(playIndex + 1)
+      changePlayIndex(playIndex + 1);
     }
-  }, [file, playIndex, historyList])
+  }, [file, playIndex, historyList]);
 
   useEffect(
     () => () => {
       if (playerRef.current && playerRef.current.event) {
-        playerRef.current.event.destroy()
+        playerRef.current.event.destroy();
       }
       if (playerRef.current && playerRef.current.api) {
-        playerRef.current.api.destroy()
+        playerRef.current.api.destroy();
       }
+      playerRef.current = null;
     },
     [file]
-  )
+  );
 
   useEffect(() => {
     if (!file) {
-      return
+      return;
     }
     const playerObject = {
       playContainer: playContainerRef.current,
       video: playContainerRef.current.querySelector('video'),
-    }
-    let isInit = false
-    const formartType = getVideoType(file)
+    };
+    let isInit = false;
+    const formartType = getVideoType(file);
     if (formartType === 'flv' || type === 'flv') {
-      isInit = true
-      playerObject.flv = createFlvPlayer(playerObject.video, { ...props, file })
+      isInit = true;
+      playerObject.flv = createFlvPlayer(playerObject.video, { ...props, file });
     }
     if (formartType === 'm3u8' || type === 'hls') {
-      isInit = true
-      playerObject.hls = createHlsPlayer(playerObject.video, file)
+      isInit = true;
+      playerObject.hls = createHlsPlayer(playerObject.video, file);
     }
     if (!isInit && (!['flv', 'm3u8'].includes(formartType) || type === 'native')) {
-      playerObject.video.src = file
+      playerObject.video.src = file;
     }
     if (playerObject.event) {
-      playerObject.event.destroy()
+      playerObject.event.destroy();
     }
-    playerObject.event = new VideoEvent(playerObject.video)
+    playerObject.event = new VideoEvent(playerObject.video);
     if (playerObject.api) {
-      playerObject.api.destroy()
+      playerObject.api.destroy();
     }
-    playerObject.api = new Api(playerObject)
-    playerRef.current = playerObject
-    setPlayerObj(playerObject)
+    playerObject.api = new Api(playerObject);
+    playerRef.current = playerObject;
+    setPlayerObj(playerObject);
     if (defaultSeekTime) {
-      playerObject.api.seekTo(defaultSeekTime)
+      playerObject.api.seekTo(defaultSeekTime);
     }
     if (onInitPlayer) {
-      onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), { seekTo, changePlayIndex, reload: reloadHistory }))
+      onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi(), { seekTo, changePlayIndex, reload: reloadHistory }));
     }
-  }, [historyList, file])
+  }, [historyList, file]);
 
   return (
     <div className={`lm-player-container ${className}`} ref={playContainerRef}>
@@ -163,7 +163,7 @@ function HistoryPlayer({ type, historyList, defaultTime, className, autoPlay, mu
       />
       {children}
     </div>
-  )
+  );
 }
 
 function VideoTools({
@@ -186,7 +186,7 @@ function VideoTools({
   defaultTime,
 }) {
   if (!playerObj) {
-    return <NoSource />
+    return <NoSource />;
   }
   return (
     <>
@@ -232,7 +232,7 @@ function VideoTools({
       />
       <PlayEnd event={playerObj.event} changePlayIndex={changePlayIndex} playIndex={playIndex} />
     </>
-  )
+  );
 }
 
 HistoryPlayer.propTypes = {
@@ -259,7 +259,7 @@ HistoryPlayer.propTypes = {
   leftMidExtContents: PropTypes.element,
   flvOptions: PropTypes.object,
   flvConfig: PropTypes.object,
-}
+};
 HistoryPlayer.defaultProps = {
   draggable: true,
   scale: true,
@@ -271,6 +271,6 @@ HistoryPlayer.defaultProps = {
   loop: false,
   defaultTime: 0,
   historyList: { beginDate: 0, duration: 0, fragments: [] },
-}
+};
 
-export default HistoryPlayer
+export default HistoryPlayer;

@@ -39,12 +39,16 @@ function ErrorEvent({ event, api, errorReloadTimer, flv, hls, changePlayIndex, i
     event.addEventListener('canplay', reloadSuccess, false)
 
     return () => {
-      // if (flv) {
-      //   flv.off('error', errorHandle)
-      // }
-      // if (hls) {
-      //   hls.off('hlsError', errorHandle)
-      // }
+      try {
+        if (flv) {
+          flv.off('error', errorHandle)
+        }
+        if (hls) {
+          hls.off('hlsError', errorHandle)
+        }
+      } catch (e) {
+        console.warn(e)
+      }
       if (isHistory) {
         event.off(EventName.CHANGE_PLAY_INDEX, clearErrorTimer)
         event.off(EventName.CLEAR_ERROR_TIMER, clearErrorTimer)
@@ -59,11 +63,10 @@ function ErrorEvent({ event, api, errorReloadTimer, flv, hls, changePlayIndex, i
       return
     }
     if (errorTimer > errorReloadTimer) {
-      isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL);
+      isHistory ? changePlayIndex(playIndex + 1) : event.emit(EventName.RELOAD_FAIL)
       api.unload()
       return
     }
-
 
     console.warn(`视频播放出错，正在进行重连${errorTimer}`)
     reloadTimer.current = setTimeout(() => {

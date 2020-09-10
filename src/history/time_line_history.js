@@ -55,6 +55,7 @@ function TineLine({ event, api, visibel, historyList, playIndex, seekTo, default
     (percent) => {
       const currentTime = percent * historyList.duration //修正一下误差
       const [index, time] = computedTimeAndIndex(historyList, currentTime)
+      console.log(index, time)
       seekTo(currentTime, index)
       setState((old) => ({ ...old, currentTime: time, isEnd: false }))
     },

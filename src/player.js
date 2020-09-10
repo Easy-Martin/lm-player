@@ -1,69 +1,70 @@
-import React, { useRef, useEffect, useState } from 'react'
-import VideoEvent from './event'
-import { getVideoType, createFlvPlayer, createHlsPlayer } from './util'
-import ContrallerBar from './contraller_bar'
-import ContrallerEvent from './event/contrallerEvent'
-import VideoMessage, { NoSource } from './message'
-import TimeLine from './time_line'
-import ErrorEvent from './event/errorEvent'
-import DragEvent from './event/dragEvent'
-import Api from './api'
-import LiveHeart from './live_heart'
-import PropTypes from 'prop-types'
-import './style/index.less'
+import React, { useRef, useEffect, useState } from 'react';
+import VideoEvent from './event';
+import { getVideoType, createFlvPlayer, createHlsPlayer } from './util';
+import ContrallerBar from './contraller_bar';
+import ContrallerEvent from './event/contrallerEvent';
+import VideoMessage, { NoSource } from './message';
+import TimeLine from './time_line';
+import ErrorEvent from './event/errorEvent';
+import DragEvent from './event/dragEvent';
+import Api from './api';
+import LiveHeart from './live_heart';
+import PropTypes from 'prop-types';
+import './style/index.less';
 
 function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinline, loop, preload, children, onInitPlayer, ...props }) {
-  const playContainerRef = useRef(null)
-  const [playerObj, setPlayerObj] = useState(null)
-  const playerRef = useRef(null)
+  const playContainerRef = useRef(null);
+  const [playerObj, setPlayerObj] = useState(null);
+  const playerRef = useRef(null);
 
   useEffect(
     () => () => {
       if (playerRef.current && playerRef.current.event) {
-        playerRef.current.event.destroy()
+        playerRef.current.event.destroy();
       }
       if (playerRef.current && playerRef.current.api) {
-        playerRef.current.api.destroy()
+        playerRef.current.api.destroy();
       }
+      playerRef.current = null;
     },
     [file]
-  )
+  );
   useEffect(() => {
     if (!file) {
-      return
+      return;
     }
     const playerObject = {
       playContainer: playContainerRef.current,
       video: playContainerRef.current.querySelector('video'),
-    }
-    let isInit = false
-    const formartType = getVideoType(file)
+    };
+    let isInit = false;
+    const formartType = getVideoType(file);
     if (formartType === 'flv' || type === 'flv') {
-      isInit = true
-      playerObject.flv = createFlvPlayer(playerObject.video, { ...props, file })
+      isInit = true;
+      playerObject.flv = createFlvPlayer(playerObject.video, { ...props, file });
     }
     if (formartType === 'm3u8' || type === 'hls') {
-      isInit = true
-      playerObject.hls = createHlsPlayer(playerObject.video, file)
+      isInit = true;
+      playerObject.hls = createHlsPlayer(playerObject.video, file);
     }
     if (!isInit && (!['flv', 'm3u8'].includes(formartType) || type === 'native')) {
-      playerObject.video.src = file
+      playerObject.video.src = file;
     }
     if (playerObject.event) {
-      playerObject.event.destroy()
+      playerObject.event.destroy();
     }
-    playerObject.event = new VideoEvent(playerObject.video)
+    playerObject.event = new VideoEvent(playerObject.video);
     if (playerObject.api) {
-      playerObject.api.destroy()
+      playerObject.api.destroy();
     }
-    playerObject.api = new Api(playerObject)
-    playerRef.current = playerObject
-    setPlayerObj(() => playerObject)
+    playerObject.api = new Api(playerObject);
+    playerRef.current = playerObject;
+    setPlayerObj(() => playerObject);
 
     if (onInitPlayer) {
-      onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()))
+      onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()));
     }
-  }, [file])
+  }, [file]);
   return (
     <div className={`lm-player-container ${className}`} ref={playContainerRef}>
       <div className="player-mask-layout">
@@ -85,7 +86,7 @@ function SinglePlayer({ type, file, className, autoPlay, muted, poster, playsinl
       />
       {children}
     </div>
-  )
+  );
 }
 
 function VideoTools({
@@ -102,7 +103,7 @@ function VideoTools({
   errorReloadTimer,
 }) {
   if (!playerObj) {
-    return <NoSource />
+    return <NoSource />;
   }
   return (
     <>
@@ -130,7 +131,7 @@ function VideoTools({
       <ErrorEvent flv={playerObj.flv} hls={playerObj.hls} api={playerObj.api} event={playerObj.event} errorReloadTimer={errorReloadTimer} />
       {isLive && <LiveHeart api={playerObj.api} />}
     </>
-  )
+  );
 }
 
 SinglePlayer.propTypes = {
@@ -157,7 +158,7 @@ SinglePlayer.propTypes = {
   flvOptions: PropTypes.object,
   flvConfig: PropTypes.object,
   children: PropTypes.element,
-}
+};
 SinglePlayer.defaultProps = {
   isLive: true,
   draggable: true,
@@ -169,6 +170,6 @@ SinglePlayer.defaultProps = {
   preload: 'auto',
   loop: false,
   hideContrallerBar: false,
-}
+};
 
-export default SinglePlayer
+export default SinglePlayer;
