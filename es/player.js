@@ -1075,7 +1075,7 @@ function ErrorEvent({
   const reloadTimer = useRef(null);
   useEffect(() => {
     const errorHandle = (...args) => {
-      if (args[1] && args[1].msg && args[1].msg.includes("Unsupported audio")) {
+      if (args[2] && args[2].msg && args[2].msg.includes("Unsupported audio")) {
         return;
       }
 
