@@ -8,6 +8,9 @@ function ErrorEvent({ event, api, errorReloadTimer, flv, hls, changePlayIndex, i
 
   useEffect(() => {
     const errorHandle = (...args) => {
+      if(args[1] && args[1].msg && args[1].msg.includes("Unsupported audio")){
+        return
+      }
       console.error(...args)
       errorInfo.current = args
       setErrorTime(errorTimer + 1)

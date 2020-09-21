@@ -79,6 +79,7 @@
       });
       this.playerEvents = {};
       this.events = {};
+      this.video = null;
     }
 
   }
@@ -940,19 +941,20 @@
       event.on(EventName.RELOAD_SUCCESS, reloadSuccess);
       event.on(EventName.RELOAD, reload);
       event.on(EventName.HISTORY_PLAY_END, playEnd);
-      event.on(EventName.CLEAR_ERROR_TIMER, reloadSuccess); // return () => {
-      //   event.removeEventListener('loadstart', openLoading)
-      //   event.removeEventListener('waiting', openLoading)
-      //   event.removeEventListener('seeking', openLoading)
-      //   event.removeEventListener('loadeddata', closeLoading)
-      //   event.removeEventListener('canplay', closeLoading)
-      //   event.off(EventName.ERROR_RELOAD, errorReload)
-      //   event.off(EventName.RELOAD_FAIL, reloadFail)
-      //   event.off(EventName.RELOAD_SUCCESS, reloadSuccess)
-      //   event.off(EventName.RELOAD, reload)
-      //   event.off(EventName.HISTORY_PLAY_END, playEnd)
-      //   event.off(EventName.CLEAR_ERROR_TIMER, reloadSuccess)
-      // }
+      event.on(EventName.CLEAR_ERROR_TIMER, reloadSuccess);
+      return () => {
+        event.removeEventListener('loadstart', openLoading);
+        event.removeEventListener('waiting', openLoading);
+        event.removeEventListener('seeking', openLoading);
+        event.removeEventListener('loadeddata', closeLoading);
+        event.removeEventListener('canplay', closeLoading);
+        event.off(EventName.ERROR_RELOAD, errorReload);
+        event.off(EventName.RELOAD_FAIL, reloadFail);
+        event.off(EventName.RELOAD_SUCCESS, reloadSuccess);
+        event.off(EventName.RELOAD, reload);
+        event.off(EventName.HISTORY_PLAY_END, playEnd);
+        event.off(EventName.CLEAR_ERROR_TIMER, reloadSuccess);
+      };
     }, [event]);
     const {
       loading,
@@ -1077,6 +1079,10 @@
     const reloadTimer = React.useRef(null);
     React.useEffect(() => {
       const errorHandle = (...args) => {
+        if (args[1] && args[1].msg && args[1].msg.includes("Unsupported audio")) {
+          return;
+        }
+
         console.error(...args);
         errorInfo.current = args;
         setErrorTime(errorTimer + 1);
@@ -1111,12 +1117,18 @@
 
       event.addEventListener('canplay', reloadSuccess, false);
       return () => {
-        // if (flv) {
-        //   flv.off('error', errorHandle)
-        // }
-        // if (hls) {
-        //   hls.off('hlsError', errorHandle)
-        // }
+        try {
+          if (flv) {
+            flv.off('error', errorHandle);
+          }
+
+          if (hls) {
+            hls.off('hlsError', errorHandle);
+          }
+        } catch (e) {
+          console.warn(e);
+        }
+
         if (isHistory) {
           event.off(EventName.CHANGE_PLAY_INDEX, clearErrorTimer);
           event.off(EventName.CLEAR_ERROR_TIMER, clearErrorTimer);
@@ -1295,6 +1307,13 @@
         this.hls.destroy();
       }
 
+      this.player = null;
+      this.playContainer = null;
+      this.flv = null;
+      this.hls = null;
+      this.event = null;
+      this.scale = null;
+      this.position = null;
       console.warn('destroy', index);
     }
     /**
@@ -1312,10 +1331,15 @@
         this.flv.load();
       }
 
-      this.player.currentTime = seconds;
+      console.log(this.player);
 
-      if (!noEmit) {
-        this.event.emit(EventName.SEEK, seconds);
+      if (this.player) {
+        console.log(this.player.currentTime);
+        this.player.currentTime = seconds;
+
+        if (!noEmit) {
+          this.event.emit(EventName.SEEK, seconds);
+        }
       }
     }
     /**
@@ -1435,7 +1459,7 @@
 
 
     getBufferedTime() {
-      if (!this.player) return null;
+      if (!this.player) return [];
       const {
         buffered
       } = this.player;
@@ -1678,6 +1702,8 @@
       if (playerRef.current && playerRef.current.api) {
         playerRef.current.api.destroy();
       }
+
+      playerRef.current = null;
     }, [file]);
     React.useEffect(() => {
       if (!file) {
@@ -1956,6 +1982,7 @@
       const currentTime = percent * historyList.duration; //修正一下误差
 
       const [index, time] = computedTimeAndIndex(historyList, currentTime);
+      console.log(index, time);
       seekTo(currentTime, index);
       setState(old => ({ ...old,
         currentTime: time,
@@ -2084,42 +2111,41 @@
     const seekTo = React.useCallback(currentTime => {
       const [index, seekTime] = computedTimeAndIndex(historyList, currentTime);
 
-      if (playerObj.event && playerObj.api) {
+      if (playerRef.current.event && playerRef.current.api) {
         //判断是否需要更新索引
         setPlayStatus(old => {
           if (old[0] !== index) {
             return [index, seekTime];
           } else {
-            playerObj.api.seekTo(seekTime, true);
-            playerObj.event.emit(EventName.SEEK, currentTime);
+            playerRef.current.api.seekTo(seekTime, true);
             return old;
           }
         });
       }
-    }, [playIndex, playerObj, playerObj, historyList]);
+    }, [playIndex, historyList]);
     const changePlayIndex = React.useCallback(index => {
       if (index > historyList.fragments.length - 1) {
-        return playerObj && playerObj.event && playerObj.event.emit(EventName.HISTORY_PLAY_END);
+        return playerRef.current && playerRef.current.event && playerRef.current.event.emit(EventName.HISTORY_PLAY_END);
       }
 
       if (!historyList.fragments[index].file) {
         return changePlayIndex(index + 1);
       }
 
-      if (playerObj && playerObj.event) {
-        playerObj.event.emit(EventName.CHANGE_PLAY_INDEX, index);
+      if (playerRef.current && playerRef.current.event) {
+        playerRef.current.event.emit(EventName.CHANGE_PLAY_INDEX, index);
       }
 
       setPlayStatus([index, 0]);
-    }, [playerObj, historyList]);
+    }, [historyList]);
     const reloadHistory = React.useCallback(() => {
       if (playStatus[0] === 0) {
-        playerObj.api.seekTo(defaultSeekTime);
+        playerRef.current.api.seekTo(defaultSeekTime);
       }
 
       setPlayStatus([0, 0]);
-      playerObj.event.emit(EventName.RELOAD);
-    }, [playerObj]);
+      playerRef.current.event.emit(EventName.RELOAD);
+    }, []);
     React.useEffect(() => {
       if (!file) {
         changePlayIndex(playIndex + 1);
@@ -2133,6 +2159,8 @@
       if (playerRef.current && playerRef.current.api) {
         playerRef.current.api.destroy();
       }
+
+      playerRef.current = null;
     }, [file]);
     React.useEffect(() => {
       if (!file) {
