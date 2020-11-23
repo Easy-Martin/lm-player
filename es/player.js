@@ -1075,7 +1075,7 @@ function ErrorEvent({
   const reloadTimer = useRef(null);
   useEffect(() => {
     const errorHandle = (...args) => {
-      if (args[2] && args[2].msg && args[2].msg.includes("Unsupported audio")) {
+      if (args[2] && args[2].msg && args[2].msg.includes('Unsupported audio')) {
         return;
       }
 
@@ -1094,12 +1094,15 @@ function ErrorEvent({
 
     const clearErrorTimer = () => setErrorTime(0);
 
-    if (flv) {
-      flv.on('error', errorHandle);
-    }
+    try {
+      if (flv) {
+        flv.on('error', errorHandle);
+      }
 
-    if (hls) {
-      hls.on('hlsError', errorHandle);
+      if (hls) {
+        hls.on('hlsError', errorHandle);
+      }
+    } catch (e) {//
     }
 
     if (isHistory) {
