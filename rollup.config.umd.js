@@ -32,7 +32,7 @@ export default {
       ['prop-types']: 'PropTypes',
       ['react']: 'React',
       ['react-dom']: 'ReactDOM',
-      ['flv.lm.js']: 'flvjs',
+      ['flv.zv.js']: 'flvjs',
       ['hls.js']: 'Hls'
     }
   },

@@ -1,4 +1,4 @@
-import flvjs from 'flv.lm.js'
+import flvjs from 'flv.zv.js'
 import * as Hls from 'hls.js'
 
 /**
@@ -29,22 +29,30 @@ export function createFlvPlayer(video, options) {
   const { flvOptions = {}, flvConfig = {} } = options
   if (flvjs.isSupported()) {
     const player = flvjs.createPlayer(
-      Object.assign({}, flvOptions, {
-        type: 'flv',
-        url: options.file,
-      }),
-      Object.assign({}, flvConfig, {
-        enableWorker: true,
-        // lazyLoad: false,
-        // Indicates how many seconds of data to be kept for lazyLoad.
-        // lazyLoadMaxDuration: 0,
-        // autoCleanupMaxBackwardDuration: 3,
-        // autoCleanupMinBackwardDuration: 2,
-        // autoCleanupSourceBuffer: true,
-        enableStashBuffer: false,
-        stashInitialSize: 128,
-        isLive: options.isLive || true,
-      })
+      Object.assign(
+        {},
+        {
+          type: 'flv',
+          url: options.file,
+        },
+        flvOptions
+      ),
+      Object.assign(
+        {},
+        {
+          enableWorker: true,
+          // lazyLoad: false,
+          // Indicates how many seconds of data to be kept for lazyLoad.
+          // lazyLoadMaxDuration: 0,
+          // autoCleanupMaxBackwardDuration: 3,
+          // autoCleanupMinBackwardDuration: 2,
+          // autoCleanupSourceBuffer: true,
+          enableStashBuffer: false,
+          stashInitialSize: 128,
+          isLive: options.isLive || true,
+        },
+        flvConfig
+      )
     )
     player.attachMediaElement(video)
     player.load()

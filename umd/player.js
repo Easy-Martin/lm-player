@@ -1,6 +1,6 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('flv.lm.js'), require('hls.js'), require('prop-types'), require('react-dom')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'react', 'flv.lm.js', 'hls.js', 'prop-types', 'react-dom'], factory) :
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('flv.zv.js'), require('hls.js'), require('prop-types'), require('react-dom')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'react', 'flv.zv.js', 'hls.js', 'prop-types', 'react-dom'], factory) :
   (global = global || self, factory(global.LMPlayer = {}, global.React, global.flvjs, global.Hls, global.PropTypes, global.ReactDOM));
 }(this, (function (exports, React, flvjs, Hls, PropTypes, ReactDOM) { 'use strict';
 
@@ -116,10 +116,10 @@
     } = options;
 
     if (flvjs.isSupported()) {
-      const player = flvjs.createPlayer(Object.assign({}, flvOptions, {
+      const player = flvjs.createPlayer(Object.assign({}, {
         type: 'flv',
         url: options.file
-      }), Object.assign({}, flvConfig, {
+      }, flvOptions), Object.assign({}, {
         enableWorker: true,
         // lazyLoad: false,
         // Indicates how many seconds of data to be kept for lazyLoad.
@@ -130,7 +130,7 @@
         enableStashBuffer: false,
         stashInitialSize: 128,
         isLive: options.isLive || true
-      }));
+      }, flvConfig));
       player.attachMediaElement(video);
       player.load();
       return player;

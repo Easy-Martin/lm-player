@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
-import flvjs from 'flv.lm.js';
+import flvjs from 'flv.zv.js';
 import * as Hls from 'hls.js';
 import { isSupported } from 'hls.js';
 import PropTypes from 'prop-types';
@@ -112,10 +112,10 @@ function createFlvPlayer(video, options) {
   } = options;
 
   if (flvjs.isSupported()) {
-    const player = flvjs.createPlayer(Object.assign({}, flvOptions, {
+    const player = flvjs.createPlayer(Object.assign({}, {
       type: 'flv',
       url: options.file
-    }), Object.assign({}, flvConfig, {
+    }, flvOptions), Object.assign({}, {
       enableWorker: true,
       // lazyLoad: false,
       // Indicates how many seconds of data to be kept for lazyLoad.
@@ -126,7 +126,7 @@ function createFlvPlayer(video, options) {
       enableStashBuffer: false,
       stashInitialSize: 128,
       isLive: options.isLive || true
-    }));
+    }, flvConfig));
     player.attachMediaElement(video);
     player.load();
     return player;

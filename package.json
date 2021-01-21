@@ -1,6 +1,6 @@
 {
   "name": "lm-player",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "video for html5 support flv m3u8",
   "repository": {
     "type": "git",
@@ -22,13 +22,13 @@
   "main": "es/player.js",
   "dependencies": {
     "aes-js": "^3.1.2",
-    "flv.lm.js": "^0.0.1",
+    "flv.zv.js": "^2.2.0",
     "hls.js": "^0.12.4",
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "prop-types": "^15.7.2"
   },
   "devDependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "@babel/core": "^7.7.2",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
     "@babel/plugin-proposal-decorators": "^7.7.0",
@@ -56,7 +56,7 @@
     "gh-pages": "^3.1.0"
   },
   "scripts": {
-    "dev":"rollup --config rollup.config.umd.js --watch",
+    "dev": "rollup --config rollup.config.umd.js --watch",
     "es": "rollup --config rollup.config.es.js",
     "umd": "rollup --config rollup.config.umd.js",
     "deploy": "gh-pages -d demo"
