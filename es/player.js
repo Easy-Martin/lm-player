@@ -1358,6 +1358,7 @@ class Api {
 
     this.unload();
     this.load();
+    this.play();
     !notEmit && this.event.emit(EventName.RELOAD);
   }
 
@@ -2401,3 +2402,4 @@ function createHistoryPlayer({
 
 export default SinglePlayer;
 export { Bar, EventName, HistoryPlayer, SinglePlayer as Player, createHistoryPlayer, createPlayer };
+//# sourceMappingURL=player.js.map

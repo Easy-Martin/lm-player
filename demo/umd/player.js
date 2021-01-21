@@ -1,13 +1,36 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('react'), require('flv.zv.js'), require('hls.js'), require('prop-types'), require('react-dom')) :
   typeof define === 'function' && define.amd ? define(['exports', 'react', 'flv.zv.js', 'hls.js', 'prop-types', 'react-dom'], factory) :
-  (global = global || self, factory(global.LMPlayer = {}, global.React, global.flvjs, global.Hls, global.PropTypes, global.ReactDOM));
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.LMPlayer = {}, global.React, global.flvjs, global.Hls, global.PropTypes, global.ReactDOM));
 }(this, (function (exports, React, flvjs, Hls, PropTypes, ReactDOM) { 'use strict';
 
-  var React__default = 'default' in React ? React['default'] : React;
-  flvjs = flvjs && Object.prototype.hasOwnProperty.call(flvjs, 'default') ? flvjs['default'] : flvjs;
-  PropTypes = PropTypes && Object.prototype.hasOwnProperty.call(PropTypes, 'default') ? PropTypes['default'] : PropTypes;
-  ReactDOM = ReactDOM && Object.prototype.hasOwnProperty.call(ReactDOM, 'default') ? ReactDOM['default'] : ReactDOM;
+  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+  function _interopNamespace(e) {
+    if (e && e.__esModule) return e;
+    var n = Object.create(null);
+    if (e) {
+      Object.keys(e).forEach(function (k) {
+        if (k !== 'default') {
+          var d = Object.getOwnPropertyDescriptor(e, k);
+          Object.defineProperty(n, k, d.get ? d : {
+            enumerable: true,
+            get: function () {
+              return e[k];
+            }
+          });
+        }
+      });
+    }
+    n['default'] = e;
+    return Object.freeze(n);
+  }
+
+  var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
+  var flvjs__default = /*#__PURE__*/_interopDefaultLegacy(flvjs);
+  var Hls__namespace = /*#__PURE__*/_interopNamespace(Hls);
+  var PropTypes__default = /*#__PURE__*/_interopDefaultLegacy(PropTypes);
+  var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
 
   class VideoEventInstance {
     constructor(video) {
@@ -92,7 +115,7 @@
 
   function createHlsPlayer(video, file) {
     if (Hls.isSupported()) {
-      const player = new Hls({
+      const player = new Hls__namespace({
         liveDurationInfinity: true,
         levelLoadingTimeOut: 15000,
         fragLoadingTimeOut: 25000,
@@ -115,8 +138,8 @@
       flvConfig = {}
     } = options;
 
-    if (flvjs.isSupported()) {
-      const player = flvjs.createPlayer(Object.assign({}, {
+    if (flvjs__default['default'].isSupported()) {
+      const player = flvjs__default['default'].createPlayer(Object.assign({}, {
         type: 'flv',
         url: options.file
       }, flvOptions), Object.assign({}, {
@@ -321,16 +344,16 @@
     className = '',
     ...props
   }) {
-    return /*#__PURE__*/React__default.createElement("i", _extends({
+    return /*#__PURE__*/React__default['default'].createElement("i", _extends({
       className: `lm-player-iconfont ${type} ${className}`
     }, props));
   }
   IconFont.propTypes = {
-    type: PropTypes.string,
-    className: PropTypes.string
+    type: PropTypes__default['default'].string,
+    className: PropTypes__default['default'].string
   };
 
-  class Slider extends React__default.Component {
+  class Slider extends React__default['default'].Component {
     constructor(props) {
       super(props);
 
@@ -408,7 +431,7 @@
         this.props.onChange && this.props.onChange(percent);
       };
 
-      this.sliderDomRef = /*#__PURE__*/React__default.createRef();
+      this.sliderDomRef = /*#__PURE__*/React__default['default'].createRef();
       this.layoutDom = null;
       this.lineDom = null;
       this.dragDom = null;
@@ -489,32 +512,32 @@
         className = '',
         tipsY
       } = this.props;
-      return /*#__PURE__*/React__default.createElement("div", {
+      return /*#__PURE__*/React__default['default'].createElement("div", {
         className: `slider-layout ${className}`,
         ref: this.sliderDomRef
-      }, /*#__PURE__*/React__default.createElement("div", {
+      }, /*#__PURE__*/React__default['default'].createElement("div", {
         className: "slider-content"
-      }, /*#__PURE__*/React__default.createElement("div", {
+      }, /*#__PURE__*/React__default['default'].createElement("div", {
         className: "slider-max-line"
-      }), /*#__PURE__*/React__default.createElement("div", {
+      }), /*#__PURE__*/React__default['default'].createElement("div", {
         className: "slider-visibel-line",
         style: {
           width: `${availablePercent}%`
         }
-      }), /*#__PURE__*/React__default.createElement("div", {
+      }), /*#__PURE__*/React__default['default'].createElement("div", {
         className: "slider-current-line",
         style: {
           width: `${value}%`
         }
-      }), this.props.children), /*#__PURE__*/React__default.createElement("div", {
+      }), this.props.children), /*#__PURE__*/React__default['default'].createElement("div", {
         className: "slider-other-content"
-      }, /*#__PURE__*/React__default.createElement("div", {
+      }, /*#__PURE__*/React__default['default'].createElement("div", {
         className: "drag-change-icon",
         draggable: false,
         style: {
           left: `${value}%`
         }
-      })), /*#__PURE__*/React__default.createElement(Tips, {
+      })), /*#__PURE__*/React__default['default'].createElement(Tips, {
         visibel: showTips,
         className: "lm-player-slide-tips",
         style: {
@@ -528,15 +551,15 @@
   }
 
   Slider.propTypes = {
-    currentPercent: PropTypes.number,
-    seekTo: PropTypes.func,
-    video: PropTypes.element,
-    renderTips: PropTypes.func,
-    availablePercent: PropTypes.number,
-    onChange: PropTypes.func,
-    children: PropTypes.any,
-    className: PropTypes.string,
-    tipsY: PropTypes.number
+    currentPercent: PropTypes__default['default'].number,
+    seekTo: PropTypes__default['default'].func,
+    video: PropTypes__default['default'].element,
+    renderTips: PropTypes__default['default'].func,
+    availablePercent: PropTypes__default['default'].number,
+    onChange: PropTypes__default['default'].func,
+    children: PropTypes__default['default'].any,
+    className: PropTypes__default['default'].string,
+    tipsY: PropTypes__default['default'].number
   };
   Slider.defaultProps = {
     tipsY: -10
@@ -560,17 +583,17 @@
       return null;
     }
 
-    return /*#__PURE__*/ReactDOM.createPortal( /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/ReactDOM__default['default'].createPortal( /*#__PURE__*/React__default['default'].createElement("div", {
       className: className,
       style: style
     }, children), ele.current);
   }
 
   Tips.propTypes = {
-    visibel: PropTypes.bool,
-    children: PropTypes.element,
-    style: PropTypes.any,
-    className: PropTypes.string
+    visibel: PropTypes__default['default'].bool,
+    children: PropTypes__default['default'].element,
+    style: PropTypes__default['default'].any,
+    className: PropTypes__default['default'].string
   };
 
   function Bar({
@@ -583,14 +606,14 @@
       return null;
     }
 
-    return /*#__PURE__*/React__default.createElement("span", _extends({
+    return /*#__PURE__*/React__default['default'].createElement("span", _extends({
       className: `contraller-bar-item ${className}`
     }, props), children);
   }
   Bar.propTypes = {
-    visibel: PropTypes.bool,
-    className: PropTypes.string,
-    children: PropTypes.any
+    visibel: PropTypes__default['default'].bool,
+    className: PropTypes__default['default'].string,
+    children: PropTypes__default['default'].any
   };
 
   var EventName = {
@@ -662,31 +685,31 @@
       isHistory ? reloadHistory() : api.reload();
       event.emit(EventName.CLEAR_ERROR_TIMER);
     }, [event, isHistory, api]);
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: "contraller-left-bar"
-    }, leftExtContents, /*#__PURE__*/React__default.createElement(Bar, {
+    }, leftExtContents, /*#__PURE__*/React__default['default'].createElement(Bar, {
       visibel: !isLive
-    }, /*#__PURE__*/React__default.createElement(IconFont, {
+    }, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       onClick: changePlayStatus,
       type: statusIconClassName,
       title: statusText
-    })), /*#__PURE__*/React__default.createElement(Bar, {
+    })), /*#__PURE__*/React__default['default'].createElement(Bar, {
       className: `contraller-bar-volume ${sliderClassName}`,
       onMouseOver: () => setOpenSliderVolume(true),
       onMouseOut: () => setOpenSliderVolume(false)
-    }, /*#__PURE__*/React__default.createElement(IconFont, {
+    }, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       onClick: mutedChantgeStatus,
       type: volumeIcon,
       title: "\u97F3\u91CF"
-    }), /*#__PURE__*/React__default.createElement("div", {
+    }), /*#__PURE__*/React__default['default'].createElement("div", {
       className: "volume-slider-layout"
-    }, /*#__PURE__*/React__default.createElement(Slider, {
+    }, /*#__PURE__*/React__default['default'].createElement(Slider, {
       className: "volume-slider",
       currentPercent: volumePercent,
       onChange: onChangeVolume,
-      renderTips: precent => /*#__PURE__*/React__default.createElement("span", null, Math.round(precent * 100), "%"),
+      renderTips: precent => /*#__PURE__*/React__default['default'].createElement("span", null, Math.round(precent * 100), "%"),
       tipsY: -2
-    }))), /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    }))), /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       onClick: reload,
       type: "lm-player-Refresh_Main",
       title: "\u91CD\u8F7D"
@@ -694,12 +717,12 @@
   }
 
   LeftBar.propTypes = {
-    api: PropTypes.object,
-    event: PropTypes.object,
-    playerProps: PropTypes.object,
-    video: PropTypes.node,
-    reloadHistory: PropTypes.func,
-    isHistory: PropTypes.bool
+    api: PropTypes__default['default'].object,
+    event: PropTypes__default['default'].object,
+    playerProps: PropTypes__default['default'].object,
+    video: PropTypes__default['default'].node,
+    reloadHistory: PropTypes__default['default'].func,
+    isHistory: PropTypes__default['default'].bool
   };
 
   function RightBar({
@@ -731,25 +754,25 @@
         api.setPosition(position, true);
       }
     }, [api, playContainer]);
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: "contraller-right-bar"
-    }, rightMidExtContents, scale && /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    }, rightMidExtContents, scale && /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       title: "\u7F29\u5C0F",
       onClick: () => setScale(-0.2),
       type: 'lm-player-ZoomOut_Main'
-    })), /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    })), /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       title: "\u590D\u4F4D",
       onClick: () => setScale(1, true),
       type: 'lm-player-ZoomDefault_Main'
-    })), /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    })), /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       title: "\u653E\u5927",
       onClick: () => setScale(0.2),
       type: 'lm-player-ZoomIn_Main'
-    }))), snapshot && /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    }))), snapshot && /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       title: "\u622A\u56FE",
       onClick: () => snapshot(api.snapshot()),
       type: "lm-player-SearchBox"
-    })), /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    })), /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       title: isfull ? '窗口' : '全屏',
       onClick: fullscreen,
       type: isfull ? 'lm-player-ExitFull_Main' : 'lm-player-Full_Main'
@@ -757,12 +780,12 @@
   }
 
   RightBar.propTypes = {
-    api: PropTypes.object,
-    event: PropTypes.object,
-    playerProps: PropTypes.object,
-    playContainer: PropTypes.node,
-    reloadHistory: PropTypes.func,
-    isHistory: PropTypes.bool
+    api: PropTypes__default['default'].object,
+    event: PropTypes__default['default'].object,
+    playerProps: PropTypes__default['default'].object,
+    playContainer: PropTypes__default['default'].node,
+    reloadHistory: PropTypes__default['default'].func,
+    isHistory: PropTypes__default['default'].bool
   };
 
   function ScaleBar({
@@ -779,17 +802,17 @@
         api.setPosition(position, true);
       }
     }, [api, playContainer]);
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: "contraller-scale-bar"
-    }, scale && /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    }, scale && /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       title: "\u7F29\u5C0F",
       onClick: () => setScale(-0.2),
       type: 'lm-player-ZoomOut_Main'
-    })), /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    })), /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       title: "\u590D\u4F4D",
       onClick: () => setScale(1, true),
       type: 'lm-player-ZoomDefault_Main'
-    })), /*#__PURE__*/React__default.createElement(Bar, null, /*#__PURE__*/React__default.createElement(IconFont, {
+    })), /*#__PURE__*/React__default['default'].createElement(Bar, null, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       title: "\u653E\u5927",
       onClick: () => setScale(0.2),
       type: 'lm-player-ZoomIn_Main'
@@ -812,9 +835,9 @@
     leftExtContents,
     leftMidExtContents
   }) {
-    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement("div", {
       className: `contraller-bar-layout ${!visibel ? 'hide-contraller-bar' : ''}`
-    }, /*#__PURE__*/React__default.createElement(LeftBar, {
+    }, /*#__PURE__*/React__default['default'].createElement(LeftBar, {
       api: api,
       event: event,
       video: video,
@@ -823,16 +846,16 @@
       isLive: isLive,
       leftMidExtContents: leftMidExtContents,
       leftExtContents: leftExtContents
-    }), /*#__PURE__*/React__default.createElement(RightBar, {
+    }), /*#__PURE__*/React__default['default'].createElement(RightBar, {
       api: api,
       event: event,
       playContainer: playContainer,
       snapshot: snapshot,
       rightExtContents: rightExtContents,
       rightMidExtContents: rightMidExtContents
-    })), /*#__PURE__*/React__default.createElement("div", {
+    })), /*#__PURE__*/React__default['default'].createElement("div", {
       className: `contraller-scale-layout ${!visibel ? 'hide-contraller-bar' : ''}`
-    }, /*#__PURE__*/React__default.createElement(ScaleBar, {
+    }, /*#__PURE__*/React__default['default'].createElement(ScaleBar, {
       api: api,
       playContainer: playContainer,
       scale: scale
@@ -840,7 +863,7 @@
   }
 
   ContrallerBar.propTypes = {
-    visibel: PropTypes.bool
+    visibel: PropTypes__default['default'].bool
   };
 
   function ContrallerEvent({
@@ -872,7 +895,7 @@
         playContainer.removeEventListener('mouseout', hideContraller, false);
       };
     }, []);
-    return React__default.Children.map(children, child => /*#__PURE__*/React__default.isValidElement(child) ? /*#__PURE__*/React__default.cloneElement(child, {
+    return React__default['default'].Children.map(children, child => /*#__PURE__*/React__default['default'].isValidElement(child) ? /*#__PURE__*/React__default['default'].cloneElement(child, {
       visibel
     }) : child);
   }
@@ -960,20 +983,20 @@
       loading,
       status
     } = state;
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: `lm-player-message-mask ${loading || status === 'fail' ? 'lm-player-mask-loading-animation' : ''}`
-    }, /*#__PURE__*/React__default.createElement(IconFont, {
+    }, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       type: status === 'fail' ? 'lm-player-YesorNo_No_Dark' : 'lm-player-Loading',
       className: `${loading && status !== 'fail' ? 'lm-player-loading-animation' : status === 'fail' ? 'lm-player-loadfail' : ''} lm-player-loading-icon`
-    }), /*#__PURE__*/React__default.createElement("span", {
+    }), /*#__PURE__*/React__default['default'].createElement("span", {
       className: "lm-player-message"
     }, message));
   }
 
   const NoSource = () => {
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: "lm-player-message-mask lm-player-mask-loading-animation"
-    }, /*#__PURE__*/React__default.createElement(IconFont, {
+    }, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       style: {
         fontSize: 80
       },
@@ -1042,22 +1065,22 @@
     const renderTimeLineTips = percent => {
       const currentTime = percent * duration;
       const time = timeStamp(currentTime);
-      return /*#__PURE__*/React__default.createElement("span", null, time);
+      return /*#__PURE__*/React__default['default'].createElement("span", null, time);
     };
 
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
-    }, /*#__PURE__*/React__default.createElement(IconFont, {
+    }, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       type: "lm-player-PrevFast",
       onClick: () => api.backWind(),
       className: "time-line-action-item"
-    }), /*#__PURE__*/React__default.createElement(Slider, {
+    }), /*#__PURE__*/React__default['default'].createElement(Slider, {
       className: "time-line-box",
       currentPercent: playPercent,
       availablePercent: bufferedPercent,
       onChange: changePlayTime,
       renderTips: renderTimeLineTips
-    }), /*#__PURE__*/React__default.createElement(IconFont, {
+    }), /*#__PURE__*/React__default['default'].createElement(IconFont, {
       type: "lm-player-NextFast_Light",
       onClick: () => api.fastForward(),
       className: "time-line-action-item"
@@ -1161,10 +1184,10 @@
         clearTimeout(reloadTimer.current);
       };
     }, [errorTimer, api, event, flv, hls]);
-    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null);
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null);
   }
 
-  class DragEvent extends React__default.Component {
+  class DragEvent extends React__default['default'].Component {
     constructor(props) {
       super(props);
 
@@ -1227,10 +1250,10 @@
   }
 
   DragEvent.propTypes = {
-    api: PropTypes.object,
-    event: PropTypes.object,
-    playContainer: PropTypes.node,
-    playerProps: PropTypes.object
+    api: PropTypes__default['default'].object,
+    event: PropTypes__default['default'].object,
+    playContainer: PropTypes__default['default'].node,
+    playerProps: PropTypes__default['default'].object
   };
 
   let index = 0;
@@ -1362,6 +1385,7 @@
 
       this.unload();
       this.load();
+      this.play();
       !notEmit && this.event.emit(EventName.RELOAD);
     }
 
@@ -1677,7 +1701,7 @@
         BrowserTab.removeEventListener(browserTabChange);
       };
     }, [api]);
-    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null);
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null);
   }
 
   function SinglePlayer({
@@ -1754,12 +1778,12 @@
         onInitPlayer(Object.assign({}, playerObject.api.getApi(), playerObject.event.getApi()));
       }
     }, [file]);
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: `lm-player-container ${className}`,
       ref: playContainerRef
-    }, /*#__PURE__*/React__default.createElement("div", {
+    }, /*#__PURE__*/React__default['default'].createElement("div", {
       className: "player-mask-layout"
-    }, /*#__PURE__*/React__default.createElement("video", {
+    }, /*#__PURE__*/React__default['default'].createElement("video", {
       autoPlay: autoPlay,
       preload: preload,
       muted: muted,
@@ -1767,7 +1791,7 @@
       controls: false,
       playsInline: playsinline,
       loop: loop
-    })), /*#__PURE__*/React__default.createElement(VideoTools, {
+    })), /*#__PURE__*/React__default['default'].createElement(VideoTools, {
       playerObj: playerObj,
       isLive: props.isLive,
       key: file,
@@ -1797,20 +1821,20 @@
     errorReloadTimer
   }) {
     if (!playerObj) {
-      return /*#__PURE__*/React__default.createElement(NoSource, null);
+      return /*#__PURE__*/React__default['default'].createElement(NoSource, null);
     }
 
-    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(VideoMessage, {
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(VideoMessage, {
       api: playerObj.api,
       event: playerObj.event
-    }), draggable && /*#__PURE__*/React__default.createElement(DragEvent, {
+    }), draggable && /*#__PURE__*/React__default['default'].createElement(DragEvent, {
       playContainer: playerObj.playContainer,
       api: playerObj.api,
       event: playerObj.event
-    }), !hideContrallerBar && /*#__PURE__*/React__default.createElement(ContrallerEvent, {
+    }), !hideContrallerBar && /*#__PURE__*/React__default['default'].createElement(ContrallerEvent, {
       event: playerObj.event,
       playContainer: playerObj.playContainer
-    }, /*#__PURE__*/React__default.createElement(ContrallerBar, {
+    }, /*#__PURE__*/React__default['default'].createElement(ContrallerBar, {
       api: playerObj.api,
       event: playerObj.event,
       playContainer: playerObj.playContainer,
@@ -1823,48 +1847,48 @@
       isLive: isLive,
       leftExtContents: leftExtContents,
       leftMidExtContents: leftMidExtContents
-    }), !isLive && /*#__PURE__*/React__default.createElement(TineLine, {
+    }), !isLive && /*#__PURE__*/React__default['default'].createElement(TineLine, {
       api: playerObj.api,
       event: playerObj.event
-    })), /*#__PURE__*/React__default.createElement(ErrorEvent, {
+    })), /*#__PURE__*/React__default['default'].createElement(ErrorEvent, {
       flv: playerObj.flv,
       hls: playerObj.hls,
       api: playerObj.api,
       event: playerObj.event,
       errorReloadTimer: errorReloadTimer
-    }), isLive && /*#__PURE__*/React__default.createElement(LiveHeart, {
+    }), isLive && /*#__PURE__*/React__default['default'].createElement(LiveHeart, {
       api: playerObj.api
     }));
   }
 
   SinglePlayer.propTypes = {
-    file: PropTypes.string.isRequired,
+    file: PropTypes__default['default'].string.isRequired,
     //播放地址 必填
-    isLive: PropTypes.bool,
+    isLive: PropTypes__default['default'].bool,
     //是否实时视频
-    errorReloadTimer: PropTypes.number,
+    errorReloadTimer: PropTypes__default['default'].number,
     //视频错误重连次数
-    type: PropTypes.oneOf(['flv', 'hls', 'native']),
+    type: PropTypes__default['default'].oneOf(['flv', 'hls', 'native']),
     //强制视频流类型
-    onInitPlayer: PropTypes.func,
-    draggable: PropTypes.bool,
-    hideContrallerBar: PropTypes.bool,
-    scale: PropTypes.bool,
-    muted: PropTypes.string,
-    autoPlay: PropTypes.bool,
-    playsInline: PropTypes.bool,
-    preload: PropTypes.string,
-    poster: PropTypes.string,
-    loop: PropTypes.bool,
-    snapshot: PropTypes.func,
-    className: PropTypes.string,
-    rightExtContents: PropTypes.element,
-    rightMidExtContents: PropTypes.element,
-    leftExtContents: PropTypes.element,
-    leftMidExtContents: PropTypes.element,
-    flvOptions: PropTypes.object,
-    flvConfig: PropTypes.object,
-    children: PropTypes.element
+    onInitPlayer: PropTypes__default['default'].func,
+    draggable: PropTypes__default['default'].bool,
+    hideContrallerBar: PropTypes__default['default'].bool,
+    scale: PropTypes__default['default'].bool,
+    muted: PropTypes__default['default'].string,
+    autoPlay: PropTypes__default['default'].bool,
+    playsInline: PropTypes__default['default'].bool,
+    preload: PropTypes__default['default'].string,
+    poster: PropTypes__default['default'].string,
+    loop: PropTypes__default['default'].bool,
+    snapshot: PropTypes__default['default'].func,
+    className: PropTypes__default['default'].string,
+    rightExtContents: PropTypes__default['default'].element,
+    rightMidExtContents: PropTypes__default['default'].element,
+    leftExtContents: PropTypes__default['default'].element,
+    leftMidExtContents: PropTypes__default['default'].element,
+    flvOptions: PropTypes__default['default'].object,
+    flvConfig: PropTypes__default['default'].object,
+    children: PropTypes__default['default'].element
   };
   SinglePlayer.defaultProps = {
     isLive: true,
@@ -1996,7 +2020,7 @@
     const renderTimeLineTips = percent => {
       const currentTime = percent * historyList.duration * 1000;
       const date = dateFormat(historyList.beginDate + currentTime);
-      return /*#__PURE__*/React__default.createElement("span", null, date);
+      return /*#__PURE__*/React__default['default'].createElement("span", null, date);
     };
 
     const {
@@ -2009,22 +2033,22 @@
     const currentIndexTime = React.useMemo(() => currentLine.length === 0 ? 0 : currentLine.length > 1 ? currentLine.reduce((p, c) => p + c) : currentLine[0], [currentLine]);
     const playPercent = React.useMemo(() => currentTime / historyList.duration * 100 + currentIndexTime, [currentIndexTime, historyList, currentTime]);
     const bufferedPercent = React.useMemo(() => buffered / historyList.duration * 100 + currentIndexTime, [historyList, currentIndexTime, buffered]);
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: `video-time-line-layout ${!visibel ? 'hide-time-line' : ''}`
-    }, /*#__PURE__*/React__default.createElement(IconFont, {
+    }, /*#__PURE__*/React__default['default'].createElement(IconFont, {
       type: "lm-player-PrevFast",
       onClick: () => api.backWind(),
       className: "time-line-action-item"
-    }), /*#__PURE__*/React__default.createElement(Slider, {
+    }), /*#__PURE__*/React__default['default'].createElement(Slider, {
       className: "time-line-box",
       currentPercent: isEnd ? '100' : playPercent,
       availablePercent: bufferedPercent,
       onChange: changePlayTime,
       renderTips: renderTimeLineTips
-    }, /*#__PURE__*/React__default.createElement(React__default.Fragment, null, lineList.map((v, i) => {
+    }, /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, lineList.map((v, i) => {
       const currentSizeLine = lineList.filter((v, i2) => i2 < i).map(v => v.size);
       const currentIndexSize = currentSizeLine.length === 0 ? 0 : currentSizeLine.length > 1 ? currentSizeLine.reduce((p, c) => p + c) : currentSizeLine[0];
-      return /*#__PURE__*/React__default.createElement("div", {
+      return /*#__PURE__*/React__default['default'].createElement("div", {
         className: `history-time-line-item ${v.disabled ? 'history-time-line-disabled' : ''}`,
         key: i,
         style: {
@@ -2032,7 +2056,7 @@
           left: `${currentIndexSize}%`
         }
       });
-    }))), /*#__PURE__*/React__default.createElement(IconFont, {
+    }))), /*#__PURE__*/React__default['default'].createElement(IconFont, {
       type: "lm-player-NextFast_Light",
       onClick: () => api.fastForward(),
       className: "time-line-action-item"
@@ -2040,13 +2064,13 @@
   }
 
   TineLine$1.propTypes = {
-    event: PropTypes.object,
-    api: PropTypes.object,
-    changePlayIndex: PropTypes.func,
-    playIndex: PropTypes.number,
-    historyList: PropTypes.array,
-    seekTo: PropTypes.func,
-    visibel: PropTypes.bool
+    event: PropTypes__default['default'].object,
+    api: PropTypes__default['default'].object,
+    changePlayIndex: PropTypes__default['default'].func,
+    playIndex: PropTypes__default['default'].number,
+    historyList: PropTypes__default['default'].array,
+    seekTo: PropTypes__default['default'].func,
+    visibel: PropTypes__default['default'].bool
   };
 
   /**
@@ -2066,13 +2090,13 @@
         event.removeEventListener('ended', endedHandle, false);
       };
     }, [event, playIndex, changePlayIndex]);
-    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null);
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null);
   }
 
   PlayEnd.propTypes = {
-    event: PropTypes.object,
-    changePlayIndex: PropTypes.func,
-    playIndex: PropTypes.number
+    event: PropTypes__default['default'].object,
+    changePlayIndex: PropTypes__default['default'].func,
+    playIndex: PropTypes__default['default'].number
   };
 
   function HistoryPlayer({
@@ -2219,12 +2243,12 @@
         }));
       }
     }, [historyList, file]);
-    return /*#__PURE__*/React__default.createElement("div", {
+    return /*#__PURE__*/React__default['default'].createElement("div", {
       className: `lm-player-container ${className}`,
       ref: playContainerRef
-    }, /*#__PURE__*/React__default.createElement("div", {
+    }, /*#__PURE__*/React__default['default'].createElement("div", {
       className: "player-mask-layout"
-    }, /*#__PURE__*/React__default.createElement("video", {
+    }, /*#__PURE__*/React__default['default'].createElement("video", {
       autoPlay: autoPlay,
       preload: preload,
       muted: muted,
@@ -2232,7 +2256,7 @@
       controls: false,
       playsInline: playsinline,
       loop: loop
-    })), /*#__PURE__*/React__default.createElement(VideoTools$1, {
+    })), /*#__PURE__*/React__default['default'].createElement(VideoTools$1, {
       defaultTime: defaultSeekTime,
       playerObj: playerObj,
       isLive: props.isLive,
@@ -2274,20 +2298,20 @@
     defaultTime
   }) {
     if (!playerObj) {
-      return /*#__PURE__*/React__default.createElement(NoSource, null);
+      return /*#__PURE__*/React__default['default'].createElement(NoSource, null);
     }
 
-    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(VideoMessage, {
+    return /*#__PURE__*/React__default['default'].createElement(React__default['default'].Fragment, null, /*#__PURE__*/React__default['default'].createElement(VideoMessage, {
       api: playerObj.api,
       event: playerObj.event
-    }), draggable && /*#__PURE__*/React__default.createElement(DragEvent, {
+    }), draggable && /*#__PURE__*/React__default['default'].createElement(DragEvent, {
       playContainer: playerObj.playContainer,
       api: playerObj.api,
       event: playerObj.event
-    }), !hideContrallerBar && /*#__PURE__*/React__default.createElement(ContrallerEvent, {
+    }), !hideContrallerBar && /*#__PURE__*/React__default['default'].createElement(ContrallerEvent, {
       event: playerObj.event,
       playContainer: playerObj.playContainer
-    }, /*#__PURE__*/React__default.createElement(ContrallerBar, {
+    }, /*#__PURE__*/React__default['default'].createElement(ContrallerBar, {
       api: playerObj.api,
       event: playerObj.event,
       playContainer: playerObj.playContainer,
@@ -2301,7 +2325,7 @@
       leftExtContents: leftExtContents,
       leftMidExtContents: leftMidExtContents,
       reloadHistory: reloadHistory
-    }), /*#__PURE__*/React__default.createElement(TineLine$1, {
+    }), /*#__PURE__*/React__default['default'].createElement(TineLine$1, {
       defaultTime: defaultTime,
       changePlayIndex: changePlayIndex,
       historyList: historyList,
@@ -2309,7 +2333,7 @@
       seekTo: seekTo,
       api: playerObj.api,
       event: playerObj.event
-    })), /*#__PURE__*/React__default.createElement(ErrorEvent, {
+    })), /*#__PURE__*/React__default['default'].createElement(ErrorEvent, {
       changePlayIndex: changePlayIndex,
       playIndex: playIndex,
       isHistory: true,
@@ -2318,7 +2342,7 @@
       api: playerObj.api,
       event: playerObj.event,
       errorReloadTimer: errorReloadTimer
-    }), /*#__PURE__*/React__default.createElement(PlayEnd, {
+    }), /*#__PURE__*/React__default['default'].createElement(PlayEnd, {
       event: playerObj.event,
       changePlayIndex: changePlayIndex,
       playIndex: playIndex
@@ -2326,32 +2350,32 @@
   }
 
   HistoryPlayer.propTypes = {
-    historyList: PropTypes.object.isRequired,
+    historyList: PropTypes__default['default'].object.isRequired,
     //播放地址 必填
-    errorReloadTimer: PropTypes.number,
+    errorReloadTimer: PropTypes__default['default'].number,
     //视频错误重连次数
-    type: PropTypes.oneOf(['flv', 'hls', 'native']),
+    type: PropTypes__default['default'].oneOf(['flv', 'hls', 'native']),
     //强制视频流类型
-    onInitPlayer: PropTypes.func,
-    isDraggable: PropTypes.bool,
-    isScale: PropTypes.bool,
-    muted: PropTypes.string,
-    autoPlay: PropTypes.bool,
-    playsInline: PropTypes.bool,
-    preload: PropTypes.string,
-    poster: PropTypes.string,
-    loop: PropTypes.bool,
-    defaultTime: PropTypes.number,
-    className: PropTypes.string,
-    playsinline: PropTypes.bool,
-    children: PropTypes.any,
-    autoplay: PropTypes.bool,
-    rightExtContents: PropTypes.element,
-    rightMidExtContents: PropTypes.element,
-    leftExtContents: PropTypes.element,
-    leftMidExtContents: PropTypes.element,
-    flvOptions: PropTypes.object,
-    flvConfig: PropTypes.object
+    onInitPlayer: PropTypes__default['default'].func,
+    isDraggable: PropTypes__default['default'].bool,
+    isScale: PropTypes__default['default'].bool,
+    muted: PropTypes__default['default'].string,
+    autoPlay: PropTypes__default['default'].bool,
+    playsInline: PropTypes__default['default'].bool,
+    preload: PropTypes__default['default'].string,
+    poster: PropTypes__default['default'].string,
+    loop: PropTypes__default['default'].bool,
+    defaultTime: PropTypes__default['default'].number,
+    className: PropTypes__default['default'].string,
+    playsinline: PropTypes__default['default'].bool,
+    children: PropTypes__default['default'].any,
+    autoplay: PropTypes__default['default'].bool,
+    rightExtContents: PropTypes__default['default'].element,
+    rightMidExtContents: PropTypes__default['default'].element,
+    leftExtContents: PropTypes__default['default'].element,
+    leftMidExtContents: PropTypes__default['default'].element,
+    flvOptions: PropTypes__default['default'].object,
+    flvConfig: PropTypes__default['default'].object
   };
   HistoryPlayer.defaultProps = {
     draggable: true,
@@ -2376,10 +2400,10 @@
     onInitPlayer,
     ...props
   }) {
-    ReactDOM.render( /*#__PURE__*/React__default.createElement(SinglePlayer, _extends({}, props, {
+    ReactDOM__default['default'].render( /*#__PURE__*/React__default['default'].createElement(SinglePlayer, _extends({}, props, {
       onInitPlayer: player => {
         player.destroy = function () {
-          ReactDOM.unmountComponentAtNode(container);
+          ReactDOM__default['default'].unmountComponentAtNode(container);
         };
 
         onInitPlayer && onInitPlayer(player);
@@ -2392,10 +2416,10 @@
     onInitPlayer,
     ...props
   }) {
-    ReactDOM.render( /*#__PURE__*/React__default.createElement(HistoryPlayer, _extends({}, props, {
+    ReactDOM__default['default'].render( /*#__PURE__*/React__default['default'].createElement(HistoryPlayer, _extends({}, props, {
       onInitPlayer: player => {
         player.destroy = function () {
-          ReactDOM.unmountComponentAtNode(container);
+          ReactDOM__default['default'].unmountComponentAtNode(container);
         };
 
         onInitPlayer && onInitPlayer(player);
@@ -2414,3 +2438,4 @@
   Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
+//# sourceMappingURL=player.js.map
