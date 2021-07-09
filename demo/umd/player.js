@@ -114,13 +114,15 @@
    */
 
   function createHlsPlayer(video, file) {
+    console.log(Hls)
     if (Hls.isSupported()) {
-      const player = new Hls__namespace({
+      const player = new Hls({
         liveDurationInfinity: true,
         levelLoadingTimeOut: 15000,
         fragLoadingTimeOut: 25000,
         enableWorker: true
       });
+      console.log(player);
       player.loadSource(file);
       player.attachMedia(video);
       return player;

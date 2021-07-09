@@ -120,7 +120,7 @@
                   播放
                 </button>
               </div>
-              <Player type={liveType} file={file} isLive={isLive} />
+              <Player type={liveType} file={file} isLive={isLive} flvConfig={{ enableWorker: true, stashInitialSize: 512, enableStashBuffer: true }}/>
             </div>
             <div style={{ width: 800, margin: '0 auto 40px auto' }}>
               <h2 style={{ marginBottom: 10 }}>HistoryPlayer适用多地址拼凑一个播放 特殊场景使用</h2>

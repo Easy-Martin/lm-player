@@ -14,6 +14,7 @@ export function createHlsPlayer(video, file) {
       fragLoadingTimeOut: 25000,
       enableWorker: true,
     })
+    console.log(player)
     player.loadSource(file)
     player.attachMedia(video)
     return player

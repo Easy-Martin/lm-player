@@ -121,6 +121,7 @@
         fragLoadingTimeOut: 25000,
         enableWorker: true
       });
+      console.log(player);
       player.loadSource(file);
       player.attachMedia(video);
       return player;
@@ -955,8 +956,8 @@
       })), api.pause());
 
       event.addEventListener('loadstart', openLoading);
-      event.addEventListener('waiting', openLoading);
-      event.addEventListener('seeking', openLoading);
+      event.addEventListener('waiting', openLoading); // event.addEventListener('seeking', openLoading)
+
       event.addEventListener('loadeddata', closeLoading);
       event.addEventListener('canplay', closeLoading);
       event.on(EventName.ERROR_RELOAD, errorReload);
@@ -967,8 +968,8 @@
       event.on(EventName.CLEAR_ERROR_TIMER, reloadSuccess);
       return () => {
         event.removeEventListener('loadstart', openLoading);
-        event.removeEventListener('waiting', openLoading);
-        event.removeEventListener('seeking', openLoading);
+        event.removeEventListener('waiting', openLoading); // event.removeEventListener('seeking', openLoading)
+
         event.removeEventListener('loadeddata', closeLoading);
         event.removeEventListener('canplay', closeLoading);
         event.off(EventName.ERROR_RELOAD, errorReload);

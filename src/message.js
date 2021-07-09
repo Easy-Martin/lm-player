@@ -29,7 +29,7 @@ function VideoMessage({ event, api }) {
 
     event.addEventListener('loadstart', openLoading)
     event.addEventListener('waiting', openLoading)
-    event.addEventListener('seeking', openLoading)
+    // event.addEventListener('seeking', openLoading)
     event.addEventListener('loadeddata', closeLoading)
     event.addEventListener('canplay', closeLoading)
     event.on(EventName.ERROR_RELOAD, errorReload)
@@ -42,7 +42,7 @@ function VideoMessage({ event, api }) {
     return () => {
       event.removeEventListener('loadstart', openLoading)
       event.removeEventListener('waiting', openLoading)
-      event.removeEventListener('seeking', openLoading)
+      // event.removeEventListener('seeking', openLoading)
       event.removeEventListener('loadeddata', closeLoading)
       event.removeEventListener('canplay', closeLoading)
       event.off(EventName.ERROR_RELOAD, errorReload)
