@@ -5,3 +5,5 @@
 /umd/
 iconfont.js
 *.html
+/es
+/dist
