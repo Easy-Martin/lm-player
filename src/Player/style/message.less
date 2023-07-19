@@ -1,0 +1,56 @@
+.lm-player-message-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: transparent;
+  opacity: 0;
+  transition: all .5s;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  &.lm-player-mask-loading-animation {
+    z-index: 1;
+    background: rgb(0 0 0 / 60%);
+    opacity: 1;
+  }
+
+  .lm-player-loading-icon {
+    position: relative;
+    z-index: -1;
+    font-size: 48px;
+    visibility: hidden;
+
+    &.lm-player-loading-animation {
+      z-index: 9;
+      visibility: visible;
+      animation: loading-animation-frames 1s linear infinite;
+    }
+
+    &.lm-player-loadfail {
+      z-index: 9;
+      visibility: visible;
+    }
+  }
+
+  .lm-player-message {
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+  }
+}
+
+@keyframes loading-animation-frames {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

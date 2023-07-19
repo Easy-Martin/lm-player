@@ -1,58 +1,83 @@
 {
-  "name": "lm-player",
-  "version": "0.2.20",
-  "description": "video for html5 support flv m3u8",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Easy-Martin/lm-player.git"
+  "private": false,
+  "name": "@cloud-app-dev/vidc",
+  "description": "Video Image Data Componennts",
+  "version": "4.0.18",
+  "scripts": {
+    "docs:deploy": "gh-pages -d docs-dist",
+    "build": "father build",
+    "deploy": "npm run docs:build && npm run docs:deploy",
+    "start": "npm run dev",
+    "build:watch": "father dev",
+    "docs:build": "dumi build",
+    "prepare": "husky install && dumi setup",
+    "demo:dev": "vite",
+    "demo:build": "tsc && vite build",
+    "doctor": "father doctor",
+    "lint:es": "eslint \"{src,test}/**/*.{js,jsx,ts,tsx}\"",
+    "stylelint": "stylelint --fix \"**/*.less\" --custom-syntax postcss-less"
   },
-  "keywords": [
-    "video",
-    "flv",
-    "hls",
-    "player",
-    "m3u8"
-  ],
-  "author": "Easy-Martin",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Easy-Martin/lm-player/issues"
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
-  "homepage": "https://github.com/Easy-Martin/lm-player",
-  "main": "es/player.js",
+  "main": "es/index.js",
+  "module": "es/index.js",
+  "typings": "es/index.d.ts",
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.{md,json}": [
+      "prettier --write --no-error-on-unmatched-pattern"
+    ],
+    "*.less": [
+      "stylelint --fix --custom-syntax postcss-less"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --parser=typescript --write"
+    ]
+  },
   "dependencies": {
-    "aes-js": "^3.1.2",
-    "flv.zv.js": "^2.2.0",
-    "hls.js": "^0.12.4",
-    "prop-types": "^15.7.2"
+    "@cloud-app-dev/mpegts.js": "^1.7.3",
+    "antd": "^5.6.4",
+    "dayjs": "^1.11.8",
+    "hls.js": "^1.4.8",
+    "lodash-es": "^4.17.21",
+    "screenfull": "^6.0.2"
+
   },
   "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/plugin-proposal-class-properties": "^7.7.0",
-    "@babel/plugin-proposal-decorators": "^7.7.0",
-    "@babel/preset-env": "^7.7.1",
-    "@babel/preset-react": "^7.7.0",
-    "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.1.0",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.8.0",
-    "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-react-hooks": "^2.3.0",
-    "gh-pages": "^3.1.0",
-    "less": "^3.10.3",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "rollup": "^2.37.1",
-    "rollup-plugin-clear": "^2.0.7",
-    "rollup-plugin-eslint": "^7.0.0",
-    "rollup-plugin-postcss": "^4.0.0",
-    "postcss": "^8.2.4"
-  },
-  "scripts": {
-    "dev": "rollup --config rollup.config.umd.js --watch",
-    "es": "rollup --config rollup.config.es.js",
-    "umd": "rollup --config rollup.config.umd.js",
-    "deploy": "gh-pages -d demo"
+    "vite": "^4.4.4",
+    "@vitejs/plugin-react": "^4.0.3",
+    "@commitlint/cli": "^17.6.5",
+    "@commitlint/config-conventional": "^17.6.5",
+    "@types/lodash-es": "^4.17.8",
+    "@types/node": "^18.16.16",
+    "@types/react": "^18.2.9",
+    "@types/react-dom": "^18.2.4",
+    "@umijs/lint": "^4.0.70",
+    "ahooks": "^3.7.7",
+    "babel-plugin-import": "^1.13.6",
+    "eslint": "^8.44.0",
+    "father": "^4.2.3",
+    "gh-pages": "^5.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "prettier": "^2.8.8",
+    "prettier-plugin-organize-imports": "^3.2.2",
+    "prettier-plugin-packagejson": "^2.4.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "stylelint": "^14.16.1",
+    "stylelint-config-prettier": "^9.0.5",
+    "stylelint-config-standard": "^29.0.0",
+    "stylelint-order": "^5.0.0"
   }
 }

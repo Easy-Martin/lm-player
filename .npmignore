@@ -1,5 +1,9 @@
-/node_modules
-/src
-/demo
-/rollup.config.*.js
-/yarn.lock
+node_modules
+src
+.eslintcache
+docs
+docs-dist
+.mfsu
+test*
+.dumi
+.husk
