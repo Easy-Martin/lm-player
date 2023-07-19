@@ -3,6 +3,7 @@
 .cache/
 /node_modules/
 /umd/
-/es/
-rollup.config.js
-/demo/*.js
+iconfont.js
+*.html
+/es
+/dist

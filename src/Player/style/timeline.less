@@ -1,0 +1,117 @@
+.player-timeline-layout {
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  z-index: 9;
+  display: flex;
+  width: 100%;
+  height: 12px;
+  cursor: pointer;
+  background: rgb(0 0 0 / 100%);
+  opacity: .8;
+  justify-content: center;
+  align-items: center;
+  transition: all .1s;
+
+  &.hide-time-line {
+    bottom: 0;
+    height: 4px;
+  }
+
+  .buffer-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    max-width: 100%;
+    pointer-events: none;
+    background-color: rgb(103 103 103);
+  }
+
+  .current-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: rgb(70 97 255 / 100%);
+  }
+
+  &.player-segment-timeline-layout {
+    background: transparent;
+
+    .segment-line-box {
+      display: flex;
+      width: 100%;
+      height: 100%;
+
+      .segment-line-item {
+        position: relative;
+        background: rgb(0 0 0 / 100%);
+        box-sizing: border-box;
+
+        &:hover {
+          &::after {
+            box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 6;
+            width: 100%;
+            height: 100%;
+            border: 1px solid #fff;
+            content: ' ';
+          }
+        }
+
+        &.segment-line-item-none {
+          z-index: 6;
+          cursor: not-allowed;
+          background: rgb(222 14 14 / 100%);
+        }
+      }
+    }
+
+    .segment-line-mark {
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      pointer-events: none;
+      background-color: #fff;
+    }
+  }
+
+  &.frontend-player-timeline-layout {
+    .frontend-line-mark {
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      pointer-events: none;
+      background-color: #fff;
+    }
+
+    .frontend-line-tip-box {
+      position: absolute;
+      top: -130px;
+      width: max-content;
+      padding: 10px;
+      margin-left: -81px;
+      font-size: 12px;
+      line-height: 20px;
+      color: #fff;
+      background-color: rgb(0 0 0 / 65%);
+      border-radius: 3px;
+    }
+  }
+}
+
+.segment-line-tip-box {
+  font-size: 12px;
+
+  div {
+    padding: 2px 0;
+    margin: 0;
+  }
+}
