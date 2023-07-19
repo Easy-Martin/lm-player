@@ -1,39 +1,15 @@
-# 说明
+import type Flvjs from '@cloud-app-dev/mpegts.js';
+import type Hls from 'hls.js';
+import type { HlsConfig } from 'hls.js';
+import type React from 'react';
+import type Api from './api';
+import type VideoEventInstance from './event';
 
-> 基于[mpegts.js](https://github.com/xqq/mpegts.js)和[hls.js](https://github.com/video-dev/hls.js)封装`React`视频组件，基于`canvas`模拟逐帧播放
+export type FlvPlayerConfig = {
+  mediaDataSource: Flvjs.MediaDataSource;
+  config: Flvjs.Config;
+};
 
-```javascript
-import { Player, HistoryPlayer } from 'lm-player';
-```
-
-| Component/Factory | description                  |
-| ----------------- | ---------------------------- |
-| `Player`          | 视频组件，适用于 `React`     |
-| `HistoryPlayer`   | 历史视频组件，适用于 `React` |
-
-# 安装
-
-```javascript
-
-yarn add lm-player
-//or
-npm i lm-player
-
-```
-
-# 例子
-
-```ts
-//React simple demo
-import { Player } from 'lm-player';
-ReactDOM.render(<Player fpsDelay={800} oneFpsPlay={true} type={state.type} url="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" isLive={false} />, document.getElementById('root'));
-```
-
-# `Props`
-
-### `Player`通用
-
-```ts
 export interface ISinglePlayerProps {
   /**
    * 视频播放地址
@@ -175,11 +151,26 @@ export interface ISinglePlayerProps {
    */
   fps?: number;
 }
-```
 
-### `HistoryPlayer` 独有
+export interface IFrontendPlayerProps extends Omit<ISinglePlayerProps, 'isLive' | 'reload'> {
+  /**
+   * 前端录像开始时间
+   */
+  begin?: number;
 
-```ts
+  /**
+   * 前端录像结束时间
+   */
+  end?: number;
+
+  /**
+   * 录像时间轴发生变化回调
+   */
+  onSeek?: (time: number) => void;
+
+  forwordRef?: React.MutableRefObject<ExportPlayerType>;
+}
+
 export interface ISegmentPlayerProps extends Omit<ISinglePlayerProps, 'url'> {
   /**
    * 云录像片段信息
@@ -195,11 +186,28 @@ export interface ISegmentPlayerProps extends Omit<ISinglePlayerProps, 'url'> {
 
   defaultIndex?: number;
 }
-```
 
-# ISegmentType
+export const SinglePlayer: React.FunctionComponent<ISinglePlayerProps>;
+export const FrontendPlayer: React.FunctionComponent<IFrontendPlayerProps>;
+export const SegmentPlayer: React.FunctionComponent<ISegmentPlayerProps>;
 
-```ts
+export type EventInfo = {
+  type: string;
+  listener: ((...args: any) => void)[];
+};
+
+export type ExportPlayerType = {
+  video: HTMLVideoElement;
+  container: HTMLElement;
+  api: Api;
+  event: VideoEventInstance;
+  plugins: [Flvjs.Player, Hls];
+  fit?: string;
+  setIndex?: (i: number) => void;
+  seekTo?: (i: number) => void;
+  reload?: () => void;
+};
+
 export interface ISegmentType {
   id?: string;
   /**
@@ -216,29 +224,10 @@ export interface ISegmentType {
    * 片段结束时间
    */
   endTime: number;
+
+  style?: any;
 }
-```
 
-# `event`
+export const ISegmentTypeDemo: React.FC<ISegmentType>;
 
-## 支持事件
-
-```javascript
-export default {
-  RELOAD: 'reload', //手动视频重载
-  RELOAD_FAIL: 'reloadFail', // 视频出错，重连失败
-  RELOAD_SUCCESS: 'reloadSuccess', //视频出错，重连成功
-  ERROR: 'error', //视频出错
-  ERROR_RELOAD: 'errorRload', //视频出错，自动重连
-  HISTORY_PLAY_END: 'historyPlayEnd', //历史视频列表播放结束
-  PLAY_ENDED: 'play_ended', //单个片断播放完毕
-  SEEK: 'seek', //跳跃播放时间
-  TRANSFORM: 'transform', //视频容器缩放
-  CHANGE_PLAY_INDEX: 'changePlayIndex', //历史视频列表播放索引改变
-  HIDE_CONTRALLER: 'hideContraller',
-  SHOW_CONTRALLER: 'showContraller',
-  CLEAR_ERROR_TIMER: 'clearErrorTimer',
-  CANVAS_PAUSE: 'canvasPause', // 逐帧暂停
-  CANVAS_PLAY: 'canvasPlay', //逐帧播放
-};
-```
+export type CustomEvent = [string, () => void];

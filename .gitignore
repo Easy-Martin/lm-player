@@ -8,11 +8,6 @@
 /package-lock.json
 
 # production
-/dist
-/docs-dist
-/es
-/.mfsu
-
 # misc
 .DS_Store
 

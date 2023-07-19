@@ -1,0 +1,43 @@
+.contraller-bar-layout {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  width: 100%;
+  height: 28px;
+  background: rgb(29 33 53 / 80%);
+  opacity: 1;
+  align-items: center;
+  justify-content: space-between;
+  transition: opacity .3s;
+
+  &.hide-contraller-bar {
+    opacity: 0;
+  }
+
+  .contraller-bar-item {
+    display: flex;
+    float: left;
+    width: 28px;
+    height: 28px;
+    justify-content: center;
+    align-items: center;
+
+    .lm-player-iconfont {
+      cursor: pointer;
+
+      &:hover {
+        color: var(--primary);
+      }
+    }
+  }
+
+  .video-time-progress {
+    float: left;
+    padding: 0 6px;
+    font-size: 10px;
+    line-height: 28px;
+    color: #fff;
+  }
+}

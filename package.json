@@ -1,8 +1,8 @@
 {
   "private": false,
-  "name": "@cloud-app-dev/vidc",
-  "description": "Video Image Data Componennts",
-  "version": "4.0.18",
+  "name": "lm-player",
+  "description": "基于mpegts.js和hls.js封装React视频播放组件",
+  "version": "1.0.0",
   "scripts": {
     "build": "father build",
     "start": "father dev",
