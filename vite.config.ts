@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: './lm-player',
+  base: 'https://easy-martin.github.io/lm-player',
   server: {
     proxy: {
       '/api': {
