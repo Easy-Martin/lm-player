@@ -1,4 +1,4 @@
-import likeGo from './likeGo';
+import likeGo from "./likeGo";
 export function getTargetElement(target, defaultElement) {
   if (!target) {
     return defaultElement;

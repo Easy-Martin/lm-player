@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useDocumentVisibility, useRafInterval, useUpdateEffect } from 'ahooks';
 import { useRef } from 'react';
 import type Api from './api';

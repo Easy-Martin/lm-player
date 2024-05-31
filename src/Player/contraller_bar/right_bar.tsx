@@ -1,5 +1,5 @@
+import { useFullscreen, useLatest } from 'ahooks';
 import React, { useContext } from 'react';
-import useFullscreen from '../../useFullscreen';
 import { Context } from '../context';
 import IconFont from '../iconfont';
 import Bar from './bar';
@@ -12,7 +12,8 @@ interface IRightBarProps {
 
 function RightBar({ rightExtContents, rightMidExtContents }: IRightBarProps) {
   const { container } = useContext(Context);
-  const [isFullScreen, { enterFullscreen, exitFullscreen }] = useFullscreen(container);
+  const domref = useLatest(container);
+  const [isFullScreen, { enterFullscreen, exitFullscreen }] = useFullscreen(domref);
   const fullscreen = isFullScreen ? exitFullscreen : enterFullscreen;
   return (
     <div className="contraller-right-bar">

@@ -24,7 +24,6 @@ var Events = {
   CLEAR_ERROR_TIMER: 'clearErrorTimer',
   CANVAS_PAUSE: 'canvasPause',
   // 逐帧暂停
-  CANVAS_PLAY: 'canvasPlay', //逐帧播放
+  CANVAS_PLAY: 'canvasPlay' //逐帧播放
 };
-
 export default Events;

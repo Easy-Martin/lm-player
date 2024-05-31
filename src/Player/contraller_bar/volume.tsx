@@ -3,8 +3,8 @@ import { Slider, Tooltip } from 'antd';
 import React, { useMemo, useState } from 'react';
 import type Api from '../api';
 import IconFont from '../iconfont';
-import '../style/volume.less';
 
+import '../style/volume.less';
 function Volume({ api, style }: { api?: Api; style?: React.CSSProperties }) {
   const [val, setVal] = useState(Math.round(api?.getVolume() ?? 0 * 100));
   const update = useUpdate();

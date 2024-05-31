@@ -1,2 +1,2 @@
-import SinglePlayer from './single_player';
+import SinglePlayer from "./single_player";
 export default SinglePlayer;

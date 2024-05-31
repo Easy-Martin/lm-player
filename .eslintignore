@@ -1,9 +1,0 @@
-.idea/
-.vscode/
-.cache/
-/node_modules/
-/umd/
-iconfont.js
-*.html
-/es
-/dist

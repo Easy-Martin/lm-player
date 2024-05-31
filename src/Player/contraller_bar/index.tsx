@@ -1,7 +1,8 @@
 import React from 'react';
-import '../style/bar.less';
 import LeftBar from './left_bar';
 import RightBar from './right_bar';
+
+import '../style/bar.less';
 
 interface IContrallerBarProps {
   rightExtContents: React.ReactNode;

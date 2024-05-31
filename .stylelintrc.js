@@ -1,8 +1,6 @@
 // .stylelintrc.js
 module.exports = {
   processors: [],
-  plugins: ['stylelint-order'],
-  extends: ['stylelint-config-standard', 'stylelint-config-prettier'],
   rules: {
     'selector-class-pattern': [
       // 命名规范 -
