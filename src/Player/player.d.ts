@@ -1,4 +1,4 @@
-import type Flvjs from '@cloud-app-dev/mpegts.js';
+import type Flvjs from 'mpegts.js';
 import type Hls from 'hls.js';
 import type { HlsConfig } from 'hls.js';
 import type React from 'react';

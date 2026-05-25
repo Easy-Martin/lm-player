@@ -1,4 +1,4 @@
-import type Flvjs from '@cloud-app-dev/mpegts.js';
+import type Flvjs from 'mpegts.js';
 import { useLatest, useMemoizedFn, useToggle, useUpdateEffect } from 'ahooks';
 import type Hls from 'hls.js';
 import type { HlsConfig } from 'hls.js';

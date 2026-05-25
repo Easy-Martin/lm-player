@@ -1,4 +1,4 @@
-import Flvjs from '@cloud-app-dev/mpegts.js';
+import Flvjs from 'mpegts.js';
 import Hls from 'hls.js';
 import { useEffect, useRef, useState } from 'react';
 import type VideoEventInstance from '.';

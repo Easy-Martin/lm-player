@@ -1,4 +1,4 @@
-import Flvjs from '@cloud-app-dev/mpegts.js';
+import Flvjs from 'mpegts.js';
 import { useMemoizedFn } from 'ahooks';
 import Hls, { HlsConfig } from 'hls.js';
 import { useEffect, useMemo, useState } from 'react';

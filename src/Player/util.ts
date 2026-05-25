@@ -1,4 +1,4 @@
-import Flvjs from '@cloud-app-dev/mpegts.js';
+import Flvjs from 'mpegts.js';
 import Hls, { HlsConfig } from 'hls.js';
 import likeGo from '../likeGo';
 import type VideoEventInstance from './event';
