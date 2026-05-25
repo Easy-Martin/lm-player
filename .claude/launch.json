@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "demo:dev",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["demo:dev"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite"],
       "port": 5173
     }
   ]
