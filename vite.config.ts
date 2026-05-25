@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
           insertTypesEntry: true,
           include: ['src/'],
           exclude: ['src/demo/**'],
-          rollupTypes: true,
+          bundleTypes: true,
         }),
       ],
       build: {
@@ -28,11 +28,11 @@ export default defineConfig(({ mode }) => {
             'react/jsx-runtime',
             'antd',
             'hls.js',
-            /@cloud-app-dev\/.*/,
+            'mpegts.js',
             'dayjs',
             'ahooks',
             'lodash-es',
-            '@emotion/css',
+            '@remixicon/react',
           ],
           output: {
             entryFileNames: 'index.js',

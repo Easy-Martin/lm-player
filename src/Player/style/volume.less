@@ -1,5 +1,5 @@
 .lm-player-volume-popup {
-  .cloudapp-tooltip-inner {
+  .ant-tooltip-inner {
     display: flex;
     width: 30px;
     height: 130px;
@@ -9,16 +9,16 @@
     justify-content: center;
   }
 
-  .cloudapp-slider-vertical {
+  .ant-slider-vertical {
     margin: 0;
   }
 
-  .cloudapp-slider-track {
-    background-color: var(--primary);
+  .ant-slider-track {
+    background-color: var(--primary, #1890ff);
   }
 
-  .cloudapp-slider-handle {
-    background-color: var(--primary);
-    border-color: var(--gray1);
+  .ant-slider-handle::after {
+    background-color: var(--primary, #1890ff);
+    box-shadow: 0 0 2px var(--gray1, #fff);
   }
 }

@@ -16,7 +16,7 @@ declare function FrontendPlayer_2({ url, begin, end, onSeek, forwordRef, customT
 
 export declare const HistoryPlayer: typeof SegmentPlayer;
 
-declare const Player: ForwardRefExoticComponent<ISinglePlayerProps & RefAttributes<ExportPlayerType>>;
+declare const Player: ForwardRefExoticComponent< ISinglePlayerProps & RefAttributes<ExportPlayerType>>;
 export { Player }
 export default Player;
 
