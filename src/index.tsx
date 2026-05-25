@@ -1,4 +1,4 @@
-import SinglePlayer from './Player';
+import SinglePlayer from './Player/single_player';
 import FrontendPlayer1 from './Player/frontend_player';
 import SegmentPlayer from './Player/segment_player';
 

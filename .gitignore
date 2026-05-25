@@ -24,3 +24,5 @@
 /.idea
 
 /test*.*
+.codegraph
+.pnpm-store
