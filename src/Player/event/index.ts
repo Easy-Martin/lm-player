@@ -87,7 +87,7 @@ export function useVideoEvent(eventName: string, handle: (event: any) => void, c
       return undefined;
     }
     const eventListener = (event?: any) => {
-      return handlerRef.current(event);
+      return handlerRef.current?.(event);
     };
     event.addEventListener(eventName, eventListener);
 
@@ -106,7 +106,7 @@ export function useRegisterPlayerEvent(eventName: string, handle: (event: any) =
     }
 
     const eventListener = (event?: any) => {
-      return handlerRef.current(event);
+      return handlerRef.current?.(event);
     };
     event.on(eventName, eventListener);
 

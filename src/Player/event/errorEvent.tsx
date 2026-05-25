@@ -8,8 +8,8 @@ import EventName from './eventName';
 interface IErrorEventProps {
   event?: VideoEventInstance;
   errorReloadTimer: number;
-  flv: Flvjs.Player;
-  hls: Hls;
+  flv?: Flvjs.Player;
+  hls?: Hls;
   reload: () => void;
   unload: () => void;
   errorHandleAdapter?: (errorInfo: any) => boolean; // 当适配器返回true时 会忽略该次错误
@@ -18,7 +18,7 @@ interface IErrorEventProps {
 function useErrorEvent({ event, reload, unload, errorReloadTimer, flv, hls, errorHandleAdapter }: IErrorEventProps) {
   const [errorTimer, setErrorTime] = useState(0);
   const errorInfo = useRef<any>(null);
-  const reloadTimer = useRef<NodeJS.Timeout>();
+  const reloadTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const errorHandle = (...args: any) => {
     if (args[2] && args[2].msg && args[2].msg.includes('Unsupported audio')) {

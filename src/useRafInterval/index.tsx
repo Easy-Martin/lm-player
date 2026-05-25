@@ -3,13 +3,13 @@ import { isNumber } from 'lodash-es';
 import { useCallback, useEffect, useRef } from 'react';
 
 interface Handle {
-  id: number | NodeJS.Timer;
+  id: ReturnType<typeof requestAnimationFrame>;
 }
 
 const setRafInterval = function (callback: () => void, delay: number = 0): Handle {
   if (typeof requestAnimationFrame === typeof undefined) {
     return {
-      id: setInterval(callback, delay),
+      id: setInterval(callback, delay) as unknown as number,
     };
   }
   let start = new Date().getTime();
@@ -28,13 +28,14 @@ const setRafInterval = function (callback: () => void, delay: number = 0): Handl
   return handle;
 };
 
-function cancelAnimationFrameIsNotDefined(t: any): t is NodeJS.Timer {
+function isNodeEnv(t: any): t is number {
   return typeof cancelAnimationFrame === typeof undefined;
 }
 
 const clearRafInterval = function (handle: Handle) {
-  if (cancelAnimationFrameIsNotDefined(handle.id)) {
-    return clearInterval(handle.id);
+  if (isNodeEnv(handle.id)) {
+    clearInterval(handle.id);
+    return;
   }
   cancelAnimationFrame(handle.id);
 };
@@ -56,10 +57,10 @@ function useRafInterval(
   useEffect(() => {
     if (!isNumber(delay) || delay < 0) return undefined;
     if (immediate) {
-      fnRef.current();
+      fnRef.current?.();
     }
     timerRef.current = setRafInterval(() => {
-      fnRef.current();
+      fnRef.current?.();
     }, delay);
     return () => {
       if (timerRef.current) {

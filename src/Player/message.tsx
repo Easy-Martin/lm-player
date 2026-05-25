@@ -8,7 +8,7 @@ import './style/message.less';
 function VideoMessage() {
   const { api } = useContext(Context);
   const [state, setState] = useState({ status: null, errorTimer: 1, loading: false });
-  const timeRef = useRef<NodeJS.Timer>();
+  const timeRef = useRef<ReturnType<typeof setTimeout>>();
 
   const message = useMemo(() => {
     if (state.status === 'fail') {
@@ -23,22 +23,22 @@ function VideoMessage() {
   }, [state.errorTimer, state.status]);
 
   const openLoading = () => {
-    clearTimeout(timeRef.current);
+    if (timeRef.current) clearTimeout(timeRef.current);
     timeRef.current = setTimeout(() => setState((old) => ({ ...old, loading: true })), 200);
   };
   const closeLoading = () => {
-    clearTimeout(timeRef.current);
+    if (timeRef.current) clearTimeout(timeRef.current);
     setState((old) => ({ ...old, loading: false }));
   };
   const errorReload = (timer?: number) => {
-    clearTimeout(timeRef.current);
+    if (timeRef.current) clearTimeout(timeRef.current);
     setState(() => ({ status: 'reload', errorTimer: timer, loading: true } as any));
   };
   const reloadFail = () => setState((old) => ({ ...old, status: 'fail' } as any));
   const reloadSuccess = () => setState((old) => ({ ...old, status: null }));
   const reload = () => setState((old) => ({ ...old, status: 'reload', loading: true } as any));
   const playEnd = () => {
-    clearTimeout(timeRef.current);
+    if (timeRef.current) clearTimeout(timeRef.current);
     setState((old) => ({ ...old, status: null, loading: false }));
     api?.pause();
   };

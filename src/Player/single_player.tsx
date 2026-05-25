@@ -67,7 +67,7 @@ const SinglePlayer = React.forwardRef(function SinglePlayer(
     rePlay();
     // playReload(video, event, flvRef.current, hlsRef.current, url);
   });
-  const unload = useMemoizedFn(() => playUnload(video, flvRef.current, hlsRef.current));
+  const unload = useMemoizedFn(() => playUnload(video, flvRef.current ?? undefined, hlsRef.current ?? undefined));
   const openFpsPlay = useMemoizedFn(() => {
     setState((old) => ({ ...old, isFpsPlay: true }));
     api?.pause();
@@ -113,7 +113,7 @@ const SinglePlayer = React.forwardRef(function SinglePlayer(
   useUpdateEffect(() => (api && event && video ? onCanPlayerInit?.() : undefined), [api, event, video]);
 
   // 补货视频错误，自定义处理
-  useErrorEvent({ unload, flv: flvRef.current, hls: hlsRef.current, event, reload, errorReloadTimer: errorReloadTimer as number });
+  useErrorEvent({ unload, flv: flvRef.current ?? undefined, hls: hlsRef.current ?? undefined, event, reload, errorReloadTimer: errorReloadTimer as number });
 
   // 直播缓冲追回
   useLiveHeart({ api, event, isLive });

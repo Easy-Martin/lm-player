@@ -9,16 +9,16 @@ interface IContrallerEventProps {
 
 function ContrallerEvent({ children }: IContrallerEventProps) {
   const { event, container } = useContext(Context);
-  const timer = useRef<NodeJS.Timer>();
+  const timer = useRef<ReturnType<typeof setTimeout>>();
   const [visibel, setVisibel] = useState(true);
 
   const showContraller = () => {
-    clearTimeout(timer.current);
+    if (timer.current) clearTimeout(timer.current);
     setVisibel(true);
     event?.emit(EventName.SHOW_CONTRALLER);
   };
   const hideContraller = () => {
-    clearTimeout(timer.current);
+    if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       setVisibel(false);
       event?.emit(EventName.HIDE_CONTRALLER);

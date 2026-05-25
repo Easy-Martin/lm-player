@@ -11250,7 +11250,7 @@ function X(e, t, n) {
 	let i = p(Y), a = g(() => i?.event ?? n, [n, i?.event]), o = r(t);
 	m(() => {
 		if (!a) return;
-		let t = (e) => o.current(e);
+		let t = (e) => o.current?.(e);
 		return a.addEventListener(e, t), () => a.removeEventListener(e, t);
 	}, [a, e]);
 }
@@ -11258,7 +11258,7 @@ function Z(e, t, n) {
 	let i = p(Y), a = g(() => i?.event ?? n, [n, i?.event]), o = r(t);
 	m(() => {
 		if (!a) return;
-		let t = (e) => o.current(e);
+		let t = (e) => o.current?.(e);
 		return a.on(e, t), () => {
 			a.off(e, t);
 		};
@@ -11391,7 +11391,7 @@ function we() {
 //#endregion
 //#region src/Player/contraller_bar/volume.tsx
 function Te({ api: e, style: t }) {
-	let [n, r] = v(Math.round(e?.getVolume() ?? 0)), i = c(), a = g(() => e?.muted ? 0 : n, void 0);
+	let [n, r] = v(Math.round(e?.getVolume() ?? 0)), i = c(), a = g(() => e?.muted ? 0 : n, []);
 	return l(() => e?.setVolume(n / 100), [n]), /* @__PURE__ */ x(F, {
 		arrow: !1,
 		overlayClassName: "lm-player-volume-popup",
@@ -11488,9 +11488,9 @@ function ke({ rightExtContents: e, rightMidExtContents: t, visibel: n, leftExtCo
 //#region src/Player/contraller_bar/contraller_event.tsx
 function Ae({ children: e }) {
 	let { event: n, container: r } = p(Y), i = _(), [o, s] = v(!0), c = () => {
-		clearTimeout(i.current), s(!0), n?.emit(K.SHOW_CONTRALLER);
+		i.current && clearTimeout(i.current), s(!0), n?.emit(K.SHOW_CONTRALLER);
 	}, l = () => {
-		clearTimeout(i.current), i.current = setTimeout(() => {
+		i.current && clearTimeout(i.current), i.current = setTimeout(() => {
 			s(!1), n?.emit(K.HIDE_CONTRALLER);
 		}, 3 * 1e3);
 	};
@@ -11543,14 +11543,17 @@ function $(e) {
 	return typeof cancelAnimationFrame > "u";
 }
 var Ne = function(e) {
-	if ($(e.id)) return clearInterval(e.id);
+	if ($(e.id)) {
+		clearInterval(e.id);
+		return;
+	}
 	cancelAnimationFrame(e.id);
 };
 function Pe(e, t, n) {
 	let i = n?.immediate, a = n?.deps ?? [], o = r(e), s = _();
 	return m(() => {
-		if (!(!I(t) || t < 0)) return i && o.current(), s.current = Me(() => {
-			o.current();
+		if (!(!I(t) || t < 0)) return i && o.current?.(), s.current = Me(() => {
+			o.current?.();
 		}, t), () => {
 			s.current && Ne(s.current);
 		};
@@ -11615,17 +11618,17 @@ function Re() {
 		errorTimer: 1,
 		loading: !1
 	}), r = _(), i = g(() => t.status === "fail" ? (console.warn("视频错误，请手动刷新重试！"), "请稍后重试！") : t.status === "reload" ? (console.warn(`第${t.errorTimer}次重连`), "正在刷新...") : "", [t.errorTimer, t.status]), a = () => {
-		clearTimeout(r.current), r.current = setTimeout(() => n((e) => ({
+		r.current && clearTimeout(r.current), r.current = setTimeout(() => n((e) => ({
 			...e,
 			loading: !0
 		})), 200);
 	}, o = () => {
-		clearTimeout(r.current), n((e) => ({
+		r.current && clearTimeout(r.current), n((e) => ({
 			...e,
 			loading: !1
 		}));
 	}, s = (e) => {
-		clearTimeout(r.current), n(() => ({
+		r.current && clearTimeout(r.current), n(() => ({
 			status: "reload",
 			errorTimer: e,
 			loading: !0
@@ -11642,7 +11645,7 @@ function Re() {
 		status: "reload",
 		loading: !0
 	}))), Z(K.HISTORY_PLAY_END, () => {
-		clearTimeout(r.current), n((e) => ({
+		r.current && clearTimeout(r.current), n((e) => ({
 			...e,
 			status: null,
 			loading: !1
@@ -11683,7 +11686,7 @@ var ze = u.forwardRef(function({ className: e, url: t, type: n, hideContrallerBa
 	}, [t]);
 	let ue = i(() => {
 		q();
-	}), de = i(() => ae(H, ce.current, J.current)), Y = i(() => {
+	}), de = i(() => ae(H, ce.current ?? void 0, J.current ?? void 0)), Y = i(() => {
 		B((e) => ({
 			...e,
 			isFpsPlay: !0
@@ -11724,8 +11727,8 @@ var ze = u.forwardRef(function({ className: e, url: t, type: n, hideContrallerBa
 		H
 	]), je({
 		unload: de,
-		flv: ce.current,
-		hls: J.current,
+		flv: ce.current ?? void 0,
+		hls: J.current ?? void 0,
 		event: U,
 		reload: ue,
 		errorReloadTimer: c

@@ -9,7 +9,7 @@ function Volume({ api, style }: { api?: Api; style?: React.CSSProperties }) {
   const [val, setVal] = useState(Math.round(api?.getVolume() ?? 0 * 100));
   const update = useUpdate();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const volume = useMemo(() => (api?.muted ? 0 : val), undefined);
+  const volume = useMemo(() => (api?.muted ? 0 : val), []);
   const onChange = (num: number) => {
     if (api?.muted) {
       api?.unmute();

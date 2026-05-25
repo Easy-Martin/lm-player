@@ -17,7 +17,7 @@ interface IFPSPlay {
 function FPSPlay({ api, event, fpsDelay, fps }: IFPSPlay) {
   const [forceKey, update] = useState(Date.now());
   const ref = useRef<HTMLCanvasElement>(null);
-  const timerRef = useRef<NodeJS.Timeout>();
+  const timerRef = useRef<ReturnType<typeof setInterval>>();
   const fps_second = useMemo(() => (fps ? 1 / fps : oneFps), [fps]);
 
   useEffect(() => {
